@@ -32,12 +32,13 @@ public class AmRegionServiceImpl extends ServiceImpl<AmRegionMapper, AmRegion> i
     public List<AmRegion> list(Integer parentId, Integer level) {
         return list(new LambdaQueryWrapper<AmRegion>()
                 .eq(parentId != null,AmRegion::getParentId,parentId)
-                .le(AmRegion::getLevel,level));
+                .le(level != null,AmRegion::getLevel,level));
     }
 
     @Override
     public List<AmRegionTree> tree(Integer level) {
         List<AmRegionTree> list = list(new LambdaQueryWrapper<AmRegion>()
+                .le(level != null,AmRegion::getLevel,level)
                 .orderByAsc(AmRegion::getAdCode)).stream().flatMap((Function<AmRegion, Stream<AmRegionTree>>) region -> {
             AmRegionTree tree = new AmRegionTree();
             tree.setName(region.getName());

@@ -34,7 +34,8 @@
         <where>
             1=1
             <if test="keywords != null">
-            and `name` like  concat('%',#{keywords},'%')
+            and (`name` like  concat('%',#{keywords},'%')
+                or leader_mobile like  concat('%',#{keywords},'%'))
             </if>
             <if test="workStatus != null">
                 and work_status = #{workStatus}

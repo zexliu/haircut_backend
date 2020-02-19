@@ -17,3 +17,4 @@ spring:
         max-wait: -1ms #默认-1 最大连接阻塞等待时间
         min-idle: 0 #最小空闲连接
 
+files-location: /Users/zex/upload_files/

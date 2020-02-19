@@ -33,7 +33,7 @@
             <if test="keywords != null">and (su.username like  concat('%',#{keywords},'%')
                 or su.email like  concat('%',#{keywords},'%')
                 or su.mobile like  concat('%',#{keywords},'%')
-                or su.nickname like  concat('%',#{keywords},'%')
+                or su.nickname like  concat('%',#{keywords},'%'))
             </if>
             <if test="enable != null">
                 and su.enable = #{enable}

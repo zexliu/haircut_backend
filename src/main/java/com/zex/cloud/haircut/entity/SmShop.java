@@ -43,11 +43,11 @@ public class SmShop implements Serializable {
 
     private String address;
 
-    private String provinceCode;
+    private Integer provinceCode;
 
-    private String cityCode;
+    private Integer cityCode;
 
-    private String districtCode;
+    private Integer districtCode;
 
     private String businessLicense;
 

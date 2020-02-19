@@ -26,7 +26,7 @@ import javax.validation.Valid;
  * @since 2020-02-19
  */
 @RestController
-@RequestMapping("/v1/audits")
+@RequestMapping("/api/v1/audits")
 @Api(tags = "审核操作相关接口")
 public class AmAuditController {
 

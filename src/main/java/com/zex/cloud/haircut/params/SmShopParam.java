@@ -3,13 +3,15 @@ package com.zex.cloud.haircut.params;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 @Data
 public class SmShopParam {
 
+    @NotNull
     private String name;
-
+    @NotNull
     private Long userId;
 
     private String logo;
@@ -17,25 +19,25 @@ public class SmShopParam {
     private String coverImage;
 
     private String introduction;
-
+    @NotNull
     private String address;
-
-    private String provinceCode;
-
-    private String cityCode;
-
-    private String districtCode;
+    @NotNull
+    private Integer provinceCode;
+    @NotNull
+    private Integer cityCode;
+    @NotNull
+    private Integer districtCode;
 
     private String businessLicense;
-
+    @NotNull
     private String leaderName;
-
+    @NotNull
     private String leaderMobile;
 
     private Boolean enable;
-
+    @NotNull
     private Double longitude;
-
+    @NotNull
     private Double latitude;
 
     private String htmlInfo;

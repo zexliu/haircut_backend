@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2020-02-19
  */
 @RestController
-@RequestMapping("/v1/shops")
+@RequestMapping("/api/v1/shops")
 public class SmShopController {
 
     @Autowired

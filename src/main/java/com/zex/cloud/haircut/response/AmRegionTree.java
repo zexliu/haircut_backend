@@ -1,6 +1,5 @@
 package com.zex.cloud.haircut.response;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

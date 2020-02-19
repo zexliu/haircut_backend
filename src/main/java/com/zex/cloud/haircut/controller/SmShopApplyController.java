@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @Api(tags = "店铺入驻申请相关接口")
-@RequestMapping("/v1/shop/apply")
+@RequestMapping("/api/v1/shop/apply")
 public class SmShopApplyController {
 
 
