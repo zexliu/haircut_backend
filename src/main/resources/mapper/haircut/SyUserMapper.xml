@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.SyUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.SyUser">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="create_at" property="createAt"/>
+        <result column="mobile" property="mobile"/>
+        <result column="login_at" property="loginAt"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="operator_id" property="operatorId"/>
+        <result column="operator_ip" property="operatorIp"/>
+        <result column="remark" property="remark"/>
+        <result column="operator_at" property="operatorAt"/>
+        <result column="enable" property="enable"/>
+        <result column="expire_at" property="expireAt"/>
+        <result column="locked" property="locked"/>
+        <result column="nickname" property="nickname"/>
+        <result column="avatar" property="avatar"/>
+    </resultMap>
+    <select id="list" resultType="com.zex.cloud.haircut.entity.SyUser">
+        select distinct(su.id), su.username, su.password, su.email, su.create_at,
+        su.mobile, su.login_at, su.login_ip, su.operator_id, su.operator_ip,
+        su.remark, su.operator_at,su.enable, su.expire_at, su.locked, su.nickname, su.avatar
+        from sy_user su
+        left join sy_group_user_rel sgur on su.id = sgur.user_id
+        <where>
+            1=1
+            <if test="keywords != null">and (su.username like %#{keywords}%
+                or su.email like %#{keywords}%
+                or su.mobile like %#{keywords}%
+                or su.nickname like %#{keywords}%)
+            </if>
+            <if test="enable != null">
+                and su.enable = #{enable}
+            </if>
+            <if test="locked != null">
+                and su.locked = #{locked}
+            </if>
+            <if test="groupId != null">
+                and sgur.group_id = #{groupId}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

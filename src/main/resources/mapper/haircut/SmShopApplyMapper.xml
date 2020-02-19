@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.SmShopApplyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.SmShopApply">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="address" property="address" />
+        <result column="province_code" property="provinceCode" />
+        <result column="city_code" property="cityCode" />
+        <result column="district_code" property="districtCode" />
+        <result column="business_license" property="businessLicense" />
+        <result column="photo" property="photo" />
+        <result column="leader_name" property="leaderName" />
+        <result column="leader_mobile" property="leaderMobile" />
+        <result column="audit_status" property="auditStatus" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="create_at" property="createAt" />
+        <result column="update_at" property="updateAt" />
+        <result column="version" property="version" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+
+</mapper>

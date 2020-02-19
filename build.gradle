@@ -1,0 +1,59 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
+group = 'com.zex.cloud'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    compileOnly 'org.projectlombok:lombok'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.3.1.tmp'
+    implementation 'com.baomidou:mybatis-plus-generator:3.3.1.tmp'
+    implementation  'p6spy:p6spy:3.8.7'
+    implementation 'org.freemarker:freemarker'
+    implementation'org.apache.commons:commons-lang3:3.9'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+    implementation 'commons-codec:commons-codec:1.14'
+    implementation 'org.apache.commons:commons-pool2:2.8.0'
+    implementation 'com.google.guava:guava:28.2-jre'
+    implementation "io.springfox:springfox-swagger2:2.9.2"
+    implementation 'com.github.xiaoymin:swagger-bootstrap-ui:1.9.6'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+}
+
+test {
+    useJUnitPlatform()
+}
