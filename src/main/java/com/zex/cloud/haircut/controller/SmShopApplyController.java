@@ -1,19 +1,25 @@
 package com.zex.cloud.haircut.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SmShopApply;
+import com.zex.cloud.haircut.enums.AuditStatus;
 import com.zex.cloud.haircut.exception.NotFoundException;
+import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.params.SmShopApplyParam;
+import com.zex.cloud.haircut.response.SmShopApplyDetail;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.ISmShopApplyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author Zex
@@ -30,9 +36,9 @@ public class SmShopApplyController {
 
     @GetMapping("/current")
     @ApiOperation("获取当前用户的申请记录")
-    public SmShopApply current(){
+    public SmShopApply current() {
         SmShopApply smShopApply = iSmShopApplyService.getApplyByUserId(RequestHolder.user().getId());
-        if (smShopApply == null){
+        if (smShopApply == null) {
             throw new NotFoundException("当前用户没有申请记录");
         }
         return smShopApply;
@@ -40,25 +46,33 @@ public class SmShopApplyController {
 
 
     @PostMapping
-    @ApiOperation("创建申请")
-    public SmShopApply create(@RequestBody SmShopApplyParam param){
-       return iSmShopApplyService.create(param, RequestHolder.user().getId());
+    @ApiOperation("提交申请")
+    public SmShopApply create(@RequestBody SmShopApplyParam param) {
+        return iSmShopApplyService.create(param, RequestHolder.user().getId());
     }
 
     @PutMapping
     @ApiOperation("修改申请(驳回后重新申请)")
-    public SmShopApply update(@RequestBody SmShopApplyParam param){
+    public SmShopApply update(@RequestBody SmShopApplyParam param) {
         return iSmShopApplyService.update(param, RequestHolder.user().getId());
     }
-    //个人申请
 
-    //驳回  ? am service
 
-    //通过    am service
+    @GetMapping
+    @ApiOperation("申请列表")
+    public IPage<SmShopApply> list(Pageable page, AuditStatus auditStatus, String keywords) {
+        return iSmShopApplyService.page(page.convert(), new LambdaQueryWrapper<SmShopApply>()
+                .eq(auditStatus != null, SmShopApply::getAuditStatus, auditStatus)
+                .eq(StringUtils.isNotBlank(keywords), SmShopApply::getName, keywords));
+    }
 
-    //获取申请记录
 
-    //获取单挑申请的详细信息
+    @GetMapping("/{id}")
+    @ApiOperation("申请详情")
+    public SmShopApplyDetail detail(@PathVariable Long id){
+        return iSmShopApplyService.detail(id);
+    }
+
 
 
 }

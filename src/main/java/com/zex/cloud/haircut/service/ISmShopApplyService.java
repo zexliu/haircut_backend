@@ -3,6 +3,7 @@ package com.zex.cloud.haircut.service;
 import com.zex.cloud.haircut.entity.SmShopApply;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.SmShopApplyParam;
+import com.zex.cloud.haircut.response.SmShopApplyDetail;
 
 /**
  * <p>
@@ -19,4 +20,7 @@ public interface ISmShopApplyService extends IService<SmShopApply> {
     SmShopApply getApplyByUserId(Long userId);
 
     SmShopApply update(SmShopApplyParam param, Long userId);
+
+    SmShopApplyDetail detail(Long id);
+
 }

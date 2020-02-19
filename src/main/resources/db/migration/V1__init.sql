@@ -45,6 +45,7 @@ create table am_audit_history
 create table sm_shop
 (
     id                   bigint not null,
+    user_id              bigint,
     name                 varchar(30),
     logo                 varchar(120),
     cover_image          varchar(120),
@@ -56,15 +57,17 @@ create table sm_shop
     business_license     varchar(120),
     leader_name          varchar(30),
     leader_mobile        varchar(30),
-    enable               tinyint,
+    enable               bool,
     longitude            double,
     latitude             double,
     create_at            datetime default CURRENT_TIMESTAMP,
     score                float,
     html_info            longtext,
+    work_start_at        time,
+    work_end_at          time,
+    work_status          tinyint,
     primary key (id)
 );
-
 
 /*==============================================================*/
 /* Table: sm_shop_apply                                         */

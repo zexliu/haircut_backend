@@ -1,12 +1,8 @@
 package com.zex.cloud.haircut.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-
-import com.zex.cloud.haircut.enums.AuditStatus;
-import com.zex.cloud.haircut.enums.AuditTargetType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,29 +19,25 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="AmAuditHistory对象", description="")
-public class AmAuditHistory implements Serializable {
+@ApiModel(value="AmRegion对象", description="")
+public class AmRegion implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    private Long targetId;
+    private String name;
 
-    private AuditTargetType targetType;
+    private Integer level;
 
-    private String snapshot;
+    private Long parentId;
 
-    private AuditStatus status;
+    private Integer adCode;
 
-    private String message;
+    private Double latitude;
 
-    private Long operatorId;
-
-    private String operatorIp;
-
-    private LocalDateTime createAt;
+    private Double longitude;
 
 
 }

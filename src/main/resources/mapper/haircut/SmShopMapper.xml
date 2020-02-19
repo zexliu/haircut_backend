@@ -4,25 +4,55 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.SmShop">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="logo" property="logo" />
-        <result column="cover_image" property="coverImage" />
-        <result column="introduction" property="introduction" />
-        <result column="address" property="address" />
-        <result column="province_code" property="provinceCode" />
-        <result column="city_code" property="cityCode" />
-        <result column="district_code" property="districtCode" />
-        <result column="business_license" property="businessLicense" />
-        <result column="leader_name" property="leaderName" />
-        <result column="leader_mobile" property="leaderMobile" />
-        <result column="enable" property="enable" />
-        <result column="longitude" property="longitude" />
-        <result column="latitude" property="latitude" />
-        <result column="create_at" property="createAt" />
-        <result column="score" property="score" />
-        <result column="html_info" property="htmlInfo" />
-        <result column="point" property="point" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="logo" property="logo"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="introduction" property="introduction"/>
+        <result column="address" property="address"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="district_code" property="districtCode"/>
+        <result column="business_license" property="businessLicense"/>
+        <result column="leader_name" property="leaderName"/>
+        <result column="leader_mobile" property="leaderMobile"/>
+        <result column="enable" property="enable"/>
+        <result column="longitude" property="longitude"/>
+        <result column="latitude" property="latitude"/>
+        <result column="create_at" property="createAt"/>
+        <result column="score" property="score"/>
+        <result column="html_info" property="htmlInfo"/>
+        <result column="work_start_at" property="workStartAt"/>
+        <result column="work_end_at" property="workEndAt"/>
+        <result column="work_status" property="workStatus"/>
     </resultMap>
+    <select id="list" resultMap="BaseResultMap">
+        select id, name, logo, cover_image, introduction, address, province_code, city_code, district_code,
+        business_license, leader_name, leader_mobile, enable, longitude, latitude, create_at, score, html_info,
+        work_start_at, work_end_at, work_status
+        from sm_shop
+        <where>
+            1=1
+            <if test="keywords != null">
+            and `name` like  concat('%',#{keywords},'%')
+            </if>
+            <if test="workStatus != null">
+                and work_status = #{workStatus}
+            </if>
+            <if test="provinceCode != null">
+                and province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                and city_code = #{cityCode}
+            </if>
+            <if test="districtCode != null">
+                and district_code = #{districtCode}
+            </if>
+            <if test="longitude != null and latitude != null">
+                order by (st_distance (point (longitude,latitude),point (#{longitude},#{latitude}))  /**111195/1000 )as juli*/
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

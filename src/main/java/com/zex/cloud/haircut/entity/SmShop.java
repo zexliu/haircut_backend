@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.time.LocalTime;
+
+import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +23,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @ApiModel(value="SmShop对象", description="")
 public class SmShop implements Serializable {
 
@@ -30,6 +32,8 @@ public class SmShop implements Serializable {
     private Long id;
 
     private String name;
+
+    private Long userId;
 
     private String logo;
 
@@ -62,5 +66,12 @@ public class SmShop implements Serializable {
     private Float score;
 
     private String htmlInfo;
+
+    private LocalTime workStartAt;
+
+    private LocalTime workEndAt;
+
+    private ShopWorkStatus workStatus;
+
 
 }

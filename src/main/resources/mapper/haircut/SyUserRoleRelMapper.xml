@@ -9,7 +9,6 @@
         <result column="user_id" property="userId"/>
     </resultMap>
     <select id="queryRolesByUserId" resultType="java.lang.String">
-
         select sr.name
         from sy_role sr
                  left join sy_user_role_rel sur on sur.role_id = sr.id

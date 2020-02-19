@@ -22,7 +22,7 @@
         <result column="nickname" property="nickname"/>
         <result column="avatar" property="avatar"/>
     </resultMap>
-    <select id="list" resultType="com.zex.cloud.haircut.entity.SyUser">
+    <select id="list" resultMap="BaseResultMap">
         select distinct(su.id), su.username, su.password, su.email, su.create_at,
         su.mobile, su.login_at, su.login_ip, su.operator_id, su.operator_ip,
         su.remark, su.operator_at,su.enable, su.expire_at, su.locked, su.nickname, su.avatar
@@ -30,10 +30,10 @@
         left join sy_group_user_rel sgur on su.id = sgur.user_id
         <where>
             1=1
-            <if test="keywords != null">and (su.username like %#{keywords}%
-                or su.email like %#{keywords}%
-                or su.mobile like %#{keywords}%
-                or su.nickname like %#{keywords}%)
+            <if test="keywords != null">and (su.username like  concat('%',#{keywords},'%')
+                or su.email like  concat('%',#{keywords},'%')
+                or su.mobile like  concat('%',#{keywords},'%')
+                or su.nickname like  concat('%',#{keywords},'%')
             </if>
             <if test="enable != null">
                 and su.enable = #{enable}
