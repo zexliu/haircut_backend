@@ -4,6 +4,8 @@ package com.zex.cloud.haircut.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.zex.cloud.haircut.params.Pageable;
+import com.zex.cloud.haircut.params.PasswordCurrentParam;
+import com.zex.cloud.haircut.params.PasswordParam;
 import com.zex.cloud.haircut.params.SyUserParam;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.response.SyUserDetail;
@@ -62,10 +64,25 @@ public class SyUserController {
     }
 
     @PutMapping("admin/{id}/password")
-    @ApiOperation("修改密码")
-    public String password(@PathVariable Long id, String password, HttpServletRequest request) {
+    @ApiOperation("管理员修改密码")
+    public String adminPassword(@PathVariable Long id, String password, HttpServletRequest request) {
         String ip = NetWorkUtils.getRemoteHost(request);
-        iSyUserService.password(id, password, ip, RequestHolder.user().getId());
+        iSyUserService.adminPassword(id, password, ip, RequestHolder.user().getId());
+        return SimpleResp.SUCCESS;
+    }
+
+
+    @PostMapping("/password")
+    @ApiOperation("通过账号和旧密码修改密码")
+    public String password(@RequestBody PasswordParam param) {
+        iSyUserService.password(param);
+        return SimpleResp.SUCCESS;
+    }
+
+    @PostMapping("/password/current")
+    @ApiOperation("修改当前访问账号的密码")
+    public String passwordCurrent(@RequestBody PasswordCurrentParam param) {
+        iSyUserService.passwordCurrent(param,RequestHolder.user().getId());
         return SimpleResp.SUCCESS;
     }
 

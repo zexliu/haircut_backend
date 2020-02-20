@@ -63,7 +63,8 @@ public class SmShopApplyController {
     public IPage<SmShopApply> list(Pageable page, AuditStatus auditStatus, String keywords) {
         return iSmShopApplyService.page(page.convert(), new LambdaQueryWrapper<SmShopApply>()
                 .eq(auditStatus != null, SmShopApply::getAuditStatus, auditStatus)
-                .eq(StringUtils.isNotBlank(keywords), SmShopApply::getName, keywords));
+                .eq(StringUtils.isNotBlank(keywords), SmShopApply::getName, keywords)
+                .orderByAsc(SmShopApply::getUpdateAt));
     }
 
 

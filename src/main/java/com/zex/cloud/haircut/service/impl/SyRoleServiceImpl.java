@@ -78,7 +78,7 @@ public class SyRoleServiceImpl extends ServiceImpl<SyRoleMapper, SyRole> impleme
 
     @Override
     public List<SyRoleTree> tree() {
-        List<SyRoleTree> list = list(new LambdaQueryWrapper<SyRole>().orderByAsc(SyRole::getSeq))
+        List<SyRoleTree> list = list(new LambdaQueryWrapper<SyRole>().orderByDesc(SyRole::getSeq))
                 .stream().flatMap((Function<SyRole, Stream<SyRoleTree>>) role -> {
                     SyRoleTree tree = new SyRoleTree();
                     tree.setName(role.getName());

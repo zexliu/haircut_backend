@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.params.SmShopParam;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -22,8 +24,13 @@ public interface ISmShopService extends IService<SmShop> {
     SmShop customSave(SmShop smShop);
 
 
-    SmShop update(Long id, SmShopParam param, Long aLong);
+    SmShop updateCurrent(Long id, SmShopParam param);
 
-    SmShop adminUpdate(Long id, SmShopParam param);
+    SmShop update(Long id, SmShopParam param);
+
+    SmShop currentWorkStatus(Long id, ShopWorkStatus workStatus);
+
+
+  void updateTitle(Long id, List<Long> titleIds);
 
 }

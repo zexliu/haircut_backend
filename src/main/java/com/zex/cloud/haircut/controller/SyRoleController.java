@@ -41,7 +41,7 @@ public class SyRoleController {
     public IPage<SyRole> list(Pageable page,Long parentId){
         return iSyRoleService.page(page.convert(),new LambdaQueryWrapper<SyRole>()
                 .eq(parentId != null,SyRole::getParentId,parentId)
-                .orderByAsc(SyRole::getSeq));
+                .orderByDesc(SyRole::getSeq));
     }
 
     @GetMapping("/tree")

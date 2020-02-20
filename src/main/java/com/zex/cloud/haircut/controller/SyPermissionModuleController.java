@@ -41,7 +41,7 @@ public class SyPermissionModuleController {
     public IPage<SyPermissionModule> list(Pageable page,Long parentId){
         return iSyPermissionModuleService.page(page.convert(),new LambdaQueryWrapper<SyPermissionModule>()
                 .eq(parentId != null,SyPermissionModule::getParentId,parentId)
-                .orderByAsc(SyPermissionModule::getSeq));
+                .orderByDesc(SyPermissionModule::getSeq));
     }
 
     @GetMapping("/tree")

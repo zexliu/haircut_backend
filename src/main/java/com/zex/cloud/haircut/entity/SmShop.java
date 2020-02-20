@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,10 +31,11 @@ public class SmShop implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
 
     private String name;
-
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long userId;
 
     private String logo;

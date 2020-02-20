@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.enums.AuditStatus;
 import com.zex.cloud.haircut.enums.AuditTargetType;
 import io.swagger.annotations.ApiModel;
@@ -29,6 +31,7 @@ public class AmAuditHistory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
 
     private Long targetId;

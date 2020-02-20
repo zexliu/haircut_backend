@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.enums.AuditStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +30,7 @@ public class SmShopApply implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
 
     private String name;
@@ -60,6 +63,7 @@ public class SmShopApply implements Serializable {
 
     private Integer version;
 
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long userId;
 
 

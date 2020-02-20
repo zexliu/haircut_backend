@@ -7,6 +7,7 @@ import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IAmAuditHistoryService;
 import com.zex.cloud.haircut.util.NetWorkUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,13 +38,12 @@ public class AmAuditController {
     private HttpServletRequest request;
 
     @PostMapping
+    @ApiOperation("审核记录")
     public String audit(@RequestBody @Valid AmAuditParam param){
         String ip = NetWorkUtils.getRemoteHost(request);
         iAmAuditHistoryService.audit(param,ip, RequestHolder.user().getId());
         return SimpleResp.SUCCESS;
     }
-    //驳回  ? am service
 
-    //通过    am service
 
 }

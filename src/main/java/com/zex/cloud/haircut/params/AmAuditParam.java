@@ -10,11 +10,10 @@ import javax.validation.constraints.NotNull;
 public class AmAuditParam {
 
     @NotNull
-    AuditTargetType targetType;
+    private AuditTargetType targetType;
     @NotNull
-    Long targetId;
+    private  Long targetId;
     @NotNull
-    AuditStatus auditStatus;
-
+    private  AuditStatus auditStatus;
     private String message;
 }

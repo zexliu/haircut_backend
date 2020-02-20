@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.HmStylistServiceRelationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.HmStylistServiceRelation">
+        <id column="id" property="id" />
+        <result column="service_id" property="serviceId" />
+        <result column="stylist_id" property="stylistId" />
+        <result column="male_price" property="malePrice" />
+        <result column="female_price" property="femalePrice" />
+        <result column="create_at" property="createAt" />
+    </resultMap>
+
+</mapper>

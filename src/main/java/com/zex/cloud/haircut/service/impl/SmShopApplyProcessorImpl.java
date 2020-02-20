@@ -54,6 +54,8 @@ public class SmShopApplyProcessorImpl extends ServiceImpl<SmShopApplyMapper, SmS
         smShopApply = new SmShopApply();
         BeanUtils.copyProperties(param, smShopApply);
         smShopApply.setAuditStatus(AuditStatus.PENDING);
+        smShopApply.setUpdateAt(LocalDateTime.now());
+        smShopApply.setUserId(userId);
         save(smShopApply);
         return smShopApply;
     }
@@ -98,14 +100,13 @@ public class SmShopApplyProcessorImpl extends ServiceImpl<SmShopApplyMapper, SmS
         if (smShopApply.getAuditStatus() != AuditStatus.PENDING){
             throw new ForbiddenException("该条记录不在待审核状态");
         }
-        if (smShopApply.getAuditStatus() == AuditStatus.PASSED){
+        if (auditStatus == AuditStatus.PASSED ){
             SmShop smShop = new SmShop();
             BeanUtils.copyProperties(smShopApply,smShop);
             smShop.setId(null);
             smShop.setCreateAt(null);
-            smShop.setCoverImage(smShopApply.getPhoto());
             smShop.setWorkStatus(ShopWorkStatus.REST);
-
+            smShop.setLogo(smShopApply.getPhoto());
             iSmShopService.customSave(smShop);
         }
         smShopApply.setAuditStatus(auditStatus);

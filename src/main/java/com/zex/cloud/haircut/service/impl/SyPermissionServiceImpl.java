@@ -81,7 +81,7 @@ public class SyPermissionServiceImpl extends ServiceImpl<SyPermissionMapper, SyP
                         .or().like(SyPermission::getUrl,keywords))
                 .eq(moduleId != null,SyPermission::getModuleId,moduleId)
                 .eq(methodType != null,SyPermission::getMethodType,methodType)
-                .orderByAsc(SyPermission::getSeq)
+                .orderByDesc(SyPermission::getSeq)
         );
     }
 

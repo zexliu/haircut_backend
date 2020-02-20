@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.zex.cloud.haircut.exception.AuthenticationException;
 import com.zex.cloud.haircut.exception.ExistsException;
+import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.SyUserMapper;
+import com.zex.cloud.haircut.params.PasswordCurrentParam;
+import com.zex.cloud.haircut.params.PasswordParam;
 import com.zex.cloud.haircut.params.SyUserParam;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestUser;
@@ -136,13 +139,39 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     }
 
     @Override
-    public void password(Long id, String password, String operatorIp, Long operatorId) {
+    public void adminPassword(Long id, String password, String operatorIp, Long operatorId) {
         SyUser syUser = new SyUser();
         syUser.setOperatorIp(operatorIp);
         syUser.setOperatorAt(LocalDateTime.now());
         syUser.setOperatorId(operatorId);
         syUser.setId(id);
         syUser.setPassword(passwordEncoder.encode(password));
+        updateById(syUser);
+    }
+
+    @Override
+    public void password(PasswordParam param) {
+        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getUsername,param.getUsername()));
+        if (syUser == null){
+            throw new NotFoundException("用户不存在");
+        }
+        if (!passwordEncoder.matches(param.getOldPassword(),syUser.getPassword())){
+            throw new NotFoundException("旧密码不对");
+        }
+        syUser.setPassword(passwordEncoder.encode(param.getNewPassword()));
+        updateById(syUser);
+    }
+
+    @Override
+    public void passwordCurrent(PasswordCurrentParam param, Long id) {
+        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getId,id));
+        if (syUser == null){
+            throw new NotFoundException("用户不存在");
+        }
+        if (!passwordEncoder.matches(param.getOldPassword(),syUser.getPassword())){
+            throw new NotFoundException("旧密码不对");
+        }
+        syUser.setPassword(passwordEncoder.encode(param.getNewPassword()));
         updateById(syUser);
     }
 

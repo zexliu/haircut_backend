@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zex.cloud.haircut.params.PasswordCurrentParam;
+import com.zex.cloud.haircut.params.PasswordParam;
 import com.zex.cloud.haircut.params.SyUserParam;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestUser;
@@ -29,5 +31,9 @@ public interface ISyUserService extends IService<SyUser> {
 
     SyUserDetail detail(Long id);
 
-    void password(Long id, String password, String operatorIp, Long operatorId);
+    void adminPassword(Long id, String password, String operatorIp, Long operatorId);
+
+    void password(PasswordParam param);
+
+    void passwordCurrent(PasswordCurrentParam param, Long id);
 }

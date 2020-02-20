@@ -69,7 +69,7 @@ public class SyPermissionModuleServiceImpl extends ServiceImpl<SyPermissionModul
 
     @Override
     public List<SyPermissionModuleTree> tree() {
-        List<SyPermissionModuleTree> list = list(new LambdaQueryWrapper<SyPermissionModule>().orderByAsc(SyPermissionModule::getSeq)).stream().flatMap((Function<SyPermissionModule, Stream<SyPermissionModuleTree>>) permissionModule -> {
+        List<SyPermissionModuleTree> list = list(new LambdaQueryWrapper<SyPermissionModule>().orderByDesc(SyPermissionModule::getSeq)).stream().flatMap((Function<SyPermissionModule, Stream<SyPermissionModuleTree>>) permissionModule -> {
             SyPermissionModuleTree module = new SyPermissionModuleTree();
             module.setName(permissionModule.getName());
             module.setId(permissionModule.getId());
