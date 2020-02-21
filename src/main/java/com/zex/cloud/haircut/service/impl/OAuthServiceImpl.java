@@ -21,6 +21,7 @@ public class OAuthServiceImpl implements IOAuthService {
     private ISyUserService iSyUserService;
     @Override
     public TokenRespSimple password(String username, String password, String clientId) {
+        // TODO: 2020/2/21 shopId
         RequestUser requestUser = iSyUserService.getRequestUser(username,password);
         String accessToken = UUID.randomUUID().toString();
         TokenRespSimple tokenRespSimple = new TokenRespSimple();

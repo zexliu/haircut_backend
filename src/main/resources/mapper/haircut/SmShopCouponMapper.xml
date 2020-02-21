@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.SmShopCouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.SmShopCoupon">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="amount" property="amount" />
+        <result column="coupon_type" property="couponType" />
+        <result column="limit_min" property="limitMin" />
+        <result column="publish_type" property="publishType" />
+        <result column="member_status" property="memberStatus" />
+        <result column="pull_limit_status" property="pullLimitStatus" />
+        <result column="pull_start_at" property="pullStartAt" />
+        <result column="pull_end_at" property="pullEndAt" />
+        <result column="publish_status" property="publishStatus" />
+        <result column="publish_count" property="publishCount" />
+        <result column="surplus_count" property="surplusCount" />
+        <result column="create_at" property="createAt" />
+        <result column="absolute_status" property="absoluteStatus" />
+        <result column="absolute_start_at" property="absoluteStartAt" />
+        <result column="absolute_end_at" property="absoluteEndAt" />
+        <result column="relative_day" property="relativeDay" />
+    </resultMap>
+
+</mapper>

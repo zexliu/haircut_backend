@@ -3,12 +3,14 @@ package com.zex.cloud.haircut.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.exception.ExistsException;
-import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.mapper.SmShopMapper;
+import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.params.SmShopParam;
+import com.zex.cloud.haircut.service.ISmHalfTimeService;
 import com.zex.cloud.haircut.service.ISmShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.service.ISmShopServiceRelationService;
@@ -31,6 +33,9 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
 
     @Autowired
     private ISmShopServiceRelationService iSmShopServiceRelationService;
+
+    @Autowired
+    private ISmHalfTimeService iSmHalfTimeService;
     @Override
     public IPage<SmShop> list(Page<SmShop> convert, String keywords, ShopWorkStatus workStatus, String provinceCode, String cityCode, String districtCode, Double longitude, Double latitude) {
         return baseMapper.list(convert, keywords, workStatus, provinceCode, cityCode, districtCode, longitude, latitude);
@@ -79,6 +84,11 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     @Override
     public void updateTitle(Long id, List<Long> titleIds) {
         iSmShopServiceRelationService.updateRelations(id,titleIds);
+    }
+
+    @Override
+    public void updateHalfTime(Long shopId, List<SmHalfTimeParam> params) {
+        iSmHalfTimeService.updateRelations(shopId,params);
     }
 
 

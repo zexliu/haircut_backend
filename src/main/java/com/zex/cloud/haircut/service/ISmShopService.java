@@ -2,9 +2,11 @@ package com.zex.cloud.haircut.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
+import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.params.SmShopParam;
 
 import java.util.List;
@@ -32,5 +34,8 @@ public interface ISmShopService extends IService<SmShop> {
 
 
   void updateTitle(Long id, List<Long> titleIds);
+
+    void updateHalfTime(Long shopId, List<SmHalfTimeParam> params);
+
 
 }

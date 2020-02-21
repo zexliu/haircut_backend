@@ -2,9 +2,11 @@ package com.zex.cloud.haircut.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.params.Pageable;
+import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.params.SmShopParam;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
@@ -78,4 +80,11 @@ public class SmShopController {
         return SimpleResp.SUCCESS;
     }
 
+
+    @PutMapping("/half/current")
+    @ApiOperation("店主设置半价开放时间")
+    public String updateHalfTime(@RequestBody List<SmHalfTimeParam> params){
+        iSmShopService.updateHalfTime(RequestHolder.user().getShopId(),params);
+        return SimpleResp.SUCCESS;
+    }
 }

@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.controller;
 
+import com.zex.cloud.haircut.enums.OAuthGrantType;
 import com.zex.cloud.haircut.exception.NotSupportException;
 import com.zex.cloud.haircut.params.TokenParam;
 import com.zex.cloud.haircut.response.SimpleResp;
@@ -30,12 +31,10 @@ public class OAuthController {
     @PostMapping("/token")
     public TokenRespSimple token(@Valid @RequestBody TokenParam param) {
 
-        switch (param.getGrantType()) {
-            case password:
-                return ioAuthService.password(param.getUsername(), param.getPassword(), param.getClientId());
-            default:
-                throw new NotSupportException("暂不支持该GrantType");
+        if (param.getGrantType() == OAuthGrantType.password) {
+            return ioAuthService.password(param.getUsername(), param.getPassword(), param.getClientId());
         }
+        throw new NotSupportException("暂不支持该GrantType");
     }
 
 

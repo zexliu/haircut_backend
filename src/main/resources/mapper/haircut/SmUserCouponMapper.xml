@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.SmUserCouponMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.SmUserCoupon">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="create_at" property="createAt"/>
+        <result column="use_status" property="useStatus"/>
+        <result column="use_start_at" property="useStartAt"/>
+        <result column="use_end_at" property="useEndAt"/>
+        <result column="coupon_id" property="couponId"/>
+        <result column="user_id" property="userId"/>
+        <result column="order_id" property="orderId"/>
+    </resultMap>
+    <select id="list" resultType="com.zex.cloud.haircut.response.SmUserCouponDetail">
+        select suc.id, suc.shop_id, suc.create_at, suc.use_status, suc.use_start_at, suc.use_end_at, suc.coupon_id,
+        suc.user_id, suc.order_id, ssc.name, ssc.description, ssc.amount, ssc.coupon_type, ssc.limit_min, ssc.publish_type, ssc.member_status
+        from sm_user_coupon suc
+        left join sm_shop_coupon ssc on suc.coupon_id = ssc.id
+        <where>
+            1 = 1
+            <if test="shopId != null">
+                and suc.shop_id = #{shopId}
+            </if>
+            <if test="userId != null">
+                and suc.user_id = #{userId}
+            </if>
+            <if test="useStatus != null">
+                and suc.use_status = #{useStatus}
+            </if>
+            <if test="dateStatus != null">
+                and suc.use_start_at >= now()
+                and suc.use_end_at <![CDATA[ <= ]]> now()
+            </if>
+        </where>
+    </select>
+
+</mapper>

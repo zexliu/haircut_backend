@@ -18,6 +18,8 @@ drop table if exists sm_shop;
 
 drop table if exists sm_shop_apply;
 
+drop table if exists sm_shop_coupon;
+
 drop table if exists sm_shop_discount;
 
 drop table if exists sm_shop_gropu;
@@ -25,6 +27,8 @@ drop table if exists sm_shop_gropu;
 drop table if exists sm_shop_service_relation;
 
 drop table if exists sm_shop_title;
+
+drop table if exists sm_user_coupon;
 
 drop table if exists sy_group_role_rel;
 
@@ -221,6 +225,34 @@ create table sm_shop_apply
 );
 
 /*==============================================================*/
+/* Table: sm_shop_coupon                                        */
+/*==============================================================*/
+create table sm_shop_coupon
+(
+    id                   bigint not null,
+    shop_id              bigint,
+    name                 varchar(30),
+    description          varchar(200),
+    amount               decimal,
+    coupon_type          tinyint,
+    limit_min            decimal,
+    publish_type         tinyint,
+    member_status        tinyint,
+    pull_limit_status    tinyint,
+    pull_start_at        datetime,
+    pull_end_at          datetime,
+    publish_status       bool,
+    publish_count        int,
+    surplus_count        int,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    absolute_status      bool,
+    absolute_start_at    datetime,
+    absolute_end_at      datetime,
+    relative_day         int,
+    primary key (id)
+);
+
+/*==============================================================*/
 /* Table: sm_shop_discount                                      */
 /*==============================================================*/
 create table sm_shop_discount
@@ -271,6 +303,23 @@ create table sm_shop_title
     icon                 varchar(128),
     create_at            datetime default CURRENT_TIMESTAMP,
     seq                  int,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: sm_user_coupon                                        */
+/*==============================================================*/
+create table sm_user_coupon
+(
+    id                   bigint not null,
+    shop_id              bigint,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    use_status           int,
+    use_start_at         datetime,
+    use_end_at           datetime,
+    coupon_id            bigint,
+    user_id              bigint,
+    order_id             bigint,
     primary key (id)
 );
 

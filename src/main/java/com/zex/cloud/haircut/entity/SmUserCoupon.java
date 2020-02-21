@@ -1,9 +1,9 @@
 package com.zex.cloud.haircut.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
@@ -19,31 +19,34 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Zex
- * @since 2020-02-20
+ * @since 2020-02-21
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HmWorkCase对象", description="")
-public class HmWorkCase implements Serializable {
+@ApiModel(value="SmUserCoupon对象", description="")
+public class SmUserCoupon implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
-
-    private Long stylistId;
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long shopId;
 
-    private String title;
-
-    private String introduction;
-
-    private String images;
-
-    private Integer seq;
-
     private LocalDateTime createAt;
+
+    private Boolean useStatus;
+
+    private LocalDateTime useStartAt;
+
+    private LocalDateTime useEndAt;
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long couponId;
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long userId;
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long orderId;
 
 
 }

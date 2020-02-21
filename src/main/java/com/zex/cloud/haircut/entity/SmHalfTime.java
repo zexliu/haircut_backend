@@ -1,12 +1,13 @@
 package com.zex.cloud.haircut.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
+import com.zex.cloud.haircut.enums.WeekDay;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,12 +20,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Zex
- * @since 2020-02-20
+ * @since 2020-02-21
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="HmWorkCase对象", description="")
-public class HmWorkCase implements Serializable {
+@ApiModel(value="SmHalfTime对象", description="")
+public class SmHalfTime implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,16 +33,14 @@ public class HmWorkCase implements Serializable {
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
 
-    private Long stylistId;
+    private WeekDay weekDay;
+
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long shopId;
 
-    private String title;
+    private LocalDateTime startAt;
 
-    private String introduction;
-
-    private String images;
-
-    private Integer seq;
+    private LocalDateTime endAt;
 
     private LocalDateTime createAt;
 
