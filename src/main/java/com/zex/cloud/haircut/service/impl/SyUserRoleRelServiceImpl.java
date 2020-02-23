@@ -46,4 +46,19 @@ public class SyUserRoleRelServiceImpl extends ServiceImpl<SyUserRoleRelMapper, S
     public List<Long> getRoleIdsByUserId(Long id) {
         return baseMapper.getRoleIdsByUserId(id);
     }
+
+    @Override
+    public void save(Long roleId, Long userId) {
+        SyUserRoleRel rel = new SyUserRoleRel();
+        rel.setRoleId(roleId);
+        rel.setUserId(userId);
+        save(rel);
+    }
+
+    @Override
+    public void remove(Long roleId, Long userId) {
+        remove(new LambdaQueryWrapper<SyUserRoleRel>()
+                .eq(SyUserRoleRel::getRoleId,roleId)
+                .eq(SyUserRoleRel::getUserId,userId));
+    }
 }

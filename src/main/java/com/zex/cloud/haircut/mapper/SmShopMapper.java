@@ -26,4 +26,6 @@ public interface SmShopMapper extends BaseMapper<SmShop> {
                        @Param("longitude")Double longitude,
                        @Param("latitude")Double latitude);
 
+    Long getShopIdByUserId(@Param("userId") Long userId);
+
 }

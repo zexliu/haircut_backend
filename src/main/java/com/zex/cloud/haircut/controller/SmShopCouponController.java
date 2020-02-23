@@ -41,8 +41,7 @@ public class SmShopCouponController {
     public IPage<SmShopCoupon> currentPage(Pageable pageable, String keywords, CouponPublishType publishType, Boolean publishStatus, CouponType couponType) {
         return iSmShopCouponService.page(pageable.convert(),
                 new LambdaQueryWrapper<SmShopCoupon>()
-                        // TODO: 2020/2/21 移除条件
-                        .eq(RequestHolder.user().getShopId() != null,SmShopCoupon::getShopId, RequestHolder.user().getShopId())
+                        .eq(SmShopCoupon::getShopId, RequestHolder.user().getShopId())
                         .like(StringUtils.isNotBlank(keywords), SmShopCoupon::getName, keywords)
                         .eq(publishStatus != null, SmShopCoupon::getPublishStatus, publishStatus)
                         .eq(publishType != null, SmShopCoupon::getPublishType, publishType)

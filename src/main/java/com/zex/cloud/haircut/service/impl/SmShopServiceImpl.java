@@ -3,8 +3,11 @@ package com.zex.cloud.haircut.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.config.Constants;
 import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
+import com.zex.cloud.haircut.entity.SyUser;
+import com.zex.cloud.haircut.entity.SyUserRoleRel;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.mapper.SmShopMapper;
@@ -14,9 +17,11 @@ import com.zex.cloud.haircut.service.ISmHalfTimeService;
 import com.zex.cloud.haircut.service.ISmShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.service.ISmShopServiceRelationService;
+import com.zex.cloud.haircut.service.ISyUserRoleRelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,6 +40,8 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     private ISmShopServiceRelationService iSmShopServiceRelationService;
 
     @Autowired
+    private ISyUserRoleRelService iSyUserRoleRelService;
+    @Autowired
     private ISmHalfTimeService iSmHalfTimeService;
     @Override
     public IPage<SmShop> list(Page<SmShop> convert, String keywords, ShopWorkStatus workStatus, String provinceCode, String cityCode, String districtCode, Double longitude, Double latitude) {
@@ -42,12 +49,17 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     }
 
     @Override
+    @Transactional
     public SmShop customSave(SmShop smShop) {
         valid(null, smShop.getUserId());
-        // TODO: 2020/2/19 保存角色信息
+        // 保存角色信息
+        iSyUserRoleRelService.save(Constants.SHOP_ADMIN_ROLE_ID,smShop.getUserId());
+        //保存店铺
         save(smShop);
         return smShop;
     }
+
+
 
     @Override
     public SmShop updateCurrent(Long id, SmShopParam param) {
@@ -64,7 +76,9 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
         SmShop smShop = getById(id);
         if (!param.getUserId().equals(smShop.getUserId())){
             valid(id,param.getUserId());
-            // TODO: 2020/2/19 移除旧用户的角色信息 并设置新的角色信息
+            //移除旧用户的角色信息
+            iSyUserRoleRelService.remove(Constants.SHOP_ADMIN_ROLE_ID,smShop.getUserId());
+            iSyUserRoleRelService.save(Constants.SHOP_ADMIN_ROLE_ID,param.getUserId());
         }
         smShop.setId(id);
         BeanUtils.copyProperties(param, smShop);
@@ -91,9 +105,12 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
         iSmHalfTimeService.updateRelations(shopId,params);
     }
 
+    @Override
+    public Long getShopIdByUserId(Long id) {
+        return baseMapper.getShopIdByUserId(id);
+    }
 
     private void valid(Long id, Long userId) {
-
         int count = count(new LambdaQueryWrapper<SmShop>().eq(SmShop::getUserId, userId)
                 .ne(id != null, SmShop::getId, id));
         if (count > 0) {

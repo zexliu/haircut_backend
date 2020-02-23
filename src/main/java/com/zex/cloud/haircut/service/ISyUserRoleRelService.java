@@ -20,4 +20,8 @@ public interface ISyUserRoleRelService extends IService<SyUserRoleRel> {
 
     List<Long> getRoleIdsByUserId(Long id);
 
+    void save(Long roleId, Long userId);
+
+    void remove(Long roleId, Long userId);
+
 }

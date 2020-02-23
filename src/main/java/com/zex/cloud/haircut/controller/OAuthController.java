@@ -30,7 +30,6 @@ public class OAuthController {
 
     @PostMapping("/token")
     public TokenRespSimple token(@Valid @RequestBody TokenParam param) {
-
         if (param.getGrantType() == OAuthGrantType.password) {
             return ioAuthService.password(param.getUsername(), param.getPassword(), param.getClientId());
         }

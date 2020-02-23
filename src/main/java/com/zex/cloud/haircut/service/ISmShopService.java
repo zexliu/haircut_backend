@@ -38,4 +38,6 @@ public interface ISmShopService extends IService<SmShop> {
     void updateHalfTime(Long shopId, List<SmHalfTimeParam> params);
 
 
+    Long getShopIdByUserId(Long id);
+
 }
