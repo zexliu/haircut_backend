@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
+import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.enums.ShopOrderStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,12 +22,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Zex
- * @since 2020-02-20
+ * @since 2020-02-23
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="SmShopGroup对象", description="")
-public class SmShopGroup implements Serializable {
+@ApiModel(value="OmShopOrder对象", description="")
+public class OmShopOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,19 +35,37 @@ public class SmShopGroup implements Serializable {
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
 
-    private String name;
-
-    @JsonSerialize(using = JsonLongSerializer.class)
-    private Long serviceId;
-
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long shopId;
 
-    private Integer count;
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long userId;
 
-    private BigDecimal discount;
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long stylistId;
+
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long orderId;
+
+    private BigDecimal totalAmount;
+
+    private BigDecimal realAmount;
+
+    private ShopOrderStatus status;
 
     private LocalDateTime createAt;
+
+    private LocalDateTime useAt;
+
+    private LocalDateTime appointmentAt;
+
+    private LocalDateTime expireAt;
+
+    private String subject;
+
+    private String body;
+
+   private SexType sexType;
 
 
 }

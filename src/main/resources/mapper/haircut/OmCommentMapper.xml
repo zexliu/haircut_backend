@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.OmCommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmComment">
+        <id column="id" property="id"/>
+        <result column="topic_id" property="topicId"/>
+        <result column="topic_type" property="topicType"/>
+        <result column="from_id" property="fromId"/>
+        <result column="from_avatar" property="fromAvatar"/>
+        <result column="from_name" property="fromName"/>
+        <result column="to_id" property="toId"/>
+        <result column="to_name" property="toName"/>
+        <result column="content" property="content"/>
+        <result column="images" property="images"/>
+        <result column="reply_id" property="replyId"/>
+        <result column="delete_status" property="deleteStatus"/>
+        <result column="root" property="root"/>
+        <result column="create_at" property="createAt"/>
+        <result column="praise_count" property="praiseCount"/>
+        <result column="comment_count" property="commentCount"/>
+        <result column="anonymous_status" property="anonymousStatus"/>
+    </resultMap>
+    <select id="orderCommentPage" resultType="com.zex.cloud.haircut.response.OmOrderCommentInfo">
+        select oc.id,
+        oc.topic_id,
+        oc.topic_type,
+        oc.from_id,
+        oc.from_avatar,
+        oc.from_name,
+        oc.from_type,
+        oc.to_id,
+        oc.to_name,
+        oc.content,
+        oc.images,
+        oc.reply_id,
+        oc.delete_status,
+        oc.root,
+        oc.create_at,
+        oc.praise_count,
+        oc.comment_count,
+        ocs.shop_id,
+        ocs.stylist_id,
+        ocs.score,
+        ocs.skill_score,
+        ocs.hygiene_score,
+        ocs.service_score
+        from om_comment oc
+        left join om_comment_score ocs on oc.id = ocs.comment_id
+        <where>
+            oc.topic_type = 1
+            <if test="shopId != null">and ocs.shop_id = #{shopId}</if>
+            <if test="orderId != null">and oc.topic_id = #{orderId}</if>
+            <if test="levelSql != null ">
+                and #{levelSql}
+            </if>
+        </where>
+        order by oc.create_at desc
+    </select>
+
+</mapper>

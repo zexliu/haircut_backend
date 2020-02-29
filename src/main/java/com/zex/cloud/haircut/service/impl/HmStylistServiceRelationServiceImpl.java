@@ -2,13 +2,17 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.HmStylistServiceRelation;
+import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.HmStylistServiceRelationMapper;
 import com.zex.cloud.haircut.params.HmStylistServiceParam;
+import com.zex.cloud.haircut.params.OmOrderServiceParam;
 import com.zex.cloud.haircut.service.IHmStylistServiceRelationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,4 +50,21 @@ public class HmStylistServiceRelationServiceImpl extends ServiceImpl<HmStylistSe
         }
 
     }
+
+    @Override
+    public BigDecimal getPriceByServiceIdStylistIdAndSex(Long serviceId, Long stylistId, SexType sexType) {
+        HmStylistServiceRelation relation = getOne(new LambdaQueryWrapper<HmStylistServiceRelation>()
+                .eq(HmStylistServiceRelation::getServiceId,serviceId)
+                .eq(HmStylistServiceRelation::getStylistId,stylistId));
+        if (relation == null){
+            throw new NotFoundException("该服务不存在: serviceId = " + serviceId + "stylistId = " + stylistId );
+        }
+        if (sexType == SexType.MALE){
+            return relation.getMalePrice();
+        }else {
+            return relation.getFemalePrice();
+        }
+    }
+
+
 }

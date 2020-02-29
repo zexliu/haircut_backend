@@ -4,14 +4,15 @@ import com.zex.cloud.haircut.enums.WeekDay;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class SmHalfTimeParam  {
 
     private WeekDay weekDay;
 
-    private LocalDateTime startAt;
+    private LocalTime startAt;
 
-    private LocalDateTime endAt;
+    private LocalTime endAt;
 
 }

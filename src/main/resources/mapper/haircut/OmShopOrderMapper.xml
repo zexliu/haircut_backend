@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.OmShopOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmShopOrder">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="user_id" property="userId" />
+        <result column="stylist_id" property="stylistId" />
+        <result column="order_id" property="orderId" />
+        <result column="total_amount" property="totalAmount" />
+        <result column="real_amount" property="realAmount" />
+        <result column="status" property="status" />
+        <result column="appointment_at" property="appointmentAt" />
+        <result column="create_at" property="createAt" />
+        <result column="use_at" property="useAt" />
+        <result column="expire_at" property="expireAt" />
+        <result column="subject" property="subject" />
+        <result column="body" property="body" />
+        <result column="sex_type" property="sexType" />
+    </resultMap>
+
+</mapper>

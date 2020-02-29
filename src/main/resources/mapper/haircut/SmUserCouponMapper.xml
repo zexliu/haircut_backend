@@ -15,8 +15,22 @@
         <result column="order_id" property="orderId"/>
     </resultMap>
     <select id="list" resultType="com.zex.cloud.haircut.response.SmUserCouponDetail">
-        select suc.id, suc.shop_id, suc.create_at, suc.use_status, suc.use_start_at, suc.use_end_at, suc.coupon_id,
-        suc.user_id, suc.order_id, ssc.name, ssc.description, ssc.amount, ssc.coupon_type, ssc.limit_min, ssc.publish_type, ssc.member_status
+        select suc.id,
+        suc.shop_id,
+        suc.create_at,
+        suc.use_status,
+        suc.use_start_at,
+        suc.use_end_at,
+        suc.coupon_id,
+        suc.user_id,
+        suc.order_id,
+        ssc.name,
+        ssc.description,
+        ssc.amount,
+        ssc.coupon_type,
+        ssc.limit_min,
+        ssc.publish_type,
+        ssc.member_status
         from sm_user_coupon suc
         left join sm_shop_coupon ssc on suc.coupon_id = ssc.id
         <where>
@@ -35,6 +49,27 @@
                 and suc.use_end_at <![CDATA[ <= ]]> now()
             </if>
         </where>
+    </select>
+    <select id="detailById" resultType="com.zex.cloud.haircut.response.SmUserCouponDetail">
+        select suc.id,
+               suc.shop_id,
+               suc.create_at,
+               suc.use_status,
+               suc.use_start_at,
+               suc.use_end_at,
+               suc.coupon_id,
+               suc.user_id,
+               suc.order_id,
+               ssc.name,
+               ssc.description,
+               ssc.amount,
+               ssc.coupon_type,
+               ssc.limit_min,
+               ssc.publish_type,
+               ssc.member_status
+        from sm_user_coupon suc
+                 left join sm_shop_coupon ssc on suc.coupon_id = ssc.id
+        where suc.id = #{id}
     </select>
 
 </mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.OmRefundOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmRefundOrder">
+        <id column="id" property="id" />
+        <result column="order_id" property="orderId" />
+        <result column="stauts" property="stauts" />
+        <result column="amount" property="amount" />
+        <result column="description" property="description" />
+        <result column="third_party_id" property="thirdPartyId" />
+        <result column="create_at" property="createAt" />
+        <result column="channel_type" property="channelType" />
+    </resultMap>
+
+</mapper>

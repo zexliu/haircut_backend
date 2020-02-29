@@ -5,6 +5,8 @@ import com.zex.cloud.haircut.entity.SmUserCoupon;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.response.SmUserCouponDetail;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  *  服务类
@@ -20,4 +22,7 @@ public interface ISmUserCouponService extends IService<SmUserCoupon> {
     SmUserCoupon userPull(Long couponId, Long userId);
 
     SmUserCoupon shopPush(Long couponId, Long shopId, Long userId);
+
+    BigDecimal useCoupon(Long couponId, Long userId, Long orderId, Long shopId, BigDecimal price);
+
 }

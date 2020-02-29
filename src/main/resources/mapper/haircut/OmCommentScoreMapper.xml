@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.OmCommentScoreMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmCommentScore">
+        <result column="id" property="id" />
+        <result column="comment_id" property="commentId" />
+        <result column="shop_id" property="shopId" />
+        <result column="stylist_id" property="stylistId" />
+        <result column="score" property="score" />
+        <result column="skill_score" property="skillScore" />
+        <result column="hygiene_score" property="hygieneScore" />
+        <result column="service_score" property="serviceScore" />
+        <result column="delete_status" property="deleteStatus" />
+    </resultMap>
+
+</mapper>

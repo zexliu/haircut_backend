@@ -1,6 +1,6 @@
 package com.zex.cloud.haircut.mapper;
 
-import com.zex.cloud.haircut.entity.SmShopGroup;
+import com.zex.cloud.haircut.entity.OmFlower;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author Zex
- * @since 2020-02-20
+ * @since 2020-02-23
  */
-public interface SmShopGroupMapper extends BaseMapper<SmShopGroup> {
+public interface OmFlowerMapper extends BaseMapper<OmFlower> {
 
 }

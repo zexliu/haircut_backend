@@ -6,18 +6,22 @@ import com.zex.cloud.haircut.entity.SmShopCoupon;
 import com.zex.cloud.haircut.entity.SmUserCoupon;
 import com.zex.cloud.haircut.enums.CouponPublishType;
 import com.zex.cloud.haircut.enums.CouponPullLimitStatus;
+import com.zex.cloud.haircut.enums.CouponType;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
+import com.zex.cloud.haircut.exception.ParameterException;
 import com.zex.cloud.haircut.mapper.SmUserCouponMapper;
 import com.zex.cloud.haircut.response.SmUserCouponDetail;
 import com.zex.cloud.haircut.service.ISmShopCouponService;
 import com.zex.cloud.haircut.service.ISmUserCouponService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zex.cloud.haircut.util.DecimalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -119,5 +123,37 @@ public class SmUserCouponServiceImpl extends ServiceImpl<SmUserCouponMapper, SmU
         }
 
         return saveCoupon(couponId, userId, coupon);
+    }
+
+    /**
+     * 使用优惠券并返回优惠券金额
+     * @param id
+     * @param userId
+     * @param orderId
+     * @param shopId
+     * @param amount
+     * @return
+     */
+    @Override
+    public BigDecimal useCoupon(Long id, Long userId, Long orderId, Long shopId, BigDecimal amount) {
+        SmUserCouponDetail couponDetail = baseMapper.detailById(id);
+        if (!couponDetail.getUserId().equals(userId)){
+            throw new ForbiddenException();
+        }
+        if (!couponDetail.getShopId().equals(shopId)){
+            throw new ParameterException("不是该店铺的优惠券 不能使用");
+        }
+        //效验是否符合使用条件
+        if (couponDetail.getCouponType() == CouponType.FULL_REDUCTION){
+            if (DecimalUtils.lt(amount,couponDetail.getLimitMin())){
+                throw new ParameterException("优惠券不满足满减金额");
+            }
+        }
+        SmUserCoupon userCoupon = new SmUserCoupon();
+        userCoupon.setId(id);
+        userCoupon.setUseStatus(true);
+        userCoupon.setOrderId(orderId);
+        updateById(userCoupon);
+        return couponDetail.getAmount();
     }
 }

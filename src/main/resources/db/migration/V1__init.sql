@@ -14,6 +14,24 @@ drop table if exists hm_stylist_service_relation;
 
 drop table if exists hm_work_case;
 
+drop table if exists om_comment;
+
+drop table if exists om_comment_score;
+
+drop table if exists om_flower;
+
+drop table if exists om_order;
+
+drop table if exists om_refund_order;
+
+drop table if exists om_shop_order;
+
+drop table if exists om_user_groupon;
+
+drop table if exists om_user_transaction;
+
+drop table if exists sm_half_time;
+
 drop table if exists sm_shop;
 
 drop table if exists sm_shop_apply;
@@ -22,7 +40,7 @@ drop table if exists sm_shop_coupon;
 
 drop table if exists sm_shop_discount;
 
-drop table if exists sm_shop_gropu;
+drop table if exists sm_shop_groupon;
 
 drop table if exists sm_shop_service_relation;
 
@@ -169,6 +187,176 @@ create table hm_work_case
     primary key (id)
 );
 
+
+/*==============================================================*/
+/* Table: om_comment                                            */
+/*==============================================================*/
+create table om_comment
+(
+    id                   bigint not null,
+    topic_id             bigint,
+    topic_type           tinyint,
+    from_id              bigint,
+    from_avatar          varchar(128),
+    from_name            varchar(30),
+    from_type            tinyint,
+    to_id                bigint,
+    to_name              varchar(30),
+    content              text,
+    images               text,
+    reply_id             bigint,
+    delete_status        bool default false,
+    root                 bool,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    praise_count         int,
+    comment_count        int,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: om_comment_score                                      */
+/*==============================================================*/
+create table om_comment_score
+(
+    id                   bigint,
+    comment_id           bigint,
+    shop_id              bigint,
+    stylist_id           bigint,
+    score                tinyint,
+    skill_score          tinyint,
+    hygiene_score        tinyint,
+    service_score        tinyint,
+    delete_status        bool
+);
+
+/*==============================================================*/
+/* Table: om_flower                                             */
+/*==============================================================*/
+create table om_flower
+(
+    id                   bigint not null,
+    user_id              bigint,
+    shop_id              bigint,
+    order_id             bigint,
+    count                int,
+    type                 tinyint,
+    description          varchar(200),
+    create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: om_order                                              */
+/*==============================================================*/
+create table om_order
+(
+    id                   bigint not null,
+    order_type           tinyint,
+    pay_status           tinyint,
+    pay_at               datetime,
+    user_Id              bigint,
+    amount               decimal,
+    channel_type         tinyint,
+    status               tinyint,
+    subject              varchar(128),
+    body                 longtext,
+    ip_address           varchar(30),
+    create_at            datetime,
+    expire_at            datetime,
+    third_party_id        varchar(200),
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: om_refund_order                                       */
+/*==============================================================*/
+create table om_refund_order
+(
+    id                   bigint not null,
+    order_id             bigint,
+    status               bool,
+    amount               decimal,
+    description          varchar(200),
+    third_party_id       varchar(200),
+    create_at            datetime default CURRENT_TIMESTAMP,
+    channel_type         tinyint,
+    user_id              bigint,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: om_shop_order                                         */
+/*==============================================================*/
+create table om_shop_order
+(
+    id                   bigint not null,
+    shop_id              bigint,
+    user_id              bigint,
+    stylist_id           bigint,
+    order_id             bigint,
+    total_amount         decimal,
+    real_amount          decimal,
+    status               tinyint,
+    create_at            datetime,
+    appointment_at       datetime,
+    use_at               datetime,
+    expire_at            datetime,
+    subject              varchar(128),
+    body                 longtext,
+    sex_type             tinyint,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: om_user_groupon                                       */
+/*==============================================================*/
+create table om_user_groupon
+(
+    id                   bigint not null,
+    user_id              bigint,
+    shop_id              bigint,
+    stylist_id           bigint,
+    create_at            datetime,
+    expire_at            datetime,
+    total_count          int,
+    remain_count         int,
+    service_id           bigint,
+    sex_type             tinyint,
+    amount               decimal,
+    status               tinyint,
+    order_id             bigint,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: om_user_transaction                                   */
+/*==============================================================*/
+create table om_user_transaction
+(
+    id                   bigint not null,
+    order_id             bigint,
+    user_id              bigint,
+    amount               decimal,
+    type                 tinyint,
+    incr_status          bool,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: sm_half_time                                          */
+/*==============================================================*/
+create table sm_half_time
+(
+    id                   bigint not null,
+    week_day             tinyint,
+    shop_id              bigint,
+    start_at             time,
+    ebd_at               time,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
 /*==============================================================*/
 /* Table: sm_shop                                               */
 /*==============================================================*/
@@ -267,9 +455,9 @@ create table sm_shop_discount
 );
 
 /*==============================================================*/
-/* Table: sm_shop_gropu                                         */
+/* Table: sm_shop_groupon                                       */
 /*==============================================================*/
-create table sm_shop_gropu
+create table sm_shop_groupon
 (
     id                   bigint not null,
     name                 varchar(30),
@@ -314,7 +502,7 @@ create table sm_user_coupon
     id                   bigint not null,
     shop_id              bigint,
     create_at            datetime default CURRENT_TIMESTAMP,
-    use_status           int,
+    use_status           bool,
     use_start_at         datetime,
     use_end_at           datetime,
     coupon_id            bigint,
@@ -377,7 +565,6 @@ create table sy_permission_module
     operator_at          datetime,
     operator_ip          varchar(30),
     create_at            datetime default CURRENT_TIMESTAMP,
-    Column_9             char(10),
     primary key (id)
 );
 

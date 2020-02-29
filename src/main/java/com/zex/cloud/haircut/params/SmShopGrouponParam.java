@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Data
-public class SmShopGroupParam {
+public class SmShopGrouponParam {
 
     private String name;
 

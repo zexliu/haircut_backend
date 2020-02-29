@@ -21,4 +21,6 @@ public interface SmUserCouponMapper extends BaseMapper<SmUserCoupon> {
                                    @Param("useStatus")Boolean useStatus,
                                    @Param("dateStatus")Boolean dateStatus);
 
+    SmUserCouponDetail detailById(@Param("id") Long id);
+
 }

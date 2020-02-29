@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class JacksonConfiguration {
+
     @Bean
     ObjectMapper objectMapper(){
         ObjectMapper objectMapper = new ObjectMapper();

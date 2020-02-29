@@ -11,6 +11,7 @@ import com.zex.cloud.haircut.params.SmShopParam;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.ISmShopService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/shops")
+@Api(tags = "店铺操作接口")
 public class SmShopController {
 
     @Autowired

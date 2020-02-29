@@ -1,5 +1,7 @@
 package com.zex.cloud.haircut.config;
 
+import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,8 @@ public class MybatisPlusConfig {
         return paginationInterceptor;
     }
 
-
-
+    @Bean
+    IdentifierGenerator identifierGenerator (){
+        return new DefaultIdentifierGenerator();
+    }
 }

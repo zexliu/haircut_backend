@@ -110,6 +110,10 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         }
         syUser.setLoginAt(LocalDateTime.now());
         updateById(syUser);
+        return adaptRequestUser(syUser);
+    }
+
+    private RequestUser adaptRequestUser(SyUser syUser) {
         RequestUser user = new RequestUser();
         user.setAvatar(syUser.getAvatar());
         user.setId(syUser.getId());
@@ -173,6 +177,12 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         }
         syUser.setPassword(passwordEncoder.encode(param.getNewPassword()));
         updateById(syUser);
+    }
+
+    @Override
+    public RequestUser getRequestUser(Long userId) {
+        SyUser syUser = getById(userId);
+        return adaptRequestUser(syUser);
     }
 
 

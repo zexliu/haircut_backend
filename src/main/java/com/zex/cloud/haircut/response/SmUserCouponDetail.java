@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.entity.SmShopCoupon;
 import com.zex.cloud.haircut.entity.SmUserCoupon;
+import com.zex.cloud.haircut.enums.CouponMemberStatus;
+import com.zex.cloud.haircut.enums.CouponPublishType;
+import com.zex.cloud.haircut.enums.CouponType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,8 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class SmUserCouponDetail extends SmUserCoupon {
+public class SmUserCouponDetail  {
 
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
@@ -39,12 +41,12 @@ public class SmUserCouponDetail extends SmUserCoupon {
 
     private BigDecimal amount;
 
-    private Integer couponType;
+    private CouponType couponType;
 
     private BigDecimal limitMin;
 
-    private Integer publishType;
+    private CouponPublishType publishType;
 
-    private Integer memberStatus;
+    private CouponMemberStatus memberStatus;
 
 }

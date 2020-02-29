@@ -16,5 +16,11 @@ spring:
         max-idle: 8 #最大空闲连接 默认8
         max-wait: -1ms #默认-1 最大连接阻塞等待时间
         min-idle: 0 #最小空闲连接
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: root
+    password: 666666
 
 files-location: /Users/zex/upload_files/
+host-url: http://api.devlsege.s3.natapp.cc/

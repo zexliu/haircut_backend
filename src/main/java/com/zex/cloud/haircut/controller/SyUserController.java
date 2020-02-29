@@ -94,6 +94,7 @@ public class SyUserController {
     }
 
     @GetMapping("/current")
+    @ApiOperation("获取当前用户信息")
     public RequestUser token() {
         return RequestHolder.user();
     }

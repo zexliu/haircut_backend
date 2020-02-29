@@ -1,6 +1,8 @@
 package com.zex.cloud.haircut.controller;
 
 import com.zex.cloud.haircut.exception.ServerException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +20,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/upload")
+@Api(tags = "文件上传相关接口")
 public class UploadController {
 
     @Value("${files-location}")
     public String filesLocation;
 
     @PostMapping
+    @ApiOperation("上传文件")
     public String upload(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request) {
 
         if (file.isEmpty()) {
@@ -55,7 +59,7 @@ public class UploadController {
         } catch (IOException e) {
             throw new ServerException();
         }
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()  + "/files/" + format +"/"+ fileName;
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/files/" + format + "/" + fileName;
 
     }
 

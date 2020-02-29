@@ -36,4 +36,7 @@ public interface ISyUserService extends IService<SyUser> {
     void password(PasswordParam param);
 
     void passwordCurrent(PasswordCurrentParam param, Long id);
+
+    RequestUser getRequestUser(Long userId);
+
 }

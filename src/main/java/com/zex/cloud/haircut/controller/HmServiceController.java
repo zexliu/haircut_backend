@@ -10,6 +10,7 @@ import com.zex.cloud.haircut.params.HmServiceParam;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.service.IHmServiceService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/service/projects")
-@ApiOperation("服务项目操作接口")
+@Api(tags = "服务项目操作接口")
 public class HmServiceController {
 
     @Autowired

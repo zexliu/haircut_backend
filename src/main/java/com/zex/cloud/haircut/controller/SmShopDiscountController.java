@@ -4,10 +4,8 @@ package com.zex.cloud.haircut.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SmShopDiscount;
-import com.zex.cloud.haircut.entity.SmShopGroup;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.params.SmShopDiscountParam;
-import com.zex.cloud.haircut.params.SmShopGroupParam;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.ISmShopDiscountService;
@@ -32,6 +30,7 @@ public class SmShopDiscountController {
     @Autowired
     private ISmShopDiscountService iSmShopDiscountService;
     @GetMapping
+    @ApiOperation("分页列表")
     public IPage<SmShopDiscount> list(Pageable pageable, Long shopId){
         return iSmShopDiscountService.page(pageable.convert(),
                 new LambdaQueryWrapper<SmShopDiscount>()

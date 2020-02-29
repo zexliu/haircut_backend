@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.time.LocalTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
@@ -38,9 +39,9 @@ public class SmHalfTime implements Serializable {
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long shopId;
 
-    private LocalDateTime startAt;
+    private LocalTime startAt;
 
-    private LocalDateTime endAt;
+    private LocalTime endAt;
 
     private LocalDateTime createAt;
 

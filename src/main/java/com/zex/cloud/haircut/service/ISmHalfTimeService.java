@@ -4,6 +4,7 @@ import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,5 +18,7 @@ import java.util.List;
 public interface ISmHalfTimeService extends IService<SmHalfTime> {
 
     void updateRelations(Long shopId, List<SmHalfTimeParam> params);
+
+    void valid(Long shopId, LocalDateTime appointmentAt);
 
 }

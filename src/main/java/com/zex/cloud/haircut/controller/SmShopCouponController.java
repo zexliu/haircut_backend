@@ -58,17 +58,18 @@ public class SmShopCouponController {
                         .eq(shopId != null, SmShopCoupon::getShopId, shopId)
                         .eq(publishStatus != null, SmShopCoupon::getPublishStatus, publishStatus)
                         .eq(publishType != null, SmShopCoupon::getPublishType, publishType)
-                        .le(pullDate != null, SmShopCoupon::getPullStartAt, LocalDateTime.now())
-                        .ge(pullDate != null, SmShopCoupon::getPullEndAt, LocalDateTime.now())
+                        .ge(pullDate != null, SmShopCoupon::getPullStartAt, LocalDateTime.now())
+                        .le(pullDate != null, SmShopCoupon::getPullEndAt, LocalDateTime.now())
                         .eq(couponType != null, SmShopCoupon::getCouponType,couponType));
 
     }
 
     @PostMapping
+    @ApiOperation("创建")
     public SmShopCoupon create(@RequestBody @Valid SmShopCouponParam param) {
         return iSmShopCouponService.save(RequestHolder.user().getId(), param);
     }
-
+    @ApiOperation("修改发布状态")
     @PutMapping("/{id}/publishStatus")
     public String updatePublishStatus(@PathVariable Long id, Boolean publishStatus) {
         iSmShopCouponService.updateStatus(id, RequestHolder.user().getShopId(), publishStatus);

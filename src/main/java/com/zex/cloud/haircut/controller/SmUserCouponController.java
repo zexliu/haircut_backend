@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2020-02-21
  */
 @RestController
-@Api("用户优惠券操作相关接口")
+@Api(tags = "用户优惠券操作相关接口")
 @RequestMapping("/api/v1/user/coupons")
 public class SmUserCouponController {
 

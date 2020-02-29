@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.SmShopDiscount;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.ForbiddenException;
+import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.SmShopDiscountMapper;
 import com.zex.cloud.haircut.params.SmShopDiscountParam;
 import com.zex.cloud.haircut.service.ISmShopDiscountService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -54,5 +57,15 @@ public class SmShopDiscountServiceImpl extends ServiceImpl<SmShopDiscountMapper,
             throw new ForbiddenException();
         }
         removeById(id);
+    }
+
+    @Override
+    public BigDecimal getDiscountByServiceIdAndShopId(Long serviceId, Long shopId) {
+        SmShopDiscount smShopDiscount = getOne(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId, shopId)
+                .eq(SmShopDiscount::getServiceId, serviceId));
+        if (smShopDiscount == null){
+            throw new NotFoundException("折扣信息不存在 serviceId = "+ serviceId +"shopId = "+ shopId);
+        }
+        return smShopDiscount.getDiscount();
     }
 }

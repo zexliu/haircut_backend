@@ -33,7 +33,7 @@ public class AmAuditHistory implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
-
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long targetId;
 
     private AuditTargetType targetType;
@@ -43,7 +43,7 @@ public class AmAuditHistory implements Serializable {
     private AuditStatus status;
 
     private String message;
-
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long operatorId;
 
     private String operatorIp;

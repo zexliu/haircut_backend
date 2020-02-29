@@ -10,6 +10,7 @@ import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.IOAuthService;
 import com.zex.cloud.haircut.util.RedisKeys;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class OAuthController {
     private IOAuthService ioAuthService;
 
     @PostMapping("/token")
+    @ApiOperation("登录")
     public TokenRespSimple token(@Valid @RequestBody TokenParam param) {
         if (param.getGrantType() == OAuthGrantType.password) {
             return ioAuthService.password(param.getUsername(), param.getPassword(), param.getClientId());
@@ -38,6 +40,7 @@ public class OAuthController {
 
 
     @DeleteMapping("/token")
+    @ApiOperation("退出登录")
     public String token() {
         String authenticationHeader = request.getHeader("Authorization");
         String accessToken = "";
