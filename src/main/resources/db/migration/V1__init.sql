@@ -30,6 +30,12 @@ drop table if exists om_user_groupon;
 
 drop table if exists om_user_transaction;
 
+drop table if exists sm_basic_setting;
+
+drop table if exists sm_commission_discount;
+
+drop table if exists sm_feedback;
+
 drop table if exists sm_half_time;
 
 drop table if exists sm_shop;
@@ -165,8 +171,8 @@ create table hm_stylist_service_relation
     id                   bigint not null,
     service_id           bigint,
     stylist_id           bigint,
-    male_price           decimal,
-    female_price         decimal,
+    male_price           decimal(10,2),
+    female_price         decimal(10,2),
     create_at            datetime default CURRENT_TIMESTAMP,
     primary key (id)
 );
@@ -186,7 +192,6 @@ create table hm_work_case
     create_at            datetime default CURRENT_TIMESTAMP,
     primary key (id)
 );
-
 
 /*==============================================================*/
 /* Table: om_comment                                            */
@@ -208,8 +213,9 @@ create table om_comment
     delete_status        bool default false,
     root                 bool,
     create_at            datetime default CURRENT_TIMESTAMP,
-    praise_count         int,
     comment_count        int,
+    praise_count         int,
+    anonymous_status     bool,
     primary key (id)
 );
 
@@ -255,7 +261,7 @@ create table om_order
     pay_status           tinyint,
     pay_at               datetime,
     user_Id              bigint,
-    amount               decimal,
+    amount               decimal(10,2),
     channel_type         tinyint,
     status               tinyint,
     subject              varchar(128),
@@ -263,7 +269,7 @@ create table om_order
     ip_address           varchar(30),
     create_at            datetime,
     expire_at            datetime,
-    third_party_id        varchar(200),
+    third_party_id       varchar(200),
     primary key (id)
 );
 
@@ -275,7 +281,7 @@ create table om_refund_order
     id                   bigint not null,
     order_id             bigint,
     status               bool,
-    amount               decimal,
+    amount               decimal(10,2),
     description          varchar(200),
     third_party_id       varchar(200),
     create_at            datetime default CURRENT_TIMESTAMP,
@@ -294,8 +300,8 @@ create table om_shop_order
     user_id              bigint,
     stylist_id           bigint,
     order_id             bigint,
-    total_amount         decimal,
-    real_amount          decimal,
+    total_amount         decimal(10,2),
+    real_amount          decimal(10,2),
     status               tinyint,
     create_at            datetime,
     appointment_at       datetime,
@@ -322,7 +328,7 @@ create table om_user_groupon
     remain_count         int,
     service_id           bigint,
     sex_type             tinyint,
-    amount               decimal,
+    amount               decimal(10,2),
     status               tinyint,
     order_id             bigint,
     primary key (id)
@@ -336,10 +342,61 @@ create table om_user_transaction
     id                   bigint not null,
     order_id             bigint,
     user_id              bigint,
-    amount               decimal,
+    amount               decimal(10,2),
     type                 tinyint,
     incr_status          bool,
     create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: sm_basic_setting                                      */
+/*==============================================================*/
+create table sm_basic_setting
+(
+    id                   bigint not null,
+    shop_free_month      int,
+    shop_commission_proportion decimal(10,2),
+    user_commission_proportion decimal(10,2),
+    user_first_amount    decimal(10,2),
+    create_at            datetime default CURRENT_TIMESTAMP,
+    operator_ip          varchar(30),
+    operator_id          bigint,
+    operator_at          datetime,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: sm_commission_discount                                */
+/*==============================================================*/
+create table sm_commission_discount
+(
+    id                   bigint not null,
+    count                int,
+    discount             decimal(10,2),
+    create_at            datetime default CURRENT_TIMESTAMP,
+    operator_ip          varchar(30),
+    operator_id          bigint,
+    operator_at          datetime,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: sm_feedback                                           */
+/*==============================================================*/
+create table sm_feedback
+(
+    id                   bigint not null,
+    user_id              bigint,
+    link_mobile          varchar(20),
+    link_name            varchar(30),
+    content              varchar(256),
+    images               text,
+    status               tinyint,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    operator_id          bigint,
+    operator_ip          varchar(30),
+    operator_at          datetime,
     primary key (id)
 );
 
@@ -421,9 +478,9 @@ create table sm_shop_coupon
     shop_id              bigint,
     name                 varchar(30),
     description          varchar(200),
-    amount               decimal,
+    amount               decimal(10,2),
     coupon_type          tinyint,
-    limit_min            decimal,
+    limit_min            decimal(10,2),
     publish_type         tinyint,
     member_status        tinyint,
     pull_limit_status    tinyint,
@@ -449,7 +506,7 @@ create table sm_shop_discount
     name                 varchar(30),
     service_id           bigint,
     shop_id              bigint,
-    discount             decimal,
+    discount             decimal(10,2),
     create_at            datetime default CURRENT_TIMESTAMP,
     primary key (id)
 );
@@ -464,7 +521,7 @@ create table sm_shop_groupon
     service_id           bigint,
     shop_id              bigint,
     count                int,
-    discount             decimal,
+    discount             decimal(10,2),
     create_at            datetime default CURRENT_TIMESTAMP,
     primary key (id)
 );

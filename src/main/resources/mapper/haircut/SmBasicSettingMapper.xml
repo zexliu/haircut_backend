@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.SmBasicSettingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.SmBasicSetting">
+        <id column="id" property="id" />
+        <result column="shop_commission_proportion" property="shopCommissionProportion" />
+        <result column="user_commission_proportion" property="userCommissionProportion" />
+        <result column="user_first_amount" property="userFirstAmount" />
+        <result column="create_at" property="createAt" />
+        <result column="operator_ip" property="operatorIp" />
+        <result column="operator_id" property="operatorId" />
+        <result column="operator_at" property="operatorAt" />
+        <result column="shop_free_month" property="shopFreeMonth" />
+    </resultMap>
+    <select id="current" resultType="com.zex.cloud.haircut.entity.SmBasicSetting">
+        select  id, shop_free_month, shop_commission_proportion, user_commission_proportion, user_first_amount, create_at, operator_ip, operator_id, operator_at  from  sm_basic_setting
+        order by create_at desc limit 1
+    </select>
+
+</mapper>
