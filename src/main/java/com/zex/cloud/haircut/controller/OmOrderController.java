@@ -70,8 +70,7 @@ public class OmOrderController {
     @PostMapping
     public OmOrder createOrder(@Valid @RequestBody OmOrderParam param, HttpServletRequest request) throws JsonProcessingException {
         String ip = NetWorkUtils.getRemoteHost(request);
-        Long userId = RequestHolder.user().getId();
-        return iOmOrderService.createOrder(param, ip, userId);
+        return iOmOrderService.createOrder(param, ip,  RequestHolder.user());
     }
 
     @ApiOperation("取消订单")

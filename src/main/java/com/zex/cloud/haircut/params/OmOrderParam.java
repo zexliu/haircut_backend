@@ -23,5 +23,7 @@ public class OmOrderParam {
 
     private OmFlowerOrderBodyParam flowerOrderBody;
 
+    private OmUserRewardBodyParam rewardBody;
+
 
 }

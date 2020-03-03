@@ -27,18 +27,17 @@ import java.time.LocalDateTime;
  * @since 2020-02-23
  */
 @RestController
-@RequestMapping("/api/v1/transaction")
-@Api(tags = "用户钱包记录接口")
+@RequestMapping("/api/v1/user/transactions")
+@Api(tags = "用户交易记录接口")
 public class OmUserTransactionController {
 
     @Autowired
     private IOmUserTransactionService iOmUserTransactionService;
 
     @GetMapping
-    @ApiOperation("获取钱包记录分页")
+    @ApiOperation("获取交易记录分页")
     public IPage<OmUserTransaction> page(Pageable pageable, LocalDateTime startAt, LocalDateTime endAt, Boolean incrStatus, UserTransactionType transactionType, Long userId) {
        return iOmUserTransactionService.page(pageable.convert(),startAt,endAt,incrStatus,transactionType,userId);
-
     }
 
     @GetMapping("/current")

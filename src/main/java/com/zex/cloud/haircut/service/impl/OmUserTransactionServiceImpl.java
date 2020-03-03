@@ -34,7 +34,7 @@ public class OmUserTransactionServiceImpl extends ServiceImpl<OmUserTransactionM
     @Override
     public void onPayHook(OmOrder omOrder) {
         OmUserTransaction transaction = new OmUserTransaction();
-        transaction.setOrderId(omOrder.getId());
+        transaction.setTargetId(omOrder.getId());
         transaction.setAmount(omOrder.getAmount());
         transaction.setIncrStatus(true);
         transaction.setUserId(omOrder.getUserId());
@@ -49,7 +49,7 @@ public class OmUserTransactionServiceImpl extends ServiceImpl<OmUserTransactionM
             throw new ForbiddenException("账户余额不足");
         }
         OmUserTransaction transaction = new OmUserTransaction();
-        transaction.setOrderId(id);
+        transaction.setTargetId(id);
         transaction.setAmount(amount);
         transaction.setIncrStatus(false);
         transaction.setUserId(userId);
@@ -75,13 +75,24 @@ public class OmUserTransactionServiceImpl extends ServiceImpl<OmUserTransactionM
     @Override
     public void refund(Long id, Long userId, BigDecimal refundAmount, Long refundId) {
         OmUserTransaction transaction = new OmUserTransaction();
-        transaction.setOrderId(id);
+        transaction.setTargetId(id);
         transaction.setAmount(refundAmount);
         transaction.setIncrStatus(true);
         transaction.setUserId(userId);
         transaction.setType(UserTransactionType.REFUND);
         save(transaction);
         iOmRefundOrderService.onRefundHook(refundId,refundAmount,String.valueOf(transaction.getId()));
+    }
+
+    @Override
+    public void onReward(Long userId, Long rewardId, BigDecimal amount) {
+        OmUserTransaction transaction = new OmUserTransaction();
+        transaction.setTargetId(rewardId);
+        transaction.setAmount(amount);
+        transaction.setIncrStatus(true);
+        transaction.setUserId(userId);
+        transaction.setType(UserTransactionType.REWARD);
+        save(transaction);
     }
 
 

@@ -5,22 +5,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zex.cloud.haircut.apis.WxApi;
 import com.zex.cloud.haircut.config.MqConfig;
 import com.zex.cloud.haircut.config.WxProperties;
-import com.zex.cloud.haircut.entity.OmComment;
 import com.zex.cloud.haircut.entity.OmOrder;
-import com.zex.cloud.haircut.entity.OmShopOrder;
 import com.zex.cloud.haircut.enums.OrderStatus;
 import com.zex.cloud.haircut.enums.OrderType;
 import com.zex.cloud.haircut.enums.PayChannelType;
-import com.zex.cloud.haircut.enums.ShopOrderStatus;
 import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.exception.NotSupportException;
 import com.zex.cloud.haircut.exception.ServerException;
 import com.zex.cloud.haircut.mapper.OmOrderMapper;
 import com.zex.cloud.haircut.message.OrderCreatedMessage;
-import com.zex.cloud.haircut.params.OmCommentOrderParam;
 import com.zex.cloud.haircut.params.OmOrderParam;
 import com.zex.cloud.haircut.response.*;
+import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.util.*;
@@ -77,15 +74,19 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
     @Autowired
     private IOmRefundOrderService iOmRefundOrderService;
 
+    @Autowired
+    private IOmUserRewardService iOmUserRewardService;
     @Override
     @Transactional
-    public OmOrder createOrder(OmOrderParam param, String ip, Long userId) throws JsonProcessingException {
+    public OmOrder createOrder(OmOrderParam param, String ip, RequestUser user) throws JsonProcessingException {
         Long generateId = (Long) identifierGenerator.nextId(null);
         String body = null;
         if (param.getOrderType() == OrderType.SHOP_SERVICE) {
-            body = iOmShopOrderService.validOrderAndCreate(param, userId, generateId);
+            body = iOmShopOrderService.validOrderAndCreate(param, user.getId(), generateId);
         } else if (param.getOrderType() == OrderType.SHOP_GROUPON) {
-            body = iSmShopGrouponService.validOrder(param, userId, generateId);
+            body = iSmShopGrouponService.validOrder(param, user.getId(), generateId);
+        }else if (param.getOrderType() == OrderType.USER_REWARD){
+            body = iOmUserRewardService.validOrderAndCreate(param, user,generateId);
         }
         OmOrder omOrder = new OmOrder();
         omOrder.setId(generateId);
@@ -94,7 +95,8 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
         omOrder.setExpireAt(LocalDateTime.now().plusDays(1));
         omOrder.setStatus(OrderStatus.PENDING);
         omOrder.setIpAddress(ip);
-        omOrder.setUserId(userId);
+        omOrder.setOrderType(param.getOrderType());
+        omOrder.setUserId(user.getId());
         save(omOrder);
         OrderCreatedMessage message = new OrderCreatedMessage();
         message.setOrderId(generateId);
@@ -195,6 +197,8 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
             iOmFlowerService.onPayHook(omOrder);
         } else if (omOrder.getOrderType() == OrderType.USER_RECHARGE) {
             iOmUserTransactionService.onPayHook(omOrder);
+        }else if (omOrder.getOrderType() == OrderType.USER_REWARD){
+            iOmUserRewardService.onPayHook(omOrder);
         }
         omOrder.setStatus(OrderStatus.PAID);
         omOrder.setPayAt(LocalDateTime.now());

@@ -22,11 +22,17 @@ drop table if exists om_flower;
 
 drop table if exists om_order;
 
+drop table if exists om_platform_transaction;
+
 drop table if exists om_refund_order;
 
 drop table if exists om_shop_order;
 
+drop table if exists om_shop_transaction;
+
 drop table if exists om_user_groupon;
+
+drop table if exists om_user_reward;
 
 drop table if exists om_user_transaction;
 
@@ -71,6 +77,12 @@ drop table if exists sy_user;
 drop table if exists sy_user_group;
 
 drop table if exists sy_user_role_rel;
+
+drop table if exists um_popularize;
+
+drop table if exists um_user_collect;
+
+drop table if exists um_user_praise;
 
 /*==============================================================*/
 /* Table: am_audit_history                                      */
@@ -274,6 +286,21 @@ create table om_order
 );
 
 /*==============================================================*/
+/* Table: om_platform_transaction                               */
+/*==============================================================*/
+create table om_platform_transaction
+(
+    id                   bigint not null,
+    target_id            bigint,
+    user_id              bigint,
+    amount               decimal(10,2),
+    type                 tinyint,
+    incr_status          bool,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
 /* Table: om_refund_order                                       */
 /*==============================================================*/
 create table om_refund_order
@@ -314,6 +341,21 @@ create table om_shop_order
 );
 
 /*==============================================================*/
+/* Table: om_shop_transaction                                   */
+/*==============================================================*/
+create table om_shop_transaction
+(
+    id                   bigint not null,
+    target_id            bigint,
+    shop_id              bigint,
+    amount               decimal(10,2),
+    type                 tinyint,
+    incr_status          bool,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
 /* Table: om_user_groupon                                       */
 /*==============================================================*/
 create table om_user_groupon
@@ -335,12 +377,40 @@ create table om_user_groupon
 );
 
 /*==============================================================*/
+/* Table: om_user_reward                                        */
+/*==============================================================*/
+create table om_user_reward
+(
+    id                   bigint not null,
+    user_id              bigint,
+    content              varchar(256),
+    images               text,
+    sex_type             tinyint,
+    height               int,
+    weight               int,
+    job                  varchar(30),
+    hair_volume          varchar(30),
+    reward_amount        decimal(10,2),
+    reward_status        tinyint,
+    delete_status        bool,
+    publish_status       tinyint,
+    order_id             bigint,
+    anonymous_status     bool,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    nickname             varchar(30),
+    avatar               varchar(128),
+    comment_count        int,
+    praise_count         int,
+    primary key (id)
+);
+
+/*==============================================================*/
 /* Table: om_user_transaction                                   */
 /*==============================================================*/
 create table om_user_transaction
 (
     id                   bigint not null,
-    order_id             bigint,
+    target_id            bigint,
     user_id              bigint,
     amount               decimal(10,2),
     type                 tinyint,
@@ -702,5 +772,47 @@ create table sy_user_role_rel
     id                   bigint not null,
     role_id              bigint,
     user_id              bigint,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: um_popularize                                         */
+/*==============================================================*/
+create table um_popularize
+(
+    id                   bigint not null,
+    user_id              bigint,
+    target_type          tinyint,
+    target_id            bigint,
+    status               tinyint,
+    create_at            datetime,
+    first_pay_at         datetime,
+    amount               decimal(10,2),
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: um_user_collect                                       */
+/*==============================================================*/
+create table um_user_collect
+(
+    id                   bigint not null,
+    user_id              bigint,
+    target_id            bigint,
+    target_type          tinyint,
+    create_at            datetime,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: um_user_praise                                        */
+/*==============================================================*/
+create table um_user_praise
+(
+    id                   bigint not null,
+    user_id              bigint,
+    target_id            bigint,
+    target_type          tinyint,
+    create_at            datetime,
     primary key (id)
 );

@@ -1,14 +1,14 @@
 package com.zex.cloud.haircut.entity;
 
-import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.zex.cloud.haircut.config.JsonLongSerializer;
-import com.zex.cloud.haircut.enums.UserTransactionType;
+import com.zex.cloud.haircut.enums.PopularizeStatus;
+import com.zex.cloud.haircut.enums.PopularizeType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,32 +21,30 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Zex
- * @since 2020-02-23
+ * @since 2020-03-03
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="OmUserTransaction对象", description="")
-public class OmUserTransaction implements Serializable {
+@ApiModel(value="UmPopularize对象", description="")
+public class UmPopularize implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
 
-    @JsonSerialize(using = JsonLongSerializer.class)
-    private Long targetId;
-
-    @JsonSerialize(using = JsonLongSerializer.class)
     private Long userId;
 
-    private BigDecimal amount;
+    private PopularizeType targetType;
 
-    private UserTransactionType type;
+    private Long targetId;
 
-    private Boolean incrStatus;
+    private PopularizeStatus status;
 
     private LocalDateTime createAt;
 
+    private LocalDateTime firstPayAt;
+
+    private BigDecimal amount;
 
 }

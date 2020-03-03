@@ -7,10 +7,7 @@ import com.zex.cloud.haircut.enums.OrderType;
 import com.zex.cloud.haircut.params.OmCommentOrderParam;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.security.RequestUser;
-import com.zex.cloud.haircut.service.IOmCommentService;
-import com.zex.cloud.haircut.service.IOmOrderService;
-import com.zex.cloud.haircut.service.IOmShopOrderService;
-import com.zex.cloud.haircut.service.ISyUserService;
+import com.zex.cloud.haircut.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,9 @@ public class MessageReceiver {
     @Autowired
     private ISyUserService iSyUserService;
 
+    @Autowired
+    private IOmUserRewardService iOmUserRewardService;
+
     @RabbitListener(queues = MqConfig.DElAY_PAY_QUEUE)
     public void cancelOrder(OrderCreatedMessage msg){
         log.info("received order created msg  = {}",msg);
@@ -44,6 +44,8 @@ public class MessageReceiver {
         iOmOrderService.updateById(omOrder);
         if (omOrder.getOrderType() == OrderType.SHOP_SERVICE){
             iOmShopOrderService.cancelOrder(omOrder.getId());
+        }else if (omOrder.getOrderType() == OrderType.USER_REWARD){
+            iOmUserRewardService.cancelOrder(omOrder.getId());
         }
     }
 

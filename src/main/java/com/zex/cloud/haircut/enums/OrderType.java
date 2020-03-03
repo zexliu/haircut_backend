@@ -7,7 +7,8 @@ public enum OrderType implements IEnum<Integer> {
     SHOP_SERVICE(1,"店铺服务"),
     SHOP_GROUPON(2,"团购服务"),
     USER_RECHARGE(3,"用户充值"),
-    USER_FLOWER(4,"购买鲜花");
+    USER_FLOWER(4,"购买鲜花"),
+    USER_REWARD(5,"用户悬赏"),;
 
     OrderType(int value) {
         this.value = value;

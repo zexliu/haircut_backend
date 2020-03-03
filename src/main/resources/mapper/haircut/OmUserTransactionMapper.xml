@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmUserTransaction">
         <id column="id" property="id"/>
-        <result column="order_id" property="orderId"/>
+        <result column="target_id" property="targetId"/>
         <result column="user_id" property="userId"/>
         <result column="amount" property="amount"/>
         <result column="type" property="type"/>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.UmPopularizeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.UmPopularize">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="target_type" property="targetType"/>
+        <result column="target_id" property="targetId"/>
+        <result column="status" property="status"/>
+        <result column="create_at" property="createAt"/>
+        <result column="first_pay_at" property="firstPayAt"/>
+    </resultMap>
+    <select id="list" resultType="com.zex.cloud.haircut.response.UmPopularizeUser">
+        select up.id,
+        up.user_id,
+        up.target_type,
+        up.target_id,
+        up.status,
+        up.create_at,
+        up.first_pay_at,
+        up.amount,
+        su.avatar,
+        su.nickname,
+        su.mobile
+        from um_popularize up
+        left join sy_user su on up.user_id = su.id
+        <where>
+            1 = 1
+            <if test="targetId != null">
+                and up.target_id = #{targetId}
+            </if>
+            <if test="popularizeStatus != null">
+                and up.status = #{popularizeStatus}
+            </if>
+            <if test="popularizeType != null">
+                and up.target_type = #{popularizeType}
+            </if>
+            <if test="startAt != null">
+                and up.create_at >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and up.create_at <![CDATA[<=]]> #{endAt}
+            </if>
+
+        </where>
+    </select>
+
+</mapper>

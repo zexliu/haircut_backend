@@ -24,9 +24,11 @@ public interface IOmUserTransactionService extends IService<OmUserTransaction> {
 
     void payOrder(Long id, BigDecimal amount, Long userId);
 
-   IPage<OmUserTransaction> page(Page<OmUserTransaction> convert, LocalDateTime startAt, LocalDateTime endAt, Boolean incrStatus, UserTransactionType transactionType, Long userId);
+    IPage<OmUserTransaction> page(Page<OmUserTransaction> convert, LocalDateTime startAt, LocalDateTime endAt, Boolean incrStatus, UserTransactionType transactionType, Long userId);
 
     BigDecimal balance(LocalDateTime startAt, LocalDateTime endAt, Boolean incrStatus, UserTransactionType transactionType, Long userId);
 
     void refund(Long id, Long userId, BigDecimal refundAmount, Long refundId);
+
+    void onReward(Long userId, Long rewardId, BigDecimal amount);
 }

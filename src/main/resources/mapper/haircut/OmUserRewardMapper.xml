@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.OmUserRewardMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmUserReward">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="content" property="content" />
+        <result column="images" property="images" />
+        <result column="sex_type" property="sexType" />
+        <result column="height" property="height" />
+        <result column="weight" property="weight" />
+        <result column="job" property="job" />
+        <result column="hair_volume" property="hairVolume" />
+        <result column="reward_amount" property="rewardAmount" />
+        <result column="status" property="status" />
+        <result column="order_id" property="orderId" />
+        <result column="anonymous_status" property="anonymousStatus" />
+        <result column="create_at" property="createAt" />
+        <result column="nickname" property="nickname" />
+        <result column="avatar" property="avatar" />
+        <result column="comment_count" property="commentCount" />
+        <result column="praise_count" property="praiseCount" />
+    </resultMap>
+
+</mapper>
