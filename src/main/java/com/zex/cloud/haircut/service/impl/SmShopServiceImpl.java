@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.config.Constants;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.entity.SyUser;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -108,6 +110,16 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     @Override
     public Long getShopIdByUserId(Long id) {
         return baseMapper.getShopIdByUserId(id);
+    }
+
+    @Override
+    public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt) {
+        return baseMapper.brokenLines(startAt,endAt);
+    }
+
+    @Override
+    public int count(LocalDate startAt, LocalDate endAt) {
+        return baseMapper.count(startAt,endAt);
     }
 
     private void valid(Long id, Long userId) {

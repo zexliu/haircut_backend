@@ -2,10 +2,12 @@ package com.zex.cloud.haircut.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -23,5 +25,9 @@ public interface SyUserMapper extends BaseMapper<SyUser> {
                        @Param("enable")Boolean enable,
                        @Param("groupId")Long groupId, Page<SyUser> page);
 
+
+    List<BrokenLinePoint> brokenLines(@Param("startAt")LocalDate startAt, @Param("endAt")LocalDate endAt);
+
+    int count(@Param("startAt")LocalDate startAt, @Param("endAt")LocalDate endAt);
 
 }

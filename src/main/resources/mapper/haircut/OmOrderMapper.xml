@@ -6,7 +6,6 @@
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmOrder">
         <id column="id" property="id" />
         <result column="order_type" property="orderType" />
-        <result column="pay_status" property="payStatus" />
         <result column="pay_at" property="payAt" />
         <result column="user_id" property="userId" />
         <result column="amount" property="amount" />
@@ -19,5 +18,42 @@
         <result column="expire_at" property="expireAt" />
         <result column="third_party_id" property="thirdPartyId" />
     </resultMap>
+    <select id="income" resultType="java.math.BigDecimal">
+
+        select sum(amount) from om_order
+        <where>
+            <if test="status != null">
+                and  status = #{status}
+            </if>
+            <if test="type != null">
+                and order_type = #{type}
+            </if>
+            <if test="startAt != null">
+                and DATE(pay_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(pay_at) <![CDATA[ <= ]]> #{endAt}
+            </if>
+        </where>
+    </select>
+    <select id="brokenLines" resultType="com.zex.cloud.haircut.dto.BrokenLinePoint">
+        select sum(amount) amount,date_format(pay_at,'%Y-%m-%d') `date`
+        from om_order
+        <where>
+            <if test="status != null">
+                and  status = #{status}
+            </if>
+            <if test="type != null">
+                and order_type = #{type}
+            </if>
+            <if test="startAt != null">
+                and DATE(pay_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(pay_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+        </where>
+        group by `date`
+    </select>
 
 </mapper>

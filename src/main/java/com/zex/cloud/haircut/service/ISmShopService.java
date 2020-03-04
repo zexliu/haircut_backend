@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -9,6 +10,7 @@ import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.params.SmShopParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -39,5 +41,9 @@ public interface ISmShopService extends IService<SmShop> {
 
 
     Long getShopIdByUserId(Long id);
+
+    List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt);
+
+    int count(LocalDate startAt, LocalDate endAt);
 
 }

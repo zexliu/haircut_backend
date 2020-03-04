@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zex.cloud.haircut.apis.WxApi;
 import com.zex.cloud.haircut.config.MqConfig;
 import com.zex.cloud.haircut.config.WxProperties;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.OmOrder;
 import com.zex.cloud.haircut.enums.OrderStatus;
 import com.zex.cloud.haircut.enums.OrderType;
@@ -36,7 +37,9 @@ import retrofit2.Retrofit;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -288,6 +291,19 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
         updateById(omOrder);
     }
 
+    @Override
+    public BigDecimal income(LocalDate startAt, LocalDate endAt, OrderType type) {
+        BigDecimal income = baseMapper.income(startAt, endAt, OrderStatus.PAID, type);
+        if (income == null){
+            return new BigDecimal("0");
+        }
+        return income;
+    }
+
+    @Override
+    public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt, OrderType type) {
+        return baseMapper.brokenLines(startAt,endAt,OrderStatus.PAID,type);
+    }
 
 
 }

@@ -16,6 +16,7 @@ public enum OrderType implements IEnum<Integer> {
 
     OrderType(int code, String subject) {
         this.value = code;
+        this.subject = subject;
     }
     private int value;
 
@@ -25,4 +26,7 @@ public enum OrderType implements IEnum<Integer> {
         return this.value;
     }
 
+    public String getSubject() {
+        return subject;
+    }
 }

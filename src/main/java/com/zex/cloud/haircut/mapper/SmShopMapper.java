@@ -2,10 +2,14 @@ package com.zex.cloud.haircut.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import org.apache.ibatis.annotations.Param;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -27,5 +31,9 @@ public interface SmShopMapper extends BaseMapper<SmShop> {
                        @Param("latitude")Double latitude);
 
     Long getShopIdByUserId(@Param("userId") Long userId);
+
+    List<BrokenLinePoint> brokenLines(@Param("startAt") LocalDate startAt,@Param("endAt")  LocalDate endAt);
+
+    int count(@Param("startAt")LocalDate startAt, @Param("endAt")LocalDate endAt);
 
 }

@@ -30,10 +30,10 @@
         left join sy_group_user_rel sgur on su.id = sgur.user_id
         <where>
             1=1
-            <if test="keywords != null">and (su.username like  concat('%',#{keywords},'%')
-                or su.email like  concat('%',#{keywords},'%')
-                or su.mobile like  concat('%',#{keywords},'%')
-                or su.nickname like  concat('%',#{keywords},'%'))
+            <if test="keywords != null">and (su.username like concat('%',#{keywords},'%')
+                or su.email like concat('%',#{keywords},'%')
+                or su.mobile like concat('%',#{keywords},'%')
+                or su.nickname like concat('%',#{keywords},'%'))
             </if>
             <if test="enable != null">
                 and su.enable = #{enable}
@@ -44,6 +44,34 @@
             <if test="groupId != null">
                 and sgur.group_id = #{groupId}
             </if>
+        </where>
+    </select>
+    <select id="brokenLines" resultType="com.zex.cloud.haircut.dto.BrokenLinePoint">
+        select count(*) amount, date_format(create_at,'%Y-%m-%d') `date`
+        from sy_user
+        <where>
+            1 = 1
+            <if test="startAt != null">
+                and DATE(create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(create_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+
+        </where>
+        group by `date`
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select  count(*) from sy_user
+        <where>
+            1 = 1
+            <if test="startAt != null">
+                and DATE(create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(create_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+
         </where>
     </select>
 

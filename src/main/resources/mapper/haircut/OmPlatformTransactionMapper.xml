@@ -17,12 +17,27 @@
         <where>
             incr_status = true
             <if test="startAt != null">
-                and create_at >= #{startAt}
+                and DATE(create_at) >= #{startAt}
             </if>
             <if test="endAt != null">
-                and create_at <![CDATA[ <= ]]> #{endAt}
+                and DATE(create_at) <![CDATA[ <= ]]> #{endAt}
             </if>
         </where>
+    </select>
+    <select id="brokenLines" resultType="com.zex.cloud.haircut.dto.BrokenLinePoint">
+        select sum(amount) amount,date_format(create_at,'%Y-%m-%d') `date`
+        from om_platform_transaction
+        <where>
+            incr_status = true
+            <if test="startAt != null">
+                and DATE(create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(create_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+
+        </where>
+        group by `date`
     </select>
 
 </mapper>

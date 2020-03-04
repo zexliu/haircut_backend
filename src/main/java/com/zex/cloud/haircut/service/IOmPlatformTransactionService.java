@@ -1,10 +1,13 @@
 package com.zex.cloud.haircut.service;
 
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.OmPlatformTransaction;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -16,7 +19,9 @@ import java.time.LocalDateTime;
  */
 public interface IOmPlatformTransactionService extends IService<OmPlatformTransaction> {
 
-    BigDecimal income(LocalDateTime startAt, LocalDateTime endAt);
+    BigDecimal income(LocalDate startAt, LocalDate endAt);
 
+
+    List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt);
 
 }

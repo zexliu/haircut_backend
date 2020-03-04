@@ -3,6 +3,7 @@ package com.zex.cloud.haircut.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.zex.cloud.haircut.exception.AuthenticationException;
 import com.zex.cloud.haircut.exception.ExistsException;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -183,6 +185,16 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     public RequestUser getRequestUser(Long userId) {
         SyUser syUser = getById(userId);
         return adaptRequestUser(syUser);
+    }
+
+    @Override
+    public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt) {
+        return baseMapper.brokenLines(startAt,endAt);
+    }
+
+    @Override
+    public int count(LocalDate startAt, LocalDate endAt) {
+        return baseMapper.count(startAt,endAt);
     }
 
 

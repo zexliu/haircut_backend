@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.PasswordCurrentParam;
@@ -9,6 +10,9 @@ import com.zex.cloud.haircut.params.PasswordParam;
 import com.zex.cloud.haircut.params.SyUserParam;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestUser;
+
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -38,5 +42,9 @@ public interface ISyUserService extends IService<SyUser> {
     void passwordCurrent(PasswordCurrentParam param, Long id);
 
     RequestUser getRequestUser(Long userId);
+
+    List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt);
+
+    int count(LocalDate startAt, LocalDate endAt);
 
 }

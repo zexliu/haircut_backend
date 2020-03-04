@@ -1,13 +1,17 @@
 package com.zex.cloud.haircut.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.OmOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zex.cloud.haircut.enums.OrderType;
 import com.zex.cloud.haircut.params.OmOrderParam;
 import com.zex.cloud.haircut.response.WxJsResponse;
 import com.zex.cloud.haircut.security.RequestUser;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -30,6 +34,11 @@ public interface IOmOrderService extends IService<OmOrder> {
     void walletPayment(Long id, String transactionPassword, Long userId);
 
     void refund(Long id, Long userId);
+
+
+    BigDecimal income(LocalDate startAt, LocalDate endAt, OrderType type);
+
+    List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt, OrderType type);
 
 
 }
