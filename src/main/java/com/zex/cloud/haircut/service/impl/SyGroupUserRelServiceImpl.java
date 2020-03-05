@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.SyGroupUserRel;
+import com.zex.cloud.haircut.entity.SyUserRoleRel;
 import com.zex.cloud.haircut.mapper.SyGroupUserRelMapper;
 import com.zex.cloud.haircut.service.ISyGroupUserRelService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -45,5 +46,20 @@ public class SyGroupUserRelServiceImpl extends ServiceImpl<SyGroupUserRelMapper,
     @Override
     public List<Long> getGroupIdsByUserId(Long id) {
         return baseMapper.getGroupIdsByUserId(id);
+    }
+
+    @Override
+    public void save(Long groupId, Long userId) {
+        SyGroupUserRel rel = new SyGroupUserRel();
+        rel.setGroupId(groupId);
+        rel.setUserId(userId);
+        save(rel);
+    }
+
+    @Override
+    public void remove(Long groupId, Long userId) {
+        remove(new LambdaQueryWrapper<SyGroupUserRel>()
+                .eq(SyGroupUserRel::getGroupId,groupId)
+                .eq(SyGroupUserRel::getUserId,userId));
     }
 }

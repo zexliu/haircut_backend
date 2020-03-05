@@ -3,8 +3,10 @@ package com.zex.cloud.haircut.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.config.Constants;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
-import com.zex.cloud.haircut.entity.SyUser;
+import com.zex.cloud.haircut.entity.*;
+import com.zex.cloud.haircut.enums.*;
 import com.zex.cloud.haircut.exception.AuthenticationException;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.NotFoundException;
@@ -14,17 +16,17 @@ import com.zex.cloud.haircut.params.PasswordParam;
 import com.zex.cloud.haircut.params.SyUserParam;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestUser;
-import com.zex.cloud.haircut.service.ISyGroupUserRelService;
-import com.zex.cloud.haircut.service.ISyUserRoleRelService;
-import com.zex.cloud.haircut.service.ISyUserService;
+import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.util.PasswordEncoder;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,10 +51,24 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     @Autowired
     private ISyUserRoleRelService iSyUserRoleRelService;
 
+    @Autowired
+    private ISyUserExtensionService iSyUserExtensionService;
+
+    @Autowired
+    private ISyUserSocialService iSyUserSocialService;
+
+    @Autowired
+    private ISmShopService iSmShopService;
+
+    @Autowired
+    private IUmPopularizeService iUmPopularizeService;
+
+    @Autowired
+    private IUmUserCollectService iUmUserCollectService;
     @Override
     @Transactional
     public SyUser save(SyUserParam param, String operatorIp, Long operatorId) {
-        valid(null, param.getUsername(),param.getMobile(),param.getEmail());
+        valid(null, param.getUsername(), param.getMobile(), param.getEmail());
         SyUser syUser = adaptUser(param, operatorIp, operatorId);
         save(syUser);
         iSyGroupUserRelService.updateRelations(syUser.getId(), param.getGroupIds());
@@ -61,19 +77,19 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     }
 
     private void valid(Long id, String username, String mobile, String email) {
-       List<SyUser>  users= list(new LambdaQueryWrapper<SyUser>()
-                .nested(i-> i.eq(SyUser::getUsername, username).or()
-                .eq(StringUtils.isNotBlank(mobile),SyUser::getMobile,mobile)
-                .eq(StringUtils.isNotBlank(email),SyUser::getEmail,email))
+        List<SyUser> users = list(new LambdaQueryWrapper<SyUser>()
+                .nested(i -> i.eq(SyUser::getUsername, username).or()
+                        .eq(StringUtils.isNotBlank(mobile), SyUser::getMobile, mobile)
+                        .eq(StringUtils.isNotBlank(email), SyUser::getEmail, email))
                 .ne(id != null, SyUser::getId, id));
         for (SyUser user : users) {
-            if (StringUtils.equals(user.getUsername(),username)){
+            if (StringUtils.equals(user.getUsername(), username)) {
                 throw new ExistsException("用户名已存在");
             }
-            if (StringUtils.equals(user.getMobile(),mobile)){
+            if (StringUtils.equals(user.getMobile(), mobile)) {
                 throw new ExistsException("手机号码已存在");
             }
-            if (StringUtils.equals(user.getEmail(),email)){
+            if (StringUtils.equals(user.getEmail(), email)) {
                 throw new ExistsException("邮箱已存在");
             }
         }
@@ -92,7 +108,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     }
 
     @Override
-    public RequestUser getRequestUser(String username, String password) {
+    public RequestUser getRequestUser(String username, String password,ClientType clientType) {
         SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>()
                 .eq(SyUser::getUsername, username));
         if (syUser == null) {
@@ -112,10 +128,10 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         }
         syUser.setLoginAt(LocalDateTime.now());
         updateById(syUser);
-        return adaptRequestUser(syUser);
+        return adaptRequestUser(syUser,clientType, null);
     }
 
-    private RequestUser adaptRequestUser(SyUser syUser) {
+    private RequestUser adaptRequestUser(SyUser syUser, ClientType clientType, String sessionKey) {
         RequestUser user = new RequestUser();
         user.setAvatar(syUser.getAvatar());
         user.setId(syUser.getId());
@@ -124,6 +140,21 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         user.setMobile(syUser.getMobile());
         List<String> roles = iSyUserRoleRelService.getRequestRoles(user.getId());
         user.setRoles(roles);
+        if (CollectionUtils.isNotEmpty(roles)&& roles.contains(Constants.SHOP_ADMIN_ROLE_NAME)){
+            Long shopId = iSmShopService.getShopIdByUserId(user.getId());
+            user.setShopId(shopId);
+        }
+        user.setClientType(clientType);
+        SyUserSocial syUserSocial = iSyUserSocialService.getById(syUser.getId());
+        if (syUserSocial != null){
+            user.setOpenId(syUserSocial.getOpenId());
+
+        }
+        SyUserExtension syUserExtension = iSyUserExtensionService.getById(syUser.getId());
+        if (syUserExtension != null){
+            user.setUnionId(syUserExtension.getUnionId());
+        }
+        user.setSessionKey(sessionKey);
         return user;
     }
 
@@ -157,11 +188,11 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
 
     @Override
     public void password(PasswordParam param) {
-        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getUsername,param.getUsername()));
-        if (syUser == null){
+        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getUsername, param.getUsername()));
+        if (syUser == null) {
             throw new NotFoundException("用户不存在");
         }
-        if (!passwordEncoder.matches(param.getOldPassword(),syUser.getPassword())){
+        if (!passwordEncoder.matches(param.getOldPassword(), syUser.getPassword())) {
             throw new NotFoundException("旧密码不对");
         }
         syUser.setPassword(passwordEncoder.encode(param.getNewPassword()));
@@ -170,11 +201,11 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
 
     @Override
     public void passwordCurrent(PasswordCurrentParam param, Long id) {
-        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getId,id));
-        if (syUser == null){
+        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getId, id));
+        if (syUser == null) {
             throw new NotFoundException("用户不存在");
         }
-        if (!passwordEncoder.matches(param.getOldPassword(),syUser.getPassword())){
+        if (!passwordEncoder.matches(param.getOldPassword(), syUser.getPassword())) {
             throw new NotFoundException("旧密码不对");
         }
         syUser.setPassword(passwordEncoder.encode(param.getNewPassword()));
@@ -184,17 +215,66 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     @Override
     public RequestUser getRequestUser(Long userId) {
         SyUser syUser = getById(userId);
-        return adaptRequestUser(syUser);
+        return adaptRequestUser(syUser,null, null);
     }
 
     @Override
     public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt) {
-        return baseMapper.brokenLines(startAt,endAt);
+        return baseMapper.brokenLines(startAt, endAt);
     }
 
     @Override
     public int count(LocalDate startAt, LocalDate endAt) {
-        return baseMapper.count(startAt,endAt);
+        return baseMapper.count(startAt, endAt);
+    }
+
+    @Override
+    @Transactional
+    public RequestUser getRequestUser(String unionId, String openId, String sessionKey, String appId,ClientType clientType,Long popularizeId, PopularizeType popularizeType) {
+        SyUserSocial social = iSyUserSocialService.getByOpenId(openId, appId);
+        if (social == null) {
+            //保存用户信息
+            SyUser syUser = new SyUser();
+            syUser.setPassword("un_used");
+            syUser.setLoginAt(LocalDateTime.now());
+            syUser.setEnable(true);
+            syUser.setLocked(false);
+            save(syUser);
+            //保存默认用户角色信息
+            iSyGroupUserRelService.save(Constants.USER_GROUP_ID, syUser.getId());
+            social = new SyUserSocial();
+            social.setAppId(appId);
+            social.setOpenId(openId);
+            social.setSocialType(SocialType.WX);
+            social.setUserId(syUser.getId());
+            iSyUserSocialService.save(social);
+            //保存拓展信息
+            SyUserExtension extension = iSyUserExtensionService.getByUnionId(unionId);
+            if (extension == null) {
+                extension = new SyUserExtension();
+                extension.setUnionId(unionId);
+                extension.setUserId(syUser.getId());
+                iSyUserExtensionService.save(extension);
+            }
+
+            //保存推广信息
+            if (popularizeId != null && popularizeType != null){
+                UmPopularize umPopularize = new UmPopularize();
+                umPopularize.setTargetId(popularizeId);
+                umPopularize.setTargetType(popularizeType);
+                umPopularize.setUserId(syUser.getId());
+                umPopularize.setAmount(new BigDecimal("0"));
+                umPopularize.setStatus(PopularizeStatus.PENDING_FIRST_PAY);
+                iUmPopularizeService.save(umPopularize);
+                //收藏
+                if (popularizeType == PopularizeType.SHOP){
+                    iUmUserCollectService.collect(popularizeId, CollectType.SHOP,syUser.getId());
+                }
+            }
+
+        }
+        SyUser syUser = getById(social.getUserId());
+        return adaptRequestUser(syUser,clientType, sessionKey);
     }
 
 

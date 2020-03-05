@@ -36,6 +36,8 @@ drop table if exists om_user_reward;
 
 drop table if exists om_user_transaction;
 
+drop table if exists pm_banner;
+
 drop table if exists sm_basic_setting;
 
 drop table if exists sm_commission_discount;
@@ -74,11 +76,17 @@ drop table if exists sy_role_permission_rel;
 
 drop table if exists sy_user;
 
+drop table if exists sy_user_extension;
+
 drop table if exists sy_user_group;
 
 drop table if exists sy_user_role_rel;
 
+drop table if exists sy_user_social;
+
 drop table if exists um_popularize;
+
+drop table if exists um_popularize_qr_code;
 
 drop table if exists um_user_collect;
 
@@ -270,7 +278,6 @@ create table om_order
 (
     id                   bigint not null,
     order_type           tinyint,
-    pay_status           tinyint,
     pay_at               datetime,
     user_Id              bigint,
     amount               decimal(10,2),
@@ -347,7 +354,7 @@ create table om_shop_transaction
 (
     id                   bigint not null,
     target_id            bigint,
-    shop_id              bigint,
+    user_id              bigint,
     amount               decimal(10,2),
     type                 tinyint,
     incr_status          bool,
@@ -416,6 +423,23 @@ create table om_user_transaction
     type                 tinyint,
     incr_status          bool,
     create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: pm_banner                                             */
+/*==============================================================*/
+create table pm_banner
+(
+    id                   bigint not null,
+    name                 varchar(30),
+    description          varchar(200),
+    seq                  int,
+    image                varchar(128),
+    create_at            datetime default CURRENT_TIMESTAMP,
+    link_type            tinyint,
+    link_url             varchar(128),
+    enable_status        bool,
     primary key (id)
 );
 
@@ -749,6 +773,17 @@ create table sy_user
 );
 
 /*==============================================================*/
+/* Table: sy_user_extension                                     */
+/*==============================================================*/
+create table sy_user_extension
+(
+    id                   bigint not null,
+    union_id             varchar(128),
+    user_id              bigint,
+    primary key (id)
+);
+
+/*==============================================================*/
 /* Table: sy_user_group                                         */
 /*==============================================================*/
 create table sy_user_group
@@ -776,6 +811,20 @@ create table sy_user_role_rel
 );
 
 /*==============================================================*/
+/* Table: sy_user_social                                        */
+/*==============================================================*/
+create table sy_user_social
+(
+    id                   bigint not null,
+    user_id              bigint,
+    open_id              varchar(128),
+    social_type          tinyint,
+    app_id               varchar(30),
+    create_at            datetime default CURRENT_TIMESTAMP,
+    primary key (id)
+);
+
+/*==============================================================*/
 /* Table: um_popularize                                         */
 /*==============================================================*/
 create table um_popularize
@@ -785,9 +834,22 @@ create table um_popularize
     target_type          tinyint,
     target_id            bigint,
     status               tinyint,
-    create_at            datetime,
+    create_at            datetime default CURRENT_TIMESTAMP,
     first_pay_at         datetime,
     amount               decimal(10,2),
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: um_popularize_qr_code                                 */
+/*==============================================================*/
+create table um_popularize_qr_code
+(
+    id                   bigint not null,
+    qr_code              varchar(128),
+    type                 tinyint,
+    create_at            datetime default CURRENT_TIMESTAMP,
+    target_id            bigint,
     primary key (id)
 );
 

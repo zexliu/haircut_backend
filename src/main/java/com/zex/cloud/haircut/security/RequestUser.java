@@ -3,6 +3,7 @@ package com.zex.cloud.haircut.security;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.entity.SyRole;
+import com.zex.cloud.haircut.enums.ClientType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,4 +33,11 @@ public class RequestUser {
 
     private List<String> roles;
 
+    private String sessionKey;
+
+    private ClientType clientType;
+
+    private String openId;
+
+    private String unionId;
 }

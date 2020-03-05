@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zex.cloud.haircut.enums.ClientType;
+import com.zex.cloud.haircut.enums.PopularizeType;
 import com.zex.cloud.haircut.params.PasswordCurrentParam;
 import com.zex.cloud.haircut.params.PasswordParam;
 import com.zex.cloud.haircut.params.SyUserParam;
@@ -29,7 +31,7 @@ public interface ISyUserService extends IService<SyUser> {
     SyUser update(Long id, SyUserParam syUserParam, String operatorIp, Long operatorId);
 
 
-    RequestUser getRequestUser(String username, String password);
+    RequestUser getRequestUser(String username, String password, ClientType clientType);
 
    IPage<SyUser> list(String keywords, Boolean locked,Boolean enable,Long groupId, Page<SyUser> convert);
 
@@ -47,4 +49,5 @@ public interface ISyUserService extends IService<SyUser> {
 
     int count(LocalDate startAt, LocalDate endAt);
 
+    RequestUser getRequestUser(String unionId, String openId, String sessionKey, String appId, ClientType clientType, Long popularizeId, PopularizeType popularizeType);
 }

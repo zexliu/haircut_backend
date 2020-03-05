@@ -1,4 +1,5 @@
 INSERT sy_user(id, username, password, email, mobile, remark, enable, locked, nickname, avatar,create_at) VALUE (1231064253191327746,'admin','$2a$10$4SBtj67t7j3xLYSxbftunO0ov9MBZoH9LYsLsJc8qKT.Sf8jHYqyG','zexliu@icloud.com',18713888898,'超级管理员',true,false,'Admin','http://b-ssl.duitang.com/uploads/item/201511/21/20151121171107_zMZcy.jpeg',now());
-INSERT sy_role(id,name, parent_id,  remark,create_at) VALUE(1231063023681441794,'ADMIN',0,'超级管理员',now());
-INSERT sy_role(id,name, parent_id,  remark,create_at) VALUE(1186593156003532801,'SHOP_ADMIN',0,'店铺管理员',now());
-INSERT sy_user_role_rel(id, role_id , user_id ) VALUE(1230875155390455810,1231063023681441794,1231064253191327746)
+INSERT sy_role(id,name, parent_id,  remark,create_at) VALUES(1231063023681441794,'ADMIN',0,'超级管理员',now()),(1186593156003532801,'SHOP_ADMIN',0,'店铺管理员',now()),(1235551571549786114,'USER',0,'普通用户',now());
+INSERT sy_user_group(id, name, remark, seq)VALUES(1235553055305797633,'ADMIN_GROUP','管理员组',0),(1235553954564575233,'SHOP_GROUP','商户用户组',0),(1235554038396129282,'USER_GROUP','普通用户组',0);
+INSERT sy_group_role_rel(id, role_id, group_id) VALUES(1235555691346169855,1231063023681441794,1235553055305797633),(1235555691346169856,1186593156003532801,1235553954564575233),(1235555691346169857,1235551571549786114,1235554038396129282);
+INSERT sy_group_user_rel(id, user_id, group_id) VALUES (1235555691346169858,1231064253191327746,1235553055305797633);

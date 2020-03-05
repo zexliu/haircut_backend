@@ -2,7 +2,7 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.zex.cloud.haircut.apis.WxApi;
+import com.zex.cloud.haircut.apis.WxPayApi;
 import com.zex.cloud.haircut.config.MqConfig;
 import com.zex.cloud.haircut.config.WxProperties;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
@@ -67,7 +67,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
     private String hostUrl;
 
     @Autowired
-    private Retrofit wxRetrofit;
+    private Retrofit wxPayRetrofit;
     @Autowired
     private IOmFlowerService iOmFlowerService;
 
@@ -150,7 +150,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
 //        wxRequest.setAttach(transactionOrder.getBody());
         wxRequest.setSign(WxPaySignature.sign(MapUtil.buildMap(wxRequest), WxProperties.SIGN_KEY));
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/xml; charset=utf-8"), XmlUtil.toString(wxRequest));
-        Call<WxCreateOrderResponse> call = wxRetrofit.create(WxApi.class).unifiedorder(requestBody);
+        Call<WxCreateOrderResponse> call = wxPayRetrofit.create(WxPayApi.class).unifiedorder(requestBody);
         try {
             Response<WxCreateOrderResponse> response = call.execute();
             if (response.isSuccessful()) {
@@ -263,7 +263,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
             wxRequest.setSign(WxPaySignature.sign(MapUtil.buildMap(wxRequest), WxProperties.SIGN_KEY));
 
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/xml; charset=utf-8"), XmlUtil.toString(wxRequest));
-            Call<WxRefundResponse> call = wxRetrofit.create(WxApi.class).refund(requestBody);
+            Call<WxRefundResponse> call = wxPayRetrofit.create(WxPayApi.class).refund(requestBody);
 
             try {
                 Response<WxRefundResponse> response = call.execute();

@@ -22,5 +22,5 @@ spring:
     username: root
     password: 666666
 
-files-location: /Users/zex/upload_files/
-host-url: http://api.devlsege.s3.natapp.cc/
+files-location: /Users/zex/upload_files
+host-url: http://api.devlsege.s3.natapp.cc

@@ -19,4 +19,8 @@ public interface ISyGroupUserRelService extends IService<SyGroupUserRel> {
     void removeByGroupId(Long id);
 
     List<Long> getGroupIdsByUserId(Long id);
+
+    void save(Long groupId, Long userId);
+
+    void remove(Long groupId, Long userId);
 }

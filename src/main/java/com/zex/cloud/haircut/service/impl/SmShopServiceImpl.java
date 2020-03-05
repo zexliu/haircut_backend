@@ -5,20 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.config.Constants;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
-import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
-import com.zex.cloud.haircut.entity.SyUser;
-import com.zex.cloud.haircut.entity.SyUserRoleRel;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.mapper.SmShopMapper;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.params.SmShopParam;
-import com.zex.cloud.haircut.service.ISmHalfTimeService;
-import com.zex.cloud.haircut.service.ISmShopService;
+import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zex.cloud.haircut.service.ISmShopServiceRelationService;
-import com.zex.cloud.haircut.service.ISyUserRoleRelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +38,8 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     @Autowired
     private ISyUserRoleRelService iSyUserRoleRelService;
     @Autowired
+    private ISyGroupUserRelService iSyGroupUserRelService;
+    @Autowired
     private ISmHalfTimeService iSmHalfTimeService;
     @Override
     public IPage<SmShop> list(Page<SmShop> convert, String keywords, ShopWorkStatus workStatus, String provinceCode, String cityCode, String districtCode, Double longitude, Double latitude) {
@@ -55,7 +51,7 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     public SmShop customSave(SmShop smShop) {
         valid(null, smShop.getUserId());
         // 保存角色信息
-        iSyUserRoleRelService.save(Constants.SHOP_ADMIN_ROLE_ID,smShop.getUserId());
+        iSyGroupUserRelService.save(Constants.SHOP_ADMIN_GROUP_ID,smShop.getUserId());
         //保存店铺
         save(smShop);
         return smShop;
@@ -79,7 +75,7 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
         if (!param.getUserId().equals(smShop.getUserId())){
             valid(id,param.getUserId());
             //移除旧用户的角色信息
-            iSyUserRoleRelService.remove(Constants.SHOP_ADMIN_ROLE_ID,smShop.getUserId());
+            iSyGroupUserRelService.remove(Constants.SHOP_ADMIN_GROUP_ID,smShop.getUserId());
             iSyUserRoleRelService.save(Constants.SHOP_ADMIN_ROLE_ID,param.getUserId());
         }
         smShop.setId(id);

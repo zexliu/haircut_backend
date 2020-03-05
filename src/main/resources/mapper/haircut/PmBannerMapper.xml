@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zex.cloud.haircut.mapper.PmBannerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.PmBanner">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="seq" property="seq" />
+        <result column="image" property="image" />
+        <result column="create_at" property="createAt" />
+        <result column="link_type" property="linkType" />
+        <result column="link_url" property="linkUrl" />
+        <result column="enable_status" property="enableStatus" />
+    </resultMap>
+
+</mapper>

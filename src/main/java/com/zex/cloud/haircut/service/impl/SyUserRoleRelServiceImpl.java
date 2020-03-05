@@ -39,6 +39,7 @@ public class SyUserRoleRelServiceImpl extends ServiceImpl<SyUserRoleRelMapper, S
 
     @Override
     public List<String> getRequestRoles(Long userId) {
+
         return baseMapper.queryRolesByUserId(userId);
     }
 

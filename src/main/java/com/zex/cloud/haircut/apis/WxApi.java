@@ -1,56 +1,23 @@
 package com.zex.cloud.haircut.apis;
 
-import com.zex.cloud.haircut.response.WxCreateOrderResponse;
-import com.zex.cloud.haircut.response.WxOrderQueryResponse;
-import com.zex.cloud.haircut.response.WxRefundResponse;
-import com.zex.cloud.haircut.response.WxTransferResponse;
-import okhttp3.RequestBody;
+import com.zex.cloud.haircut.response.WxAccessToken;
+import com.zex.cloud.haircut.response.WxJsCodeToSessionResponse;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-/**
- * @company_name 唐山徕思歌科技有限公司
- * @auther liuze
- * @create_date 2018/9/19
- * @description 微信Api
- */
 public interface WxApi {
 
+    @GET("/sns/jscode2session")
+    Call<WxJsCodeToSessionResponse> jsCodeToSession(@Query("appid") String appId, @Query("secret") String secret, @Query("js_code") String jsCode, @Query("grant_type") String grantType);
+
+    @GET("/cgi-bin/token")
+    Call<WxAccessToken> getWxAccessToken(@Query("grant_type") String grantType, @Query("appid") String appId, @Query("secret") String secret);
 
 
-    /**
-     * 统一下单
-     *
-     * @param body
-     * @return https://api.mch.weixin.qq.com
-     */
-    @POST("/pay/unifiedorder")
-    Call<WxCreateOrderResponse> unifiedorder(@Body RequestBody body);
-
-    /**
-     * 订单查询
-     *
-     * @param body
-     * @return https://api.mch.weixin.qq.com
-     */
-    @POST("/pay/orderquery")
-    Call<WxOrderQueryResponse> orderquery(@Body RequestBody body);
-
-
-    /**
-     * 转账给用户
-     * @param body
-     * @return https://api.mch.weixin.qq.com
-     */
-    @POST("/mmpaymkttransfers/promotion/transfers")
-    Call<WxTransferResponse> transfer(@Body RequestBody body);  /**
-
-
-     * 申请退款
-     * @param body
-     * @return https://api.mch.weixin.qq.com
-     */
-    @POST("/secapi/pay/refund")
-    Call<WxRefundResponse> refund(@Body RequestBody body);
+    @GET("/wxa/getwxacodeunlimit")
+    Call<ResponseBody> getQrCode(@Query("access_token")String accessToken, @Query("scene")String scene, @Query("page")String page);
 }

@@ -9,11 +9,12 @@
         <result column="user_id" property="userId"/>
     </resultMap>
     <select id="queryRolesByUserId" resultType="java.lang.String">
-        select sr.name
+        select distinct sr.name
         from sy_role sr
                  left join sy_user_role_rel sur on sur.role_id = sr.id
-        where sur.user_id = #{userId}
-
+                 left join sy_group_role_rel  sgrr on sgrr.role_id = sr.id
+                 left join sy_group_user_rel sgur on sgur.group_id = sgrr.group_id
+        where sur.user_id = #{userId} or sgur.user_id = #{userId}
     </select>
     <select id="getRoleIdsByUserId" resultType="java.lang.Long">
         select role_id from sy_user_role_rel where  user_id = #{userId}

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ResourceUtils;
 import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 import javax.net.ssl.*;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 public class RetrofitConfig {
 
     @Bean
-    public Retrofit wxRetrofit() throws Exception {
+    public Retrofit wxPayRetrofit() throws Exception {
         //配置微信证书
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("wx_cert.p12");
         KeyStore keystore = KeyStore.getInstance("PKCS12");
@@ -50,6 +51,18 @@ public class RetrofitConfig {
                         .addInterceptor((new HttpLoggingInterceptor()
                                 .setLevel(HttpLoggingInterceptor.Level.BODY)))
                         .sslSocketFactory(socketFactory, trustManager)
+                        .build()
+                ).build();
+    }
+
+    @Bean
+    public Retrofit wxRetrofit(){
+        return new Retrofit.Builder()
+                .baseUrl(WxProperties.WX_GATEWAY)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .client(new OkHttpClient.Builder()
+                        .addInterceptor((new HttpLoggingInterceptor()
+                                .setLevel(HttpLoggingInterceptor.Level.BODY)))
                         .build()
                 ).build();
     }
