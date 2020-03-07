@@ -1,14 +1,19 @@
 package com.zex.cloud.haircut.params;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@ApiModel("分页相关")
+@Data
 public class Pageable {
-
+    @ApiModelProperty("分页数量")
     Integer size = 10;
-
+    @ApiModelProperty("第几页")
     Integer current = 1;
-
+    @ApiModelProperty("是否查询数量")
     Boolean isSearchCount = true;
 
     public Pageable(Integer size, Integer current, Boolean isSearchCount) {

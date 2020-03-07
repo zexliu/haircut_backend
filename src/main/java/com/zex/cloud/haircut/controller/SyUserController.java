@@ -3,10 +3,7 @@ package com.zex.cloud.haircut.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SyUser;
-import com.zex.cloud.haircut.params.Pageable;
-import com.zex.cloud.haircut.params.PasswordCurrentParam;
-import com.zex.cloud.haircut.params.PasswordParam;
-import com.zex.cloud.haircut.params.SyUserParam;
+import com.zex.cloud.haircut.params.*;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestHolder;
@@ -54,6 +51,13 @@ public class SyUserController {
     public SyUser save(@RequestBody @Valid SyUserParam syUserParam, HttpServletRequest request) {
         String ip = NetWorkUtils.getRemoteHost(request);
         return iSyUserService.save(syUserParam, ip, RequestHolder.user().getId());
+    }
+
+    @PostMapping("/register")
+    @ApiOperation("用户注册")
+    public SyUser register(@RequestBody @Valid SyUserRegisterParam param, HttpServletRequest request){
+        String ip = NetWorkUtils.getRemoteHost(request);
+        return iSyUserService.register(param,ip);
     }
 
     @PutMapping("/{id}")

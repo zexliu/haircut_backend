@@ -30,4 +30,7 @@ public interface ISyPermissionService extends IService<SyPermission> {
 
     List<SyPermissionTree> tree();
 
+    List<String> getRoleNamesByUrlAndMethodType(String url, PermissionMethodType type);
+
+
 }

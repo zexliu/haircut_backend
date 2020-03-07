@@ -21,11 +21,12 @@
         <result column="locked" property="locked"/>
         <result column="nickname" property="nickname"/>
         <result column="avatar" property="avatar"/>
+        <result column="gender" property="gender"/>
     </resultMap>
     <select id="list" resultMap="BaseResultMap">
         select distinct(su.id), su.username, su.password, su.email, su.create_at,
         su.mobile, su.login_at, su.login_ip, su.operator_id, su.operator_ip,
-        su.remark, su.operator_at,su.enable, su.expire_at, su.locked, su.nickname, su.avatar
+        su.remark, su.operator_at,su.enable, su.expire_at, su.locked, su.nickname, su.avatar,su.gender
         from sy_user su
         left join sy_group_user_rel sgur on su.id = sgur.user_id
         <where>

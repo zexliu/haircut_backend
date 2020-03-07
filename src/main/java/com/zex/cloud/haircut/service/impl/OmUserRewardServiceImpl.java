@@ -74,7 +74,7 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
         userReward.setOrderId(generateId);
         userReward.setNickname(user.getNickname());
         userReward.setPraiseCount(0);
-        userReward.setSexType(body.getSexType());
+        userReward.setGenderType(body.getSexType());
         userReward.setRewardStatus(UserRewardStatus.PENDING_REWARD);
         userReward.setPublishStatus(UserRewardPublishStatus.PENDING_PAY);
         userReward.setRewardAmount(param.getAmount());

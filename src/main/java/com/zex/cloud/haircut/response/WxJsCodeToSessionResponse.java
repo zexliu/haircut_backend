@@ -13,9 +13,6 @@ public class WxJsCodeToSessionResponse {
     @JsonProperty("session_key")
     private String sessionKey;
 
-    @JsonProperty("unionid")
-    private String unionId;
-
     @JsonProperty("errcode")
     private Integer errCode;
 

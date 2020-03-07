@@ -1,6 +1,6 @@
 package com.zex.cloud.haircut.dto;
 
-import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.enums.GenderType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,5 +12,5 @@ public class OrderGrouponDTO {
     private Long serviceId;
     private Integer count;
     private BigDecimal amount;
-    private SexType sexType;
+    private GenderType genderType;
 }

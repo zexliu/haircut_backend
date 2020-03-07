@@ -1,6 +1,6 @@
 package com.zex.cloud.haircut.params;
 
-import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.enums.GenderType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -31,5 +31,5 @@ public class OmShopOrderBodyParam {
 
     @NotNull
     @ApiModelProperty(value = "性别")
-    SexType sexType;
+    GenderType genderType;
 }

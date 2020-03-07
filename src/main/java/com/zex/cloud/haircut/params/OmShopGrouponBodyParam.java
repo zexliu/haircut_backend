@@ -1,11 +1,9 @@
 package com.zex.cloud.haircut.params;
 
-import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.enums.GenderType;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 public class OmShopGrouponBodyParam {
@@ -22,7 +20,7 @@ public class OmShopGrouponBodyParam {
     private Long stylistId;
 
     @NotNull
-    private SexType sexType;
+    private GenderType genderType;
 
     private Long couponId;
 }

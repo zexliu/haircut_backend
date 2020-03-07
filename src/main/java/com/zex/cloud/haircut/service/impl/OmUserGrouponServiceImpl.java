@@ -1,11 +1,10 @@
 package com.zex.cloud.haircut.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zex.cloud.haircut.dto.OrderGrouponDTO;
 import com.zex.cloud.haircut.entity.OmOrder;
-import com.zex.cloud.haircut.entity.OmShopOrder;
 import com.zex.cloud.haircut.entity.OmUserGroupon;
-import com.zex.cloud.haircut.enums.ShopOrderStatus;
 import com.zex.cloud.haircut.enums.UserGrouponStatus;
 import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
@@ -35,21 +34,26 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
 
     @Override
     public void onPayHook(OmOrder omOrder) {
-        OrderGrouponDTO dto = objectMapper.convertValue(omOrder.getBody(), OrderGrouponDTO.class);
-        OmUserGroupon omUserGroupon = new OmUserGroupon();
-        //设置一年有效期
-        omUserGroupon.setExpireAt(LocalDateTime.now().plusYears(1));
-        omUserGroupon.setRemainCount(dto.getCount());
-        omUserGroupon.setTotalCount(dto.getCount());
-        omUserGroupon.setServiceId(dto.getServiceId());
-        omUserGroupon.setStylistId(dto.getStylistId());
-        omUserGroupon.setShopId(dto.getShopId());
-        omUserGroupon.setSexType(dto.getSexType());
-        omUserGroupon.setUserId(omOrder.getUserId());
-        omUserGroupon.setAmount(omOrder.getAmount());
-        omUserGroupon.setStatus(UserGrouponStatus.PENDING_USE);
-        omUserGroupon.setOrderId(omOrder.getId());
-        save(omUserGroupon);
+        try {
+            OrderGrouponDTO dto = objectMapper.readValue(omOrder.getBody(), OrderGrouponDTO.class);
+            OmUserGroupon omUserGroupon = new OmUserGroupon();
+            //设置一年有效期
+            omUserGroupon.setExpireAt(LocalDateTime.now().plusYears(1));
+            omUserGroupon.setRemainCount(dto.getCount());
+            omUserGroupon.setTotalCount(dto.getCount());
+            omUserGroupon.setServiceId(dto.getServiceId());
+            omUserGroupon.setStylistId(dto.getStylistId());
+            omUserGroupon.setShopId(dto.getShopId());
+            omUserGroupon.setGenderType(dto.getGenderType());
+            omUserGroupon.setUserId(omOrder.getUserId());
+            omUserGroupon.setAmount(omOrder.getAmount());
+            omUserGroupon.setStatus(UserGrouponStatus.PENDING_USE);
+            omUserGroupon.setOrderId(omOrder.getId());
+            save(omUserGroupon);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

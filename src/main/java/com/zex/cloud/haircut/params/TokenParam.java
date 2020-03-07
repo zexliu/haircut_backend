@@ -19,7 +19,7 @@ public class TokenParam {
     private String username;
     @NotBlank
     private String password;
-    private String refreshToken;
+//    private String refreshToken;
     @NotNull
     private ClientType clientType;
 }

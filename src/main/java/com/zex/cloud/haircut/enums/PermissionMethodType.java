@@ -1,6 +1,7 @@
 package com.zex.cloud.haircut.enums;
 
 import com.baomidou.mybatisplus.core.enums.IEnum;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 public enum PermissionMethodType implements IEnum<Integer> {
 
@@ -12,6 +13,10 @@ public enum PermissionMethodType implements IEnum<Integer> {
         this.value = code;
     }
     private int value;
+
+    public static PermissionMethodType adapt(RequestMethod requestMethod) {
+        return valueOf(requestMethod.name());
+    }
 
     @Override
     public Integer getValue() {

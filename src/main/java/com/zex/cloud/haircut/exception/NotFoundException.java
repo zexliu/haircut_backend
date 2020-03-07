@@ -6,6 +6,6 @@ public class NotFoundException extends RuntimeException {
     }
 
     public NotFoundException() {
-        super("资源♀不存在");
+        super("资源不存在");
     }
 }

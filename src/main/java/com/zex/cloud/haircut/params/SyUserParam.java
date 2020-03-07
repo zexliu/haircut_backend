@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.params;
 
+import com.zex.cloud.haircut.enums.GenderType;
 import lombok.Data;
 import org.w3c.dom.stylesheets.LinkStyle;
 
@@ -33,6 +34,8 @@ public class SyUserParam {
     private String nickname;
 
     private String avatar;
+
+    private GenderType gender;
 
     private List<Long> groupIds;
 

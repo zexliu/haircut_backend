@@ -2,6 +2,9 @@ package com.zex.cloud.haircut.mapper;
 
 import com.zex.cloud.haircut.entity.SyPermission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2020-02-16
  */
 public interface SyPermissionMapper extends BaseMapper<SyPermission> {
+
+    List<String> getRoleNamesByPermissionId(@Param("permissionId") Long permissionId);
 
 }

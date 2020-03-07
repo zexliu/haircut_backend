@@ -7,9 +7,7 @@ import com.zex.cloud.haircut.entity.SyUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.ClientType;
 import com.zex.cloud.haircut.enums.PopularizeType;
-import com.zex.cloud.haircut.params.PasswordCurrentParam;
-import com.zex.cloud.haircut.params.PasswordParam;
-import com.zex.cloud.haircut.params.SyUserParam;
+import com.zex.cloud.haircut.params.*;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestUser;
 
@@ -49,5 +47,8 @@ public interface ISyUserService extends IService<SyUser> {
 
     int count(LocalDate startAt, LocalDate endAt);
 
-    RequestUser getRequestUser(String unionId, String openId, String sessionKey, String appId, ClientType clientType, Long popularizeId, PopularizeType popularizeType);
+
+    RequestUser getRequestUser(WxUserInfoParam userInfo, String sessionKey, ClientType clientType, Long popularizeId, PopularizeType popularizeType);
+
+    SyUser register(SyUserRegisterParam param, String ip);
 }

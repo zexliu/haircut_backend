@@ -16,5 +16,10 @@
         <result column="operator_at" property="operatorAt" />
         <result column="module_id" property="moduleId" />
     </resultMap>
+    <select id="getRoleNamesByPermissionId" resultType="java.lang.String">
+        select name from  sy_role
+        left join sy_role_permission_rel srpr on sy_role.id = srpr.role_id
+        where srpr.permission_id = #{permissionId}
+    </select>
 
 </mapper>

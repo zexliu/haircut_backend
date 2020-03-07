@@ -11,9 +11,7 @@ import com.zex.cloud.haircut.exception.AuthenticationException;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.SyUserMapper;
-import com.zex.cloud.haircut.params.PasswordCurrentParam;
-import com.zex.cloud.haircut.params.PasswordParam;
-import com.zex.cloud.haircut.params.SyUserParam;
+import com.zex.cloud.haircut.params.*;
 import com.zex.cloud.haircut.response.SyUserDetail;
 import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.*;
@@ -65,6 +63,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
 
     @Autowired
     private IUmUserCollectService iUmUserCollectService;
+
     @Override
     @Transactional
     public SyUser save(SyUserParam param, String operatorIp, Long operatorId) {
@@ -108,7 +107,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     }
 
     @Override
-    public RequestUser getRequestUser(String username, String password,ClientType clientType) {
+    public RequestUser getRequestUser(String username, String password, ClientType clientType) {
         SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>()
                 .eq(SyUser::getUsername, username));
         if (syUser == null) {
@@ -128,7 +127,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         }
         syUser.setLoginAt(LocalDateTime.now());
         updateById(syUser);
-        return adaptRequestUser(syUser,clientType, null);
+        return adaptRequestUser(syUser, clientType, null);
     }
 
     private RequestUser adaptRequestUser(SyUser syUser, ClientType clientType, String sessionKey) {
@@ -140,18 +139,18 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         user.setMobile(syUser.getMobile());
         List<String> roles = iSyUserRoleRelService.getRequestRoles(user.getId());
         user.setRoles(roles);
-        if (CollectionUtils.isNotEmpty(roles)&& roles.contains(Constants.SHOP_ADMIN_ROLE_NAME)){
+        if (CollectionUtils.isNotEmpty(roles) && roles.contains(Constants.SHOP_ADMIN_ROLE_NAME)) {
             Long shopId = iSmShopService.getShopIdByUserId(user.getId());
             user.setShopId(shopId);
         }
         user.setClientType(clientType);
         SyUserSocial syUserSocial = iSyUserSocialService.getById(syUser.getId());
-        if (syUserSocial != null){
+        if (syUserSocial != null) {
             user.setOpenId(syUserSocial.getOpenId());
 
         }
         SyUserExtension syUserExtension = iSyUserExtensionService.getById(syUser.getId());
-        if (syUserExtension != null){
+        if (syUserExtension != null) {
             user.setUnionId(syUserExtension.getUnionId());
         }
         user.setSessionKey(sessionKey);
@@ -215,7 +214,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     @Override
     public RequestUser getRequestUser(Long userId) {
         SyUser syUser = getById(userId);
-        return adaptRequestUser(syUser,null, null);
+        return adaptRequestUser(syUser, null, null);
     }
 
     @Override
@@ -230,8 +229,8 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
 
     @Override
     @Transactional
-    public RequestUser getRequestUser(String unionId, String openId, String sessionKey, String appId,ClientType clientType,Long popularizeId, PopularizeType popularizeType) {
-        SyUserSocial social = iSyUserSocialService.getByOpenId(openId, appId);
+    public RequestUser getRequestUser(WxUserInfoParam userInfo, String sessionKey, ClientType clientType, Long popularizeId, PopularizeType popularizeType) {
+        SyUserSocial social = iSyUserSocialService.getByOpenId(userInfo.getOpenId(), userInfo.getWatermark().getAppid());
         if (social == null) {
             //保存用户信息
             SyUser syUser = new SyUser();
@@ -239,26 +238,30 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
             syUser.setLoginAt(LocalDateTime.now());
             syUser.setEnable(true);
             syUser.setLocked(false);
+            syUser.setNickname(userInfo.getNickName());
+            syUser.setAvatar(userInfo.getAvatarUrl());
+            syUser.setGender(GenderType.getByValue(userInfo.getGender()));
             save(syUser);
             //保存默认用户角色信息
             iSyGroupUserRelService.save(Constants.USER_GROUP_ID, syUser.getId());
             social = new SyUserSocial();
-            social.setAppId(appId);
-            social.setOpenId(openId);
+            social.setAppId(userInfo.getWatermark().getAppid());
+            social.setOpenId(userInfo.getOpenId());
             social.setSocialType(SocialType.WX);
             social.setUserId(syUser.getId());
             iSyUserSocialService.save(social);
             //保存拓展信息
-            SyUserExtension extension = iSyUserExtensionService.getByUnionId(unionId);
-            if (extension == null) {
-                extension = new SyUserExtension();
-                extension.setUnionId(unionId);
-                extension.setUserId(syUser.getId());
-                iSyUserExtensionService.save(extension);
+            if (StringUtils.isNotBlank(userInfo.getUnionId())){
+                SyUserExtension extension = iSyUserExtensionService.getByUnionId(userInfo.getUnionId());
+                if (extension == null) {
+                    extension = new SyUserExtension();
+                    extension.setUnionId(userInfo.getUnionId());
+                    extension.setUserId(syUser.getId());
+                    iSyUserExtensionService.save(extension);
+                }
             }
-
             //保存推广信息
-            if (popularizeId != null && popularizeType != null){
+            if (popularizeId != null && popularizeType != null) {
                 UmPopularize umPopularize = new UmPopularize();
                 umPopularize.setTargetId(popularizeId);
                 umPopularize.setTargetType(popularizeType);
@@ -267,14 +270,27 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
                 umPopularize.setStatus(PopularizeStatus.PENDING_FIRST_PAY);
                 iUmPopularizeService.save(umPopularize);
                 //收藏
-                if (popularizeType == PopularizeType.SHOP){
-                    iUmUserCollectService.collect(popularizeId, CollectType.SHOP,syUser.getId());
+                if (popularizeType == PopularizeType.SHOP) {
+                    iUmUserCollectService.collect(popularizeId, CollectType.SHOP, syUser.getId());
                 }
             }
 
         }
         SyUser syUser = getById(social.getUserId());
-        return adaptRequestUser(syUser,clientType, sessionKey);
+        return adaptRequestUser(syUser, clientType, sessionKey);
+    }
+
+    @Override
+    public SyUser register(SyUserRegisterParam param, String ip) {
+        valid(null, param.getUsername(), null, null);
+        SyUser syUser = new SyUser();
+        syUser.setUsername(param.getUsername());
+        String password = passwordEncoder.encode(param.getPassword());
+        syUser.setPassword(password);
+        save(syUser);
+        //默认用户组
+        iSyGroupUserRelService.save(Constants.USER_GROUP_ID, syUser.getId());
+        return syUser;
     }
 
 

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.enums.UserRewardPublishStatus;
 import com.zex.cloud.haircut.enums.UserRewardStatus;
 import io.swagger.annotations.ApiModel;
@@ -39,7 +40,7 @@ public class OmUserReward implements Serializable {
 
     private String images;
 
-    private Integer sexType;
+    private GenderType genderType;
 
     private Integer height;
 

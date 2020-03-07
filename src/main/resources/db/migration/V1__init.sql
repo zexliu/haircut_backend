@@ -343,7 +343,7 @@ create table om_shop_order
     expire_at            datetime,
     subject              varchar(128),
     body                 longtext,
-    sex_type             tinyint,
+    gender_type          tinyint,
     primary key (id)
 );
 
@@ -376,7 +376,7 @@ create table om_user_groupon
     total_count          int,
     remain_count         int,
     service_id           bigint,
-    sex_type             tinyint,
+    gender_type          tinyint,
     amount               decimal(10,2),
     status               tinyint,
     order_id             bigint,
@@ -392,7 +392,7 @@ create table om_user_reward
     user_id              bigint,
     content              varchar(256),
     images               text,
-    sex_type             tinyint,
+    gender_type          tinyint,
     height               int,
     weight               int,
     job                  varchar(30),
@@ -753,7 +753,7 @@ create table sy_role_permission_rel
 create table sy_user
 (
     id                   bigint not null,
-    username             varchar(30) not null,
+    username             varchar(30),
     password             varchar(200),
     email                varchar(128),
     create_at            datetime default CURRENT_TIMESTAMP,
@@ -769,6 +769,7 @@ create table sy_user
     locked               bool default false,
     nickname             varchar(30),
     avatar               varchar(128),
+    gender               tinyint,
     primary key (id)
 );
 

@@ -11,7 +11,6 @@ import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.exception.ParameterException;
 import com.zex.cloud.haircut.exception.ServerException;
 import com.zex.cloud.haircut.mapper.OmShopOrderMapper;
-import com.zex.cloud.haircut.message.OrderCreatedMessage;
 import com.zex.cloud.haircut.message.OrderUsedMessage;
 import com.zex.cloud.haircut.params.OmOrderParam;
 import com.zex.cloud.haircut.params.OmOrderServiceParam;
@@ -26,7 +25,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -73,7 +71,7 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
         //便利项目
         for (OmOrderServiceParam service : body.getServices()) {
             //获取实际价格
-            BigDecimal originPrice = iHmStylistServiceRelationService.getPriceByServiceIdStylistIdAndSex(service.getServiceId(), body.getStylistId(), body.getSexType());
+            BigDecimal originPrice = iHmStylistServiceRelationService.getPriceByServiceIdStylistIdAndSex(service.getServiceId(), body.getStylistId(), body.getGenderType());
             BigDecimal realPrice = originPrice;
             if (DecimalUtils.ne(originPrice, service.getOriginalAmount())) {
                 throw new ParameterException("原价不符 serviceId =" + service);
@@ -121,7 +119,7 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
         omShopOrder.setSubject(param.getSubject());
         omShopOrder.setTotalAmount(totalOriginPrice);
         omShopOrder.setUserId(userId);
-        omShopOrder.setSexType(body.getSexType());
+        omShopOrder.setGenderType(body.getGenderType());
         ShopOrderBody shopOrderBody = new ShopOrderBody();
         shopOrderBody.setCouponId(body.getCouponId());
         shopOrderBody.setServices(body.getServices());

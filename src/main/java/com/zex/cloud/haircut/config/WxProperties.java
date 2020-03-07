@@ -20,8 +20,8 @@ public class WxProperties {
 
     public static final Map<String,String> APPS = new HashMap<String,String>(){
         {
-            put("wxbfe3af412df84deb", "SECRET");
-            put("wxbfe3af412df84deb1", "SECRET");
+            put("wxbfe3af412df84deb", "6eaf81dbe70df60d0e9456fc7f27fac1");
+            put("wxbfe3af412df84deb1", "6eaf81dbe70df60d0e9456fc7f27fac1");
         }
     };
 }

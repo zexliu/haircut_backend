@@ -3,9 +3,8 @@ package com.zex.cloud.haircut.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.zex.cloud.haircut.entity.OmShopOrder;
 import com.zex.cloud.haircut.entity.OmUserGroupon;
-import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.enums.UserGrouponStatus;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.service.IOmUserGrouponService;
@@ -38,7 +37,7 @@ public class OmUserGrouponController {
     @GetMapping
     public IPage<OmUserGroupon> groupons(Pageable pageable, String keywords, Long userId,
                                          Long shopId, Long stylistId, Long serviceId,
-                                         UserGrouponStatus status, SexType sexType, LocalDateTime startAt, LocalDateTime endAt) {
+                                         UserGrouponStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt) {
         return iOmUserGrouponService.page(pageable.convert(), new LambdaQueryWrapper<OmUserGroupon>()
                 .eq(userId != null, OmUserGroupon::getUserId, userId)
                 .eq(shopId != null, OmUserGroupon::getShopId, shopId)
@@ -47,7 +46,7 @@ public class OmUserGrouponController {
                 .eq(status != null, OmUserGroupon::getStatus, status)
                 .ge(startAt != null, OmUserGroupon::getCreateAt, startAt)
                 .le(endAt != null, OmUserGroupon::getCreateAt, endAt)
-                .eq(sexType != null, OmUserGroupon::getSexType, sexType)
+                .eq(genderType != null, OmUserGroupon::getGenderType, genderType)
                 .and(StringUtils.isNotBlank(keywords), i ->
                         i.like(OmUserGroupon::getOrderId, keywords)
                                 .or()

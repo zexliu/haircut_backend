@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.params;
 
+import com.zex.cloud.haircut.enums.GenderType;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -13,7 +14,7 @@ public class OmUserRewardBodyParam {
 
     private String images;
     @NotNull
-    private Integer sexType;
+    private GenderType sexType;
     @NotNull
     private Integer height;
     @NotNull

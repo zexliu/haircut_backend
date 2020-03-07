@@ -2,9 +2,8 @@ package com.zex.cloud.haircut.service;
 
 import com.zex.cloud.haircut.entity.HmStylistServiceRelation;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zex.cloud.haircut.enums.SexType;
+import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.params.HmStylistServiceParam;
-import com.zex.cloud.haircut.params.OmOrderServiceParam;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +22,7 @@ public interface IHmStylistServiceRelationService extends IService<HmStylistServ
 
     void updateRelations(Long id, List<HmStylistServiceParam> services);
 
-    BigDecimal getPriceByServiceIdStylistIdAndSex(Long serviceId, Long stylistId, SexType sexType);
+    BigDecimal getPriceByServiceIdStylistIdAndSex(Long serviceId, Long stylistId, GenderType genderType);
 
 
 }

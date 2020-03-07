@@ -1,8 +1,10 @@
 package com.zex.cloud.haircut.config;
 
 import com.zex.cloud.haircut.interceptor.AuthenticationInterceptor;
+import com.zex.cloud.haircut.service.ISyPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -14,23 +16,29 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
-
     @Value("${files-location}")
     public String filesLocation;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private ISyPermissionService iSyPermissionService;
+    @Bean
+    public AuthenticationInterceptor authenticationInterceptor() {
+        return new AuthenticationInterceptor(redisTemplate,iSyPermissionService);
+
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        AuthenticationInterceptor authenticationInterceptor = new AuthenticationInterceptor(redisTemplate);
-        registry.addInterceptor(authenticationInterceptor);
+        registry.addInterceptor(authenticationInterceptor()).addPathPatterns("/api/**");
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedOrigins("*")
-                .allowedMethods("GET","POST","PUT","DELETE")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowCredentials(true).maxAge(3600);
     }
 
@@ -39,6 +47,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("static/**")
                 .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("files/**")
-                .addResourceLocations("file:"+filesLocation + "/");
+                .addResourceLocations("file:" + filesLocation + "/");
     }
 }

@@ -18,7 +18,7 @@
         <result column="expire_at" property="expireAt" />
         <result column="subject" property="subject" />
         <result column="body" property="body" />
-        <result column="sex_type" property="sexType" />
+        <result column="gender_type" property="genderType" />
     </resultMap>
 
 </mapper>

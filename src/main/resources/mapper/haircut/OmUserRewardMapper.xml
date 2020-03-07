@@ -8,7 +8,7 @@
         <result column="user_id" property="userId" />
         <result column="content" property="content" />
         <result column="images" property="images" />
-        <result column="sex_type" property="sexType" />
+        <result column="gender_type" property="genderType" />
         <result column="height" property="height" />
         <result column="weight" property="weight" />
         <result column="job" property="job" />
