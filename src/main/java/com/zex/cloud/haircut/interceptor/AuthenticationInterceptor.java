@@ -107,8 +107,6 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
             }
 
-            System.out.println(permissionUrl);
-            System.out.println(methodType);
             List<String> roleNames = iSyPermissionService.getRoleNamesByUrlAndMethodType(permissionUrl, methodType);
             if (roleNames.contains("ANY")) {
                 return super.preHandle(request, response, handler);
@@ -116,7 +114,15 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                 if (RequestHolder.user() != null && CollectionUtils.containsAny(roleNames, RequestHolder.user().getRoles())) {
                     return super.preHandle(request, response, handler);
                 } else {
-                    throw new AuthenticationException();
+                    StringBuilder roles = new StringBuilder("[");
+                    for (int i = 0; i < roleNames.size(); i++) {
+                        if (i == roleNames.size() - 1){
+                            roles.append(roleNames.get(i)).append("]");
+                        }else {
+                            roles.append(roleNames.get(i)).append(",");
+                        }
+                    }
+                    throw new AuthenticationException("需要访问权限 roles = "+ roles.toString());
                 }
             }
 

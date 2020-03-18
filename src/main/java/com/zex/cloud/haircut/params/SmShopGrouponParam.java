@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.params;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
+import com.zex.cloud.haircut.enums.GenderType;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -18,5 +19,7 @@ public class SmShopGrouponParam {
     @NotNull
     private Integer count;
     @NotNull
-    private BigDecimal discount;
+    private BigDecimal amount;
+    @NotNull
+    private GenderType gender;
 }

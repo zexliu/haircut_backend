@@ -31,4 +31,6 @@ public interface IOmUserTransactionService extends IService<OmUserTransaction> {
     void refund(Long id, Long userId, BigDecimal refundAmount, Long refundId);
 
     void onReward(Long userId, Long rewardId, BigDecimal amount);
+
+
 }

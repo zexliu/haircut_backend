@@ -45,18 +45,60 @@
         ocs.score,
         ocs.skill_score,
         ocs.hygiene_score,
-        ocs.service_score
+        ocs.service_score ,
+        hs.nickname stylist_name
         from om_comment oc
         left join om_comment_score ocs on oc.id = ocs.comment_id
+        left join  hm_stylist hs on hs.id = ocs.stylist_id
         <where>
             oc.topic_type = 1
             <if test="shopId != null">and ocs.shop_id = #{shopId}</if>
+            <if test="stylistId != null">and ocs.stylist_id = #{stylistId}</if>
             <if test="orderId != null">and oc.topic_id = #{orderId}</if>
             <if test="levelSql != null ">
                 and #{levelSql}
             </if>
         </where>
         order by oc.create_at desc
+    </select>
+    <select id="selectReWardComments" resultType="com.zex.cloud.haircut.vo.OmCommentVo">
+        select oc.id,
+               oc.topic_id,
+               oc.topic_type,
+               oc.from_id,
+               oc.from_avatar,
+               oc.from_name,
+               oc.from_type,
+               oc.to_id,
+               oc.to_name,
+               oc.content,
+               oc.images,
+               oc.reply_id,
+               oc.delete_status,
+               oc.root,
+               oc.create_at,
+               oc.comment_count,
+               oc.praise_count,
+               oc.anonymous_status,
+               if(uup.id is null, false, true) praised,
+               if(ost.id is null, false,true) rewarded
+        from   om_comment oc
+        left join um_user_praise uup on uup.target_type = 1 and uup.target_id = oc.id  and uup.user_id  = #{currentUserId}
+        left join om_shop_transaction ost on ost.target_id = oc.id
+        where topic_id = #{rewardId}
+        and topic_type = 2
+
+    </select>
+    <select id="shopScoreCountVO" resultType="com.zex.cloud.haircut.vo.ScoreCountVO">
+        select  count(*) count ,avg(score) score   from  om_comment_score ocs
+        <where>
+            <if test="shopId != null">
+                shop_id = #{shopId}
+            </if>
+        <if test="stylistId != null">
+            stylist_id = #{stylistId}
+        </if>
+        </where>
     </select>
 
 </mapper>

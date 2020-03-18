@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IOmCommentScoreService extends IService<OmCommentScore> {
 
+    Float getRate(Long id);
+
+    Float score(Long id);
+
+    int stylistGoodCommentCount(Long id);
+
 }

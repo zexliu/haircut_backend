@@ -11,5 +11,21 @@
         <result column="female_price" property="femalePrice" />
         <result column="create_at" property="createAt" />
     </resultMap>
+    <select id="getMinAmount" resultType="java.math.BigDecimal">
+        SELECT IF( MIN(male_price) > min(female_price) ,min(female_price) ,MIN(male_price)) min_price
+        FROM hm_stylist_service_relation  hr
+        left join hm_stylist  hs ON  hs.id =  hr.stylist_id
+        <where>
+            <if test="shopId != null">
+                and hs.shop_id = #{shopId}
+            </if>
+            <if test="stylistId != null">
+                and hr.stylist_id = #{stylistId}
+            </if>
+            <if test="serviceId != null">
+                and hr.service_id = #{serviceId}
+            </if>
+        </where>
+    </select>
 
 </mapper>

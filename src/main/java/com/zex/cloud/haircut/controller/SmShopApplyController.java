@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * <p>
  * 前端控制器
@@ -37,23 +39,20 @@ public class SmShopApplyController {
     @GetMapping("/current")
     @ApiOperation("获取当前用户的申请记录")
     public SmShopApply current() {
-        SmShopApply smShopApply = iSmShopApplyService.getApplyByUserId(RequestHolder.user().getId());
-        if (smShopApply == null) {
-            throw new NotFoundException("当前用户没有申请记录");
-        }
-        return smShopApply;
+        return iSmShopApplyService.getApplyByUserId(RequestHolder.user().getId());
     }
+
 
 
     @PostMapping
     @ApiOperation("提交申请")
-    public SmShopApply create(@RequestBody SmShopApplyParam param) {
+    public SmShopApply create(@RequestBody @Valid SmShopApplyParam param) {
         return iSmShopApplyService.create(param, RequestHolder.user().getId());
     }
 
     @PutMapping
     @ApiOperation("修改申请(驳回后重新申请)")
-    public SmShopApply update(@RequestBody SmShopApplyParam param) {
+    public SmShopApply update(@RequestBody @Valid SmShopApplyParam param) {
         return iSmShopApplyService.update(param, RequestHolder.user().getId());
     }
 

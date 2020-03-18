@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.mapper;
 
 import com.zex.cloud.haircut.entity.OmCommentScore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface OmCommentScoreMapper extends BaseMapper<OmCommentScore> {
 
+    Float getRate(@Param("shopId")Long shopId);
+
+    Float getScore(@Param("id") Long id);
 }

@@ -31,8 +31,11 @@ public class HmWorkCase implements Serializable {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
+    @JsonSerialize(using = JsonLongSerializer.class)
 
     private Long stylistId;
+    @JsonSerialize(using = JsonLongSerializer.class)
+
     private Long shopId;
 
     private String title;

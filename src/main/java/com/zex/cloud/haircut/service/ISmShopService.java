@@ -3,11 +3,13 @@ package com.zex.cloud.haircut.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
-import com.zex.cloud.haircut.entity.SmHalfTime;
+import com.zex.cloud.haircut.vo.ShopDetailVO;
+import com.zex.cloud.haircut.vo.SmHomeShopVO;
+import com.zex.cloud.haircut.vo.SmShopVO;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
-import com.zex.cloud.haircut.params.SmHalfTimeParam;
+import com.zex.cloud.haircut.params.SmShopCurrentParam;
 import com.zex.cloud.haircut.params.SmShopParam;
 
 import java.time.LocalDate;
@@ -27,8 +29,7 @@ public interface ISmShopService extends IService<SmShop> {
 
     SmShop customSave(SmShop smShop);
 
-
-    SmShop updateCurrent(Long id, SmShopParam param);
+    SmShop updateCurrent(Long id, SmShopCurrentParam param);
 
     SmShop update(Long id, SmShopParam param);
 
@@ -37,7 +38,7 @@ public interface ISmShopService extends IService<SmShop> {
 
   void updateTitle(Long id, List<Long> titleIds);
 
-    void updateHalfTime(Long shopId, List<SmHalfTimeParam> params);
+//    void updateHalfTime(Long shopId, List<SmHalfTimeParam> params);
 
 
     Long getShopIdByUserId(Long id);
@@ -46,4 +47,13 @@ public interface ISmShopService extends IService<SmShop> {
 
     int count(LocalDate startAt, LocalDate endAt);
 
+    SmShopVO getByShopId(Long shopId);
+
+    IPage<SmHomeShopVO> homeVo(Page<SmHomeShopVO> convert, String keywords, ShopWorkStatus workStatus, String provinceCode, String cityCode, String districtCode, Double longitude, Double latitude);
+
+    ShopDetailVO detail(Long id, Long aLong);
+
+    void updateHalfStatus(Long shopId, Boolean halfStatus);
+
+    IPage<SmHomeShopVO> getCollectShops(Page<SmHomeShopVO> page, Long userId, Double latitude, Double longitude);
 }

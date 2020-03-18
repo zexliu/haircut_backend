@@ -4,21 +4,49 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmShopOrder">
-        <id column="id" property="id" />
-        <result column="shop_id" property="shopId" />
-        <result column="user_id" property="userId" />
-        <result column="stylist_id" property="stylistId" />
-        <result column="order_id" property="orderId" />
-        <result column="total_amount" property="totalAmount" />
-        <result column="real_amount" property="realAmount" />
-        <result column="status" property="status" />
-        <result column="appointment_at" property="appointmentAt" />
-        <result column="create_at" property="createAt" />
-        <result column="use_at" property="useAt" />
-        <result column="expire_at" property="expireAt" />
-        <result column="subject" property="subject" />
-        <result column="body" property="body" />
-        <result column="gender_type" property="genderType" />
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="userId"/>
+        <result column="stylist_id" property="stylistId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="real_amount" property="realAmount"/>
+        <result column="status" property="status"/>
+        <result column="appointment_at" property="appointmentAt"/>
+        <result column="create_at" property="createAt"/>
+        <result column="use_at" property="useAt"/>
+        <result column="expire_at" property="expireAt"/>
+        <result column="subject" property="subject"/>
+        <result column="body" property="body"/>
+        <result column="gender_type" property="genderType"/>
     </resultMap>
+    <select id="shopOrderVO" resultType="com.zex.cloud.haircut.vo.OmShopOrderVO">
+        select oso.id, oso.shop_id, oso.user_id, oso.stylist_id, oso.order_id, oso.total_amount,
+        oso.real_amount, oso.status, oso.create_at, oso.appointment_at, oso.use_at,
+        oso.expire_at, oso.subject, oso.body,oso.gender_type , su.nickname user_nickname , hs.nickname stylist_name
+        from om_shop_order oso
+        left join sy_user su on su.id = oso.user_id
+        left join hm_stylist hs on hs.id = oso.stylist_id
+        <where>
+            <if test="shopId != null">and oso.shop_id = #{shopId}</if>
+            <if test="userId != null">and oso.user_id = #{userId}</if>
+            <if test="keywords != null">and (oso.order_id like concat('%',#{keywords},'%' )
+                or oso.id like concat('%',#{keywords},'%'))
+            </if>
+            <if test="genderType != null">and oso.gender_type = #{genderType}</if>
+            <if test="status != null">and oso.status = #{status}</if>
+            <if test="stylistId != null">and oso.stylist_id = #{stylistId}</if>
+            <if test="startAt != null">
+                and DATE(oso.create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(oso.create_at) <![CDATA[ <= ]]> #{endAt}
+            </if>
+            <if test="useStatus != null and useStatus ">and oso.use_at is not null</if>
+            <if test="useStatus != null and !useStatus">and oso.use_at is null</if>
+            <if test="payStatus != null and payStatus"> and oso.status >= 2 </if>
+            <if test="payStatus != null and !payStatus"> and oso.status <![CDATA[ < ]]> 2 </if>
+        </where>
+    </select>
 
 </mapper>

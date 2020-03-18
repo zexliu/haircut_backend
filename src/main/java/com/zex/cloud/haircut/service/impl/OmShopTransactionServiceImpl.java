@@ -4,15 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.entity.OmShopTransaction;
-import com.zex.cloud.haircut.entity.OmUserTransaction;
 import com.zex.cloud.haircut.enums.ShopTransactionType;
-import com.zex.cloud.haircut.enums.UserTransactionType;
 import com.zex.cloud.haircut.mapper.OmShopTransactionMapper;
 import com.zex.cloud.haircut.service.IOmShopTransactionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zex.cloud.haircut.util.DateTimeUtils;
+import com.zex.cloud.haircut.vo.OmShopTransactionVO;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -28,7 +29,8 @@ public class OmShopTransactionServiceImpl extends ServiceImpl<OmShopTransactionM
 
     @Override
     public BigDecimal balance(LocalDateTime startAt, LocalDateTime endAt, Boolean incrStatus, ShopTransactionType transactionType, Long shopId) {
-        return null;
+        return baseMapper.balance(startAt,endAt,incrStatus,transactionType,shopId);
+
     }
 
     @Override
@@ -50,5 +52,17 @@ public class OmShopTransactionServiceImpl extends ServiceImpl<OmShopTransactionM
         transaction.setShopId(shopId);
         transaction.setType(ShopTransactionType.REWARD);
         save(transaction);
+    }
+
+    @Override
+    public OmShopTransactionVO currentShop(Long shopId) {
+        BigDecimal withdrawAmount = balance(null,null,null,null,shopId);
+        BigDecimal todayAmount = balance(DateTimeUtils.LocalTimeToLocalDateTime(LocalDate.now()),DateTimeUtils.LocalTimeToLocalDateTime(LocalDate.now().plusDays(1)),true,null,shopId);
+        BigDecimal totalAmount = balance(null,null,true,null,shopId);
+        OmShopTransactionVO vo  = new OmShopTransactionVO();
+        vo.setWithdrawalAmount(withdrawAmount);
+        vo.setTotalAmount(totalAmount);
+        vo.setTodayAmount(todayAmount);
+        return vo;
     }
 }

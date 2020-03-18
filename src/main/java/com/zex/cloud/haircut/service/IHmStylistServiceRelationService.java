@@ -25,4 +25,7 @@ public interface IHmStylistServiceRelationService extends IService<HmStylistServ
     BigDecimal getPriceByServiceIdStylistIdAndSex(Long serviceId, Long stylistId, GenderType genderType);
 
 
+    List<HmStylistServiceRelation> getByStylistId(Long stylistId);
+
+    BigDecimal getMinAmount(Long washCutBlowId, Long shopId, Long stylistId);
 }

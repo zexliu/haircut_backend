@@ -4,18 +4,115 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.HmStylist">
-        <id column="id" property="id" />
-        <result column="avatar" property="avatar" />
-        <result column="nickname" property="nickname" />
-        <result column="job_title_id" property="jobTitleId" />
-        <result column="introduction" property="introduction" />
-        <result column="cover_images" property="coverImages" />
-        <result column="html_intro" property="htmlIntro" />
-        <result column="work_status" property="workStatus" />
-        <result column="shop_id" property="shopId" />
-        <result column="delete_status" property="deleteStatus" />
-        <result column="create_at" property="createAt" />
-        <result column="seq" property="seq" />
+        <id column="id" property="id"/>
+        <result column="avatar" property="avatar"/>
+        <result column="nickname" property="nickname"/>
+        <result column="job_title_id" property="jobTitleId"/>
+        <result column="introduction" property="introduction"/>
+        <result column="cover_images" property="coverImages"/>
+        <result column="html_intro" property="htmlIntro"/>
+        <result column="work_status" property="workStatus"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="delete_status" property="deleteStatus"/>
+        <result column="create_at" property="createAt"/>
+        <result column="seq" property="seq"/>
+        <result column="work_age" property="workAge"/>
     </resultMap>
+    <select id="getHmStylistVOsBySHopId" resultType="com.zex.cloud.haircut.vo.HmStylistVO">
+        select hs.id,
+               hs.avatar,
+               hs.nickname,
+               hs.job_title_id,
+               hs.introduction,
+               hs.cover_images,
+               hs.html_intro,
+               hs.work_status,
+               hs.shop_id,
+               hs.delete_status,
+               hs.create_at,
+               hs.seq,
+               hs.work_age,
+               IF(hssr.male_price > hssr.female_price, hssr.female_price, hssr.male_price) price
+        from hm_stylist hs
+                 left join hm_stylist_service_relation hssr on hs.id = hssr.stylist_id and service_id = #{serviceId}
+        where hs.delete_status = 0
+          and hs.shop_id = #{shopId}
+    </select>
+    <select id="getDetail" resultType="com.zex.cloud.haircut.vo.HmStylistDetailVO">
+        select hs.id,
+               hs.avatar,
+               hs.nickname,
+               hs.job_title_id,
+               hs.introduction,
+               hs.cover_images,
+               hs.html_intro,
+               hs.work_status,
+               hs.shop_id,
+               hs.delete_status,
+               hs.create_at,
+               hs.seq,
+               hs.work_age,
+               ss.name                                                                                  shop_name,
+               st_distance(point(ss.longitude, ss.latitude), point(#{longitude}, #{latitude})) * 111195 distance,
+               if(uuc.id is null, false, true)                                                          collect
+        from hm_stylist hs
+                 left join sm_shop ss on ss.id = hs.shop_id
+                 left join um_user_collect uuc on uuc.user_id = #{userId} and target_id = hs.id
+        where hs.id = #{id}
+    </select>
+    <select id="getCollectStylists" resultType="com.zex.cloud.haircut.vo.HmStylistCollectVO">
+        select hs.id,
+               hs.avatar,
+               hs.nickname,
+               hs.job_title_id,
+               hs.introduction,
+               hs.cover_images,
+               hs.html_intro,
+               hs.work_status,
+               hs.shop_id,
+               hs.delete_status,
+               hs.create_at,
+               hs.seq,
+               hs.work_age,
+               st_distance(point(ss.longitude, ss.latitude), point(#{longitude}, #{latitude})) * 111195 distance,
+               ss.name                                                                                  shop_name,
+               IF(hssr.male_price > hssr.female_price, hssr.female_price, hssr.male_price)              price
+        from hm_stylist hs
+                 left join sm_shop ss on ss.id = hs.shop_id
+                 left join hm_stylist_service_relation hssr on hs.id = hssr.stylist_id and service_id = #{serviceId}
+                 left join um_user_collect uuc on  target_id = hs.id
+        where uuc.user_id = #{userId}
+             and hs.delete_status = 0
+
+    </select>
+    <select id="list" resultType="com.zex.cloud.haircut.vo.HmStylistCollectVO">
+        select hs.id,
+               hs.avatar,
+               hs.nickname,
+               hs.job_title_id,
+               hs.introduction,
+               hs.cover_images,
+               hs.html_intro,
+               hs.work_status,
+               hs.shop_id,
+               hs.delete_status,
+               hs.create_at,
+               hs.seq,
+               hs.work_age,
+               st_distance(point(ss.longitude, ss.latitude), point(#{longitude}, #{latitude})) * 111195 distance,
+               ss.name                                                                                  shop_name,
+               IF(hssr.male_price > hssr.female_price, hssr.female_price, hssr.male_price)              price
+        from hm_stylist hs
+                 left join sm_shop ss on ss.id = hs.shop_id
+                 left join hm_stylist_service_relation hssr on hs.id = hssr.stylist_id and service_id = #{serviceId}
+        <where>
+            hs.delete_status = 0
+            <if test="keywords != null">
+                and `nickname` like concat('%',#{keywords},'%')
+            </if>
+        </where>
+
+
+    </select>
 
 </mapper>

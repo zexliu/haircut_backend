@@ -107,6 +107,7 @@ public class SmShopApplyProcessorImpl extends ServiceImpl<SmShopApplyMapper, SmS
             smShop.setCreateAt(null);
             smShop.setWorkStatus(ShopWorkStatus.REST);
             smShop.setLogo(smShopApply.getPhoto());
+            smShop.setEnable(true);
             iSmShopService.customSave(smShop);
         }
         smShopApply.setAuditStatus(auditStatus);

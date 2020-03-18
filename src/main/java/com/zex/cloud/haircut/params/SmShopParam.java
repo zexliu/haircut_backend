@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 public class SmShopParam {
@@ -47,5 +48,6 @@ public class SmShopParam {
     private LocalTime workEndAt;
 
     private ShopWorkStatus workStatus;
+
 
 }

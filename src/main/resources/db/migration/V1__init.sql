@@ -10,6 +10,8 @@ drop table if exists hm_stylist;
 
 drop table if exists hm_stylist_domain_relation;
 
+drop table if exists hm_stylist_resume;
+
 drop table if exists hm_stylist_service_relation;
 
 drop table if exists hm_work_case;
@@ -169,6 +171,7 @@ create table hm_stylist
     delete_status        bool default false,
     create_at            datetime,
     seq                  int,
+    work_age             int,
     primary key (id)
 );
 
@@ -179,6 +182,20 @@ create table hm_stylist_domain_relation
 (
     id                   bigint not null,
     domain_id            bigint,
+    stylist_id           bigint,
+    primary key (id)
+);
+
+/*==============================================================*/
+/* Table: hm_stylist_resume                                     */
+/*==============================================================*/
+create table hm_stylist_resume
+(
+    id                   bigint not null,
+    studio_name          varchar(30),
+    start_at             date,
+    end_at               date,
+    create_at            datetime,
     stylist_id           bigint,
     primary key (id)
 );
@@ -560,6 +577,9 @@ create table sm_shop_apply
     update_at            datetime,
     version              int,
     user_id              bigint,
+    identity_card_front  varchar(120),
+    identity_card_back   varchar(120),
+    social_credit_code   varchar(120),
     primary key (id)
 );
 
@@ -615,8 +635,10 @@ create table sm_shop_groupon
     service_id           bigint,
     shop_id              bigint,
     count                int,
-    discount             decimal(10,2),
+    amount               decimal(10,2),
     create_at            datetime default CURRENT_TIMESTAMP,
+    stylist_id           bigint,
+    gender               tinyint,
     primary key (id)
 );
 

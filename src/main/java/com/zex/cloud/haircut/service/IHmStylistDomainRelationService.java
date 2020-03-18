@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.service;
 
+import com.zex.cloud.haircut.entity.HmDomain;
 import com.zex.cloud.haircut.entity.HmStylistDomainRelation;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -21,4 +22,5 @@ public interface IHmStylistDomainRelationService extends IService<HmStylistDomai
 
     void updateRelations(Long id, List<Long> domainIds);
 
+    List<HmDomain> getByStylistId(Long id);
 }

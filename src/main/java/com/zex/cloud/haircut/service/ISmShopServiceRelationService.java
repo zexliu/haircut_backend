@@ -19,4 +19,6 @@ public interface ISmShopServiceRelationService extends IService<SmShopServiceRel
 
     void updateRelations(Long shopId, List<Long> titleIds);
 
+    List<Long> getServiceIdsByShopId(Long shopId);
+
 }

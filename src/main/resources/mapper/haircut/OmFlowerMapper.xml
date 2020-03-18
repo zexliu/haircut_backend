@@ -4,14 +4,42 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmFlower">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="shop_id" property="shopId" />
-        <result column="order_id" property="orderId" />
-        <result column="count" property="count" />
-        <result column="type" property="type" />
-        <result column="description" property="description" />
-        <result column="create_at" property="createAt" />
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="count" property="count"/>
+        <result column="type" property="type"/>
+        <result column="description" property="description"/>
+        <result column="create_at" property="createAt"/>
     </resultMap>
+    <select id="flowerVOPage" resultType="com.zex.cloud.haircut.vo.OmFlowerVo">
+        select omf.id,
+        omf.user_id,
+        omf.shop_id,
+        omf.order_id,
+        omf.count,
+        omf.type,
+        omf.description,
+        omf.create_at,
+        su.nickname user_nickname,
+        ss.name shop_name
+        from om_flower omf
+        left join sy_user su on omf.user_id = su.id
+        left join sm_shop ss on ss.id = omf.shop_id
+        <where>
+            <if test="shopId != null">
+                and omf.shop_id = #{shopId}
+            </if>
+            <if test="userId != null">
+                and omf.user_id = #{userId}
+            </if>
+            <if test="type != null">
+                and omf.type = type
+            </if>
+            <if test="startAt != null">and omf.create_at >= #{startAt}</if>
+            <if test="endAt != null">and omf.create_at <![CDATA[<=]]> #{startAt}</if>
+        </where>
+    </select>
 
 </mapper>

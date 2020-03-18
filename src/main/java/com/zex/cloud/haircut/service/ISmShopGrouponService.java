@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.OmOrderParam;
 import com.zex.cloud.haircut.params.SmShopGrouponParam;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -23,4 +25,9 @@ public interface ISmShopGrouponService extends IService<SmShopGroupon> {
 
     String validOrder(OmOrderParam param, Long userId, Long orderId) throws JsonProcessingException;
 
+    void updateGrouponsByStylist(Long stylistId, Long shopId, List<SmShopGrouponParam> groupons);
+
+    void removeByStylistId(Long stylistId);
+
+    List<SmShopGroupon> getByStylistId(Long stylistId);
 }

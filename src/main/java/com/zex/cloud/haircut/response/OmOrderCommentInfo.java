@@ -19,4 +19,6 @@ public class OmOrderCommentInfo extends OmComment  {
     private Integer hygieneScore;
 
     private Integer serviceScore;
+
+    private String stylistName;
 }

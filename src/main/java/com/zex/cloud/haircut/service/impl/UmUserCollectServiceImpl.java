@@ -41,4 +41,20 @@ public class UmUserCollectServiceImpl extends ServiceImpl<UmUserCollectMapper, U
         remove(new LambdaQueryWrapper<UmUserCollect>().eq(UmUserCollect::getTargetId,id)
         .eq(UmUserCollect::getTargetType,collectType).eq(UmUserCollect::getUserId,userId));
     }
+
+    @Override
+    public int shopCount(CollectType collectType, Long targetId) {
+        return count(new LambdaQueryWrapper<UmUserCollect>().eq(UmUserCollect::getTargetType,collectType).eq(UmUserCollect::getTargetId,targetId));
+    }
+
+    @Override
+    public boolean isCollect(Long userId, Long targetId, CollectType collectType) {
+        int count  = count(new LambdaQueryWrapper<UmUserCollect>().eq(UmUserCollect::getUserId,userId)
+        .eq(UmUserCollect::getTargetType,collectType)
+        .eq(UmUserCollect::getTargetId,targetId));
+        if (count == 0){
+            return false;
+        }
+        return true;
+    }
 }

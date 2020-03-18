@@ -1,6 +1,8 @@
 package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zex.cloud.haircut.entity.OmComment;
@@ -25,6 +27,7 @@ import com.zex.cloud.haircut.service.IOmShopTransactionService;
 import com.zex.cloud.haircut.service.IOmUserRewardService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.service.IOmUserTransactionService;
+import com.zex.cloud.haircut.vo.OmUserReWardVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -132,6 +135,11 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
         }
 
 
+    }
+
+    @Override
+    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long currentUserId,Long userId) {
+        return baseMapper.queryUserRewardVO(convert,rewardStatus,publishStatus,currentUserId,userId);
     }
 
     private OmUserReward getByOrderId(Long id) {

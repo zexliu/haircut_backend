@@ -14,5 +14,14 @@
         <result column="service_score" property="serviceScore" />
         <result column="delete_status" property="deleteStatus" />
     </resultMap>
+    <select id="getRate" resultType="java.lang.Float">
+        SELECT  good / total  FROM (
+                                    (SELECT COUNT(*)  good  FROM om_comment_score WHERE score >= 4 and shop_id = #{shopId} ) AS a
+                                     , (SELECT COUNT(*) total  FROM om_comment_score WHERE shop_id = #{shopId} ) AS b
+                                   )
+    </select>
+    <select id="getScore" resultType="java.lang.Float">
+        select  avg(score) from om_comment_score where shop_id = #{id}
+    </select>
 
 </mapper>

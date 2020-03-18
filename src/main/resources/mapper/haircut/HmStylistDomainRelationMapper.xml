@@ -8,5 +8,10 @@
         <result column="domain_id" property="domainId" />
         <result column="stylist_id" property="stylistId" />
     </resultMap>
+    <select id="getByStylistId" resultType="com.zex.cloud.haircut.entity.HmDomain">
+        select  hd.id, name, description, icon, create_at, seq from  hm_domain hd
+        left join hm_stylist_domain_relation hsdr on hd.id = hsdr.domain_id
+        where hsdr.stylist_id = #{stylistId}
+    </select>
 
 </mapper>

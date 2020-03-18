@@ -2,12 +2,13 @@ package com.zex.cloud.haircut.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -15,11 +16,10 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Zex
- * @since 2020-03-05
+ * @since 2020-03-16
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @ApiModel(value="SyUserExtension对象", description="")
 public class SyUserExtension implements Serializable {
 
@@ -31,6 +31,22 @@ public class SyUserExtension implements Serializable {
     private String unionId;
 
     private Long userId;
+
+    private LocalDateTime birthDay;
+
+    private String job;
+
+    private String education;
+
+    private String face;
+
+    private String hairHeight;
+
+    private String hairQuality;
+
+    private String hairStyle;
+
+    private String idol;
 
 
 }

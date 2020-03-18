@@ -9,4 +9,5 @@ public class Constants {
     public static final Long USER_ROLE_ID = 1235551571549786114L;
 
 
+    public static final Long WASH_CUT_BLOW_ID = 1237022834038325250L;
 }

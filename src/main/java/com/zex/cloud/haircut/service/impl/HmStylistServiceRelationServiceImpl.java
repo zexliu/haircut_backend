@@ -65,5 +65,16 @@ public class HmStylistServiceRelationServiceImpl extends ServiceImpl<HmStylistSe
         }
     }
 
+    @Override
+    public List<HmStylistServiceRelation> getByStylistId(Long stylistId) {
+        return list(new LambdaQueryWrapper<HmStylistServiceRelation>()
+                .eq(HmStylistServiceRelation::getStylistId,stylistId));
+    }
+
+    @Override
+    public BigDecimal getMinAmount(Long washCutBlowId, Long shopId, Long stylistId) {
+        return baseMapper.getMinAmount(washCutBlowId,shopId,stylistId);
+    }
+
 
 }

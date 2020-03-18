@@ -40,6 +40,11 @@ public class SmShopServiceRelationServiceImpl extends ServiceImpl<SmShopServiceR
         saveBatch(relations);
     }
 
+    @Override
+    public List<Long> getServiceIdsByShopId(Long shopId) {
+        return baseMapper.getServiceIdsByShopId(shopId);
+    }
+
     private void removeByShopId(Long shopId) {
         remove(new LambdaQueryWrapper<SmShopServiceRelation>().eq(SmShopServiceRelation::getShopId,shopId));
 

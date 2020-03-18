@@ -66,5 +66,9 @@ public class SmShopApply implements Serializable {
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long userId;
 
+    private String identityCardFront;
+    private String identityCardBack;
+    private String socialCreditCode;
+
 
 }

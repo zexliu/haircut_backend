@@ -8,5 +8,8 @@
         <result column="shop_id" property="shopId" />
         <result column="title_id" property="titleId" />
     </resultMap>
+    <select id="getServiceIdsByShopId" resultType="java.lang.Long">
+        select  title_id from   sm_shop_service_relation where  shop_id = #{shopId}
+    </select>
 
 </mapper>

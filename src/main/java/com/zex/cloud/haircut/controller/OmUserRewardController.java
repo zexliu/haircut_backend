@@ -11,6 +11,7 @@ import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.IOmUserRewardService;
+import com.zex.cloud.haircut.vo.OmUserReWardVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,8 @@ public class OmUserRewardController {
 
     @GetMapping
     @ApiOperation("获取悬赏动态列表")
-    public IPage<OmUserReward> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus){
-        return iOmUserRewardService.page(pageable.convert(),new LambdaQueryWrapper<OmUserReward>()
-        .eq(rewardStatus != null , OmUserReward::getRewardStatus , rewardStatus)
-        .eq(publishStatus != null, OmUserReward::getPublishStatus,publishStatus));
+    public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long userId){
+        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),userId);
     }
 
     @ApiOperation("悬赏")
@@ -46,6 +45,7 @@ public class OmUserRewardController {
          iOmUserRewardService.rewardStatus(id,commentId, RequestHolder.user().getId());
         return SimpleResp.SUCCESS;
     }
+
 
 
 }

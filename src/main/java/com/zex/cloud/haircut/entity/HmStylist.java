@@ -8,6 +8,7 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
+import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class HmStylist implements Serializable {
 
     private String nickname;
 
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long jobTitleId;
 
     private String introduction;
@@ -45,8 +47,8 @@ public class HmStylist implements Serializable {
 
     private String htmlIntro;
 
-    private Integer workStatus;
-
+    private ShopWorkStatus workStatus;
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long shopId;
 
     @TableLogic
@@ -55,5 +57,7 @@ public class HmStylist implements Serializable {
     private LocalDateTime createAt;
 
     private Integer seq;
+
+    private Integer workAge;
 
 }

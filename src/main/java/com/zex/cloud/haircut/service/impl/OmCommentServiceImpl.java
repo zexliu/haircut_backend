@@ -1,7 +1,6 @@
 package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.entity.OmComment;
@@ -11,7 +10,6 @@ import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.enums.CommentFromType;
 import com.zex.cloud.haircut.enums.CommentStarLevel;
 import com.zex.cloud.haircut.enums.CommentTopicType;
-import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.OmCommentMapper;
 import com.zex.cloud.haircut.params.CommentReplyParam;
@@ -23,6 +21,7 @@ import com.zex.cloud.haircut.service.IOmCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.service.IOmShopOrderService;
 import com.zex.cloud.haircut.service.ISmShopService;
+import com.zex.cloud.haircut.vo.ScoreCountVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,7 +127,7 @@ public class OmCommentServiceImpl extends ServiceImpl<OmCommentMapper, OmComment
     }
 
     @Override
-    public IPage<OmOrderCommentInfo> orderCommentPage(Page<OmOrderCommentInfo> page, Long shopId, Long orderId, CommentStarLevel starLevel) {
+    public IPage<OmOrderCommentInfo> orderCommentPage(Page<OmOrderCommentInfo> page, Long shopId, Long stylistId,Long orderId, CommentStarLevel starLevel) {
         String levelSql = null;
         if (starLevel != null){
             if (starLevel == CommentStarLevel.GOOD){
@@ -139,8 +138,14 @@ public class OmCommentServiceImpl extends ServiceImpl<OmCommentMapper, OmComment
                 levelSql = "oc.score < 3";
             }
         }
-        return baseMapper.orderCommentPage(page,shopId,orderId,levelSql);
+        return baseMapper.orderCommentPage(page,shopId,stylistId,orderId,levelSql);
     }
+
+    @Override
+    public ScoreCountVO getScoreCountVo(Long shopId, Long stylistId) {
+        return baseMapper.shopScoreCountVO(shopId,stylistId);
+    }
+
 
 
 }

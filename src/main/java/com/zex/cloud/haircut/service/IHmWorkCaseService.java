@@ -4,6 +4,8 @@ import com.zex.cloud.haircut.entity.HmWorkCase;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.HmWorkCaseParam;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -22,4 +24,7 @@ public interface IHmWorkCaseService extends IService<HmWorkCase> {
 
     void delete(Long id, Long shopId);
 
+    List<HmWorkCase> getByStylistId(Long id);
+
+    void updateWorkCases(Long id, Long shopId, List<HmWorkCaseParam> workCases);
 }

@@ -13,6 +13,10 @@ import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IHmStylistService;
 import com.zex.cloud.haircut.service.ISmShopTitleService;
+import com.zex.cloud.haircut.vo.HmStylistCollectVO;
+import com.zex.cloud.haircut.vo.HmStylistDetail;
+import com.zex.cloud.haircut.vo.HmStylistDetailVO;
+import com.zex.cloud.haircut.vo.HmStylistVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -48,11 +52,25 @@ public class HmStylistController {
         .orderByDesc(HmStylist::getSeq));
     }
 
+    @GetMapping("/client")
+    @ApiOperation("客户端搜索设计师")
+    public IPage<HmStylistCollectVO> list(Pageable pageable, String keywords,@RequestParam Double latitude, @RequestParam Double longitude){
+        return iHmStylistService.list(pageable.convert(),keywords,latitude,longitude);
+    }
+
     @GetMapping("/{id}")
     @ApiOperation("通过ID查询")
-    public HmStylist getById(@PathVariable Long id){
-        return iHmStylistService.getById(id);
+    public HmStylistDetail getById(@PathVariable Long id){
+        return iHmStylistService.getDetailById(id);
     }
+
+
+    @GetMapping("/details/{id}")
+    @ApiOperation("客户端获取发型师详情")
+    public HmStylistDetailVO detail(@PathVariable Long id,@RequestParam Double latitude,@RequestParam Double longitude){
+        return iHmStylistService.detailVO(id,latitude,longitude,RequestHolder.user().getId());
+    }
+
     @PostMapping
     @ApiOperation("新增")
     public HmStylist save(@RequestBody HmStylistParam param){
@@ -73,6 +91,11 @@ public class HmStylistController {
     }
 
 
-
+    @GetMapping("/collect")
+    @ApiOperation("获取收藏的设计师")
+    public IPage<HmStylistCollectVO>  collectStylist(Pageable pageable,@RequestParam Double latitude ,
+                                                     @RequestParam Double longitude){
+       return iHmStylistService.getCollectStylist(pageable.convert(),RequestHolder.user().getId(),latitude,longitude);
+    }
 
 }

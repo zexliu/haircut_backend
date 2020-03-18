@@ -12,5 +12,31 @@
         <result column="incr_status" property="incrStatus" />
         <result column="create_at" property="createAt" />
     </resultMap>
+    <select id="balance" resultType="java.math.BigDecimal">
+        select SUM(inc_amount) - SUM(sub_amount) amount
+        from (
+        select SUM(amount) inc_amount, 0 sub_amount
+        from om_shop_transaction
+        <where>
+            incr_status is true
+            <if test="shopId != null">and shop_id = #{shopId}</if>
+            <if test="startAt != null">and create_at >= #{startAt}</if>
+            <if test="endAt != null">and create_at <![CDATA[<=]]> #{startAt}</if>
+            <if test="incrStatus != null">and incr_status = #{incrStatus}</if>
+            <if test="type != null">and type = #{type}</if>
+        </where>
+        union all
+        select 0 inc_amount, SUM(amount) sub_amount
+        from om_shop_transaction
+        <where>
+            incr_status is false
+            <if test="shopId != null">and shop_id = #{shopId}</if>
+            <if test="startAt != null">and create_at >= #{startAt}</if>
+            <if test="endAt != null">and create_at <![CDATA[<=]]> #{startAt}</if>
+            <if test="incrStatus != null">and incr_status = #{incrStatus}</if>
+            <if test="type != null">and type = #{type}</if>
+        </where>
+        )as t
 
+    </select>
 </mapper>

@@ -9,6 +9,7 @@ import com.zex.cloud.haircut.params.CommentReplyParam;
 import com.zex.cloud.haircut.params.OmCommentOrderParam;
 import com.zex.cloud.haircut.response.OmOrderCommentInfo;
 import com.zex.cloud.haircut.security.RequestUser;
+import com.zex.cloud.haircut.vo.ScoreCountVO;
 
 /**
  * <p>
@@ -26,6 +27,7 @@ public interface IOmCommentService extends IService<OmComment> {
 
     void delete(Long id);
 
-    IPage<OmOrderCommentInfo> orderCommentPage(Page<OmOrderCommentInfo> page, Long shopId, Long orderId, CommentStarLevel starLevel);
+    IPage<OmOrderCommentInfo> orderCommentPage(Page<OmOrderCommentInfo> page, Long shopId,Long stylistId, Long orderId, CommentStarLevel starLevel);
 
+    ScoreCountVO getScoreCountVo(Long shopId, Long stylistId);
 }

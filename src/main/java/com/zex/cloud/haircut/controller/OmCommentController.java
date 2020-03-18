@@ -14,6 +14,7 @@ import com.zex.cloud.haircut.response.OmOrderCommentInfo;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IOmCommentService;
+import com.zex.cloud.haircut.vo.ScoreCountVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,29 @@ public class OmCommentController {
 
     @ApiOperation("获取订单评论列表")
     @GetMapping("/order")
-    public IPage<OmOrderCommentInfo> orderPage(Pageable pageable, Long shopId, Long orderId, CommentStarLevel starLevel) {
-        return  iOmCommentService.orderCommentPage(pageable.convert(),shopId,orderId,starLevel);
+    public IPage<OmOrderCommentInfo> orderPage(Pageable pageable, Long shopId, Long stylistId, Long orderId, CommentStarLevel starLevel) {
+        return  iOmCommentService.orderCommentPage(pageable.convert(),shopId,stylistId,orderId,starLevel);
     }
 
+    @ApiOperation("获取当前店铺 评分和评论总数")
+    @GetMapping("/score")
+    public ScoreCountVO shopScoreCountVO(){
+        return iOmCommentService.getScoreCountVo(RequestHolder.user().getShopId(),null);
+    }
+
+
+    @ApiOperation("客户端获取评论和评分数")
+    @GetMapping("/client/score")
+    public ScoreCountVO shopScoreCountVO(Long shopId, Long stylistId){
+        return iOmCommentService.getScoreCountVo(shopId,stylistId);
+    }
+
+    @ApiOperation("获取当前店铺评分列表")
+    @GetMapping("/order/current")
+    public IPage<OmOrderCommentInfo> currentOrderPage(Pageable pageable,Long stylistId, Long orderId,CommentStarLevel starLevel) {
+        Long shopId = RequestHolder.user().getShopId();
+        return  orderPage(pageable, shopId,stylistId, orderId, starLevel);
+    }
 
     @ApiOperation("获取订单评论列表")
     @GetMapping
@@ -58,6 +78,11 @@ public class OmCommentController {
         .eq(toId != null, OmComment::getToId,toId)
         .orderByDesc(OmComment::getCreateAt));
     }
+
+
+
+
+
 
 
 

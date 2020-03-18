@@ -29,13 +29,13 @@
     <select id="list" resultMap="BaseResultMap">
         select id, name, logo, cover_image, introduction, address, province_code, city_code, district_code,
         business_license, leader_name, leader_mobile, enable, longitude, latitude, create_at, score, html_info,
-        work_start_at, work_end_at, work_status
+        work_start_at, work_end_at, work_status ,half_status
         from sm_shop
         <where>
             1=1
             <if test="keywords != null">
-            and (`name` like  concat('%',#{keywords},'%')
-                or leader_mobile like  concat('%',#{keywords},'%'))
+                and (`name` like concat('%',#{keywords},'%')
+                or leader_mobile like concat('%',#{keywords},'%'))
             </if>
             <if test="workStatus != null">
                 and work_status = #{workStatus}
@@ -50,12 +50,15 @@
                 and district_code = #{districtCode}
             </if>
             <if test="longitude != null and latitude != null">
-                order by (st_distance (point (longitude,latitude),point (#{longitude},#{latitude}))  /**111195/1000 )as juli*/
+                order by (st_distance (point (longitude,latitude),point (#{longitude},#{latitude})) /**111195/1000 )as
+                juli*/
             </if>
         </where>
     </select>
     <select id="getShopIdByUserId" resultType="java.lang.Long">
-        select  id from  sm_shop where  user_id  = #{userId}
+        select id
+        from sm_shop
+        where user_id = #{userId}
     </select>
     <select id="brokenLines" resultType="com.zex.cloud.haircut.dto.BrokenLinePoint">
         select count(*) amount, date_format(create_at,'%Y-%m-%d') `date`
@@ -73,7 +76,7 @@
         group by `date`
     </select>
     <select id="count" resultType="java.lang.Integer">
-        select  count(*) from sm_shop
+        select count(*) from sm_shop
         <where>
             1 = 1
             <if test="startAt != null">
@@ -84,6 +87,54 @@
             </if>
 
         </where>
+    </select>
+    <resultMap id="homeVO" type="com.zex.cloud.haircut.vo.SmHomeShopVO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="logo" property="logo"/>
+        <result column="distance" property="distance"/>
+        <result column="address" property="address"/>
+        <result column="work_status" property="workStatus"/>
+    </resultMap>
+    <select id="homeVo" resultMap="homeVO">
+        select id,
+        name,
+        logo,
+        address,
+        work_status ,
+        st_distance (point (longitude,latitude),point (#{longitude},#{latitude})) * 111195 distance
+        from sm_shop
+        <where>
+            enable
+            <if test="keywords != null">
+                and (`name` like concat('%',#{keywords},'%')
+                or leader_mobile like concat('%',#{keywords},'%'))
+            </if>
+            <if test="workStatus != null">
+                and work_status = #{workStatus}
+            </if>
+            <if test="provinceCode != null">
+                and province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                and city_code = #{cityCode}
+            </if>
+            <if test="districtCode != null">
+                and district_code = #{districtCode}
+            </if>
+            order by score desc ,distance asc
+        </where>
+    </select>
+    <select id="getCollectShops" resultType="com.zex.cloud.haircut.vo.SmHomeShopVO">
+        select ss.id,
+               ss.name,
+               ss.logo,
+               ss.address,
+               ss.work_status,
+               st_distance(point(longitude, latitude), point(#{longitude}, #{latitude})) * 111195 distance
+        from sm_shop ss
+                 left join um_user_collect uuc on ss.id = uuc.target_id
+        where enable  and uuc.user_id = #{userId}
     </select>
 
 

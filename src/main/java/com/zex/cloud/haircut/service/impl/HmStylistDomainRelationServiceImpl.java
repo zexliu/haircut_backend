@@ -1,6 +1,7 @@
 package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zex.cloud.haircut.entity.HmDomain;
 import com.zex.cloud.haircut.entity.HmStylistDomainRelation;
 import com.zex.cloud.haircut.mapper.HmStylistDomainRelationMapper;
 import com.zex.cloud.haircut.service.IHmStylistDomainRelationService;
@@ -47,5 +48,10 @@ public class HmStylistDomainRelationServiceImpl extends ServiceImpl<HmStylistDom
             }).collect(Collectors.toList());
             saveBatch(list);
         }
+    }
+
+    @Override
+    public List<HmDomain> getByStylistId(Long id) {
+        return baseMapper.getByStylistId(id);
     }
 }

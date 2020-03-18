@@ -3,12 +3,11 @@ package com.zex.cloud.haircut.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.OmShopTransaction;
-import com.zex.cloud.haircut.entity.OmUserTransaction;
 import com.zex.cloud.haircut.enums.ShopTransactionType;
-import com.zex.cloud.haircut.enums.UserTransactionType;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IOmShopTransactionService;
+import com.zex.cloud.haircut.vo.OmShopTransactionVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,5 +63,11 @@ public class OmShopTransactionController {
         return iOmShopTransactionService.balance(startAt,endAt,incrStatus,transactionType,shopId);
     }
 
+
+    @ApiOperation("获取当日成交金额 总金额 可提现金额")
+    @GetMapping("/statistics/current")
+    public OmShopTransactionVO currentShop(){
+        return iOmShopTransactionService.currentShop(RequestHolder.user().getShopId());
+    }
 
 }

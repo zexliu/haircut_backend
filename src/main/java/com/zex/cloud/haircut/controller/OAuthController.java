@@ -48,7 +48,7 @@ public class OAuthController {
     public String token() {
         String authenticationHeader = request.getHeader("Authorization");
         String accessToken = "";
-        if (StringUtils.isNotBlank(authenticationHeader) && StringUtils.startsWith(authenticationHeader,"Bearer ")){
+        if (StringUtils.isNotBlank(authenticationHeader) && StringUtils.startsWith(authenticationHeader, "Bearer ")) {
             accessToken = authenticationHeader.substring(7);
         }
         ioAuthService.cancelAuth(accessToken);

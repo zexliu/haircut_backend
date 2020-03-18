@@ -4,6 +4,7 @@ import com.zex.cloud.haircut.dto.BarPoint;
 import com.zex.cloud.haircut.dto.PiePoint;
 import com.zex.cloud.haircut.service.IStatisticsService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,7 @@ public class StatisticsController {
     public List<BarPoint> bar(LocalDate startAt, LocalDate endAt) {
         return iStatisticsService.bar(startAt,endAt);
     }
+
+
 
 }

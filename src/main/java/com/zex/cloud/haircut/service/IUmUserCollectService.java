@@ -17,4 +17,9 @@ public interface IUmUserCollectService extends IService<UmUserCollect> {
     void collect(Long id, CollectType collectType, Long userId);
 
     void delete(Long id, CollectType collectType, Long userId);
+
+    int shopCount(CollectType collectType, Long targetId);
+
+    boolean isCollect(Long userId, Long targetId, CollectType collectType);
+
 }

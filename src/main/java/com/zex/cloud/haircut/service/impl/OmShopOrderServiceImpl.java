@@ -1,10 +1,12 @@
 package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zex.cloud.haircut.config.MqConfig;
 import com.zex.cloud.haircut.entity.OmShopOrder;
+import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.enums.ShopOrderStatus;
 import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
@@ -19,6 +21,7 @@ import com.zex.cloud.haircut.response.ShopOrderBody;
 import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.util.DecimalUtils;
+import com.zex.cloud.haircut.vo.OmShopOrderVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -84,7 +87,10 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
             }
             if (service.getIsHalf() != null && service.getIsHalf()) {
                 //效验是否在半价时间内
-                iSmHalfTimeService.valid(body.getShopId(), body.getAppointmentAt());
+                boolean valid = iSmHalfTimeService.valid(body.getShopId(), body.getAppointmentAt());
+                if (!valid){
+                    throw new ServerException("不在半价时间内");
+                }
                 realPrice = DecimalUtils.divide(realPrice, new BigDecimal("2"));
             }
             if (DecimalUtils.ne(realPrice, service.getRealAmount())) {
@@ -223,6 +229,25 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
         shopOrder.setStatus(ShopOrderStatus.FINISH);
         updateById(shopOrder);
         return shopOrder;
+    }
+
+    @Override
+    public IPage<OmShopOrderVO> shopOrderVO(IPage<OmShopOrderVO> page, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt, Boolean useStatus, Boolean payStatus) {
+        return baseMapper.shopOrderVO(page,keywords,shopId,stylistId,userId,status,genderType,startAt,endAt,useStatus,payStatus);
+    }
+
+    @Override
+    public int getWaitCount(Long id, LocalDateTime now) {
+        return count(new LambdaQueryWrapper<OmShopOrder>().eq(OmShopOrder::getStylistId,id)
+        .eq(OmShopOrder::getStatus,ShopOrderStatus.PENDING_USE)
+        .ge(OmShopOrder::getAppointmentAt,now)
+        .le(OmShopOrder::getAppointmentAt,now.plusHours(6)));
+    }
+
+    @Override
+    public int stylistOrderCount(Long id) {
+        return count(new LambdaQueryWrapper<OmShopOrder>().eq(OmShopOrder::getStylistId,id)
+        .ge(OmShopOrder::getStatus,ShopOrderStatus.PENDING_USE));
     }
 
     private OmShopOrder getByOrderId(Long id) {

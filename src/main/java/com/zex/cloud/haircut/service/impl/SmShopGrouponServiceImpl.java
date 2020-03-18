@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zex.cloud.haircut.dto.OrderGrouponDTO;
@@ -16,11 +17,16 @@ import com.zex.cloud.haircut.service.ISmShopGrouponService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.service.ISmUserCouponService;
 import com.zex.cloud.haircut.util.DecimalUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -82,9 +88,10 @@ public class SmShopGrouponServiceImpl extends ServiceImpl<SmShopGrouponMapper, S
         if (shopGroupon == null) {
             throw new NotFoundException("团购信息不存在");
         }
-        BigDecimal onePrice = iHmStylistServiceRelationService.getPriceByServiceIdStylistIdAndSex(shopGroupon.getServiceId(), body.getStylistId(), body.getGenderType());
-        BigDecimal originPrice = DecimalUtils.multiply(onePrice, new BigDecimal(shopGroupon.getCount()));
-        BigDecimal realAmount = DecimalUtils.multiply(originPrice, shopGroupon.getDiscount());
+//        BigDecimal onePrice = iHmStylistServiceRelationService.getPriceByServiceIdStylistIdAndSex(shopGroupon.getServiceId(), body.getStylistId(), body.getGenderType());
+//        BigDecimal originPrice = DecimalUtils.multiply(onePrice, new BigDecimal(shopGroupon.getCount()));
+//        BigDecimal realAmount = DecimalUtils.multiply(originPrice, shopGroupon.getDiscount());
+        BigDecimal realAmount = shopGroupon.getAmount();
 
         if (body.getCouponId() != null) {
             //使用优惠券并验证优惠金额
@@ -144,5 +151,32 @@ public class SmShopGrouponServiceImpl extends ServiceImpl<SmShopGrouponMapper, S
 //        dto.setShopId(body.getShopId());
 //        dto.setStylistId(body.getStylistId());
 //        return objectMapper.writeValueAsString(dto);
+    }
+
+    @Override
+    public void updateGrouponsByStylist(Long stylistId, Long shopId, List<SmShopGrouponParam> groupons) {
+        remove(new LambdaQueryWrapper<SmShopGroupon>()
+                .eq(SmShopGroupon::getStylistId,stylistId)
+                .eq(SmShopGroupon::getShopId,shopId));
+        if (CollectionUtils.isNotEmpty(groupons)){
+            List<SmShopGroupon> grouponList = groupons.stream().flatMap((Function<SmShopGrouponParam, Stream<SmShopGroupon>>) smShopGrouponParam -> {
+                SmShopGroupon groupon = new SmShopGroupon();
+                BeanUtils.copyProperties(smShopGrouponParam, groupon);
+                groupon.setShopId(shopId);
+                groupon.setStylistId(stylistId);
+                return Stream.of(groupon);
+            }).collect(Collectors.toList());
+            saveBatch(grouponList);
+        }
+    }
+
+    @Override
+    public void removeByStylistId(Long stylistId) {
+        remove(new LambdaQueryWrapper<SmShopGroupon>().eq(SmShopGroupon::getStylistId,stylistId));
+    }
+
+    @Override
+    public List<SmShopGroupon> getByStylistId(Long stylistId) {
+        return list(new LambdaQueryWrapper<SmShopGroupon>().eq(SmShopGroupon::getStylistId,stylistId));
     }
 }

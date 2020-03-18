@@ -29,7 +29,7 @@ public class JacksonConfiguration {
         SimpleModule simpleModule = new SimpleModule();
         objectMapper
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false) //反序列化的时候如果多了其他属性,不抛出异常
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+//                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false) //如果是空对象的时候,不抛异常
                 .registerModule(simpleModule)
                 .registerModule(new JavaTimeModule()

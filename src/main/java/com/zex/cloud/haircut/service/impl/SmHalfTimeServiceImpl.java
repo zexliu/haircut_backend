@@ -2,15 +2,21 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.SmHalfTime;
+import com.zex.cloud.haircut.entity.SmShop;
+import com.zex.cloud.haircut.enums.WeekDay;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.SmHalfTimeMapper;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.service.ISmHalfTimeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zex.cloud.haircut.service.ISmShopService;
 import com.zex.cloud.haircut.util.DateTimeUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -29,34 +35,59 @@ import java.util.stream.Stream;
 @Service
 public class SmHalfTimeServiceImpl extends ServiceImpl<SmHalfTimeMapper, SmHalfTime> implements ISmHalfTimeService {
 
-    @Override
-    public void updateRelations(Long shopId, List<SmHalfTimeParam> params) {
-        remove(new LambdaQueryWrapper<SmHalfTime>().eq(SmHalfTime::getShopId, shopId));
-        if (CollectionUtils.isNotEmpty(params)) {
-            List<SmHalfTime> list = params.stream()
-                    .flatMap((Function<SmHalfTimeParam, Stream<SmHalfTime>>) smHalfTimeParam -> {
-                        SmHalfTime time = new SmHalfTime();
-                        time.setShopId(shopId);
-                        time.setStartAt(smHalfTimeParam.getStartAt());
-                        time.setEndAt(smHalfTimeParam.getEndAt());
-                        time.setWeekDay(smHalfTimeParam.getWeekDay());
-                        return Stream.of(time);
-                    }).collect(Collectors.toList());
-            saveBatch(list);
-        }
-    }
+    @Autowired
+    private ISmShopService iSmShopService;
+//    @Override
+//    public void updateRelations(Long shopId, List<SmHalfTimeParam> params) {
+//        remove(new LambdaQueryWrapper<SmHalfTime>().eq(SmHalfTime::getShopId, shopId));
+//        if (CollectionUtils.isNotEmpty(params)) {
+//            List<SmHalfTime> list = params.stream()
+//                    .flatMap((Function<SmHalfTimeParam, Stream<SmHalfTime>>) smHalfTimeParam -> {
+//                        SmHalfTime time = new SmHalfTime();
+//                        time.setShopId(shopId);
+//                        time.setStartAt(smHalfTimeParam.getStartAt());
+//                        time.setEndAt(smHalfTimeParam.getEndAt());
+//                        time.setWeekDay(smHalfTimeParam.getWeekDay());
+//                        return Stream.of(time);
+//                    }).collect(Collectors.toList());
+//            saveBatch(list);
+//        }
+//    }
 
     @Override
-    public void valid(Long shopId, LocalDateTime appointmentAt) {
+    public boolean valid(Long shopId, LocalDateTime appointmentAt) {
+        SmShop smShop  = iSmShopService.getById(shopId);
+        if (smShop == null){
+            return false;
+        }
+        if (smShop.getHalfStatus() == null || !smShop.getHalfStatus()){
+            return false;
+        }
         LocalTime localTime = DateTimeUtils.localDateTimeToLocalTime(appointmentAt);
        int count =  count(new LambdaQueryWrapper<SmHalfTime>().eq(SmHalfTime::getShopId, shopId)
-                .eq(SmHalfTime::getWeekDay, appointmentAt.getDayOfWeek())
+                .eq(SmHalfTime::getWeekDay, WeekDay.adapt(appointmentAt.getDayOfWeek()))
                 .le(SmHalfTime::getStartAt, localTime)
                 .ge(SmHalfTime::getEndAt, localTime));
-       if (count == 0){
-           throw new NotFoundException("不在半价时间内");
-       }
-
+       return count > 0;
 
     }
+
+    @Override
+    public SmHalfTime create(SmHalfTimeParam param) {
+        SmHalfTime halfTime = new SmHalfTime();
+        BeanUtils.copyProperties(param,halfTime);
+        save(halfTime);
+        return halfTime;
+    }
+
+    @Override
+    public SmHalfTime update(Long id, SmHalfTimeParam param) {
+        SmHalfTime halfTime = new SmHalfTime();
+        BeanUtils.copyProperties(param,halfTime);
+        halfTime.setId(id);
+        updateById(halfTime);
+        return halfTime;
+    }
+
+
 }

@@ -1,14 +1,15 @@
 package com.zex.cloud.haircut.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.zex.cloud.haircut.entity.OmShopOrder;
+import com.zex.cloud.haircut.enums.ClientType;
 import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.enums.ShopOrderStatus;
 import com.zex.cloud.haircut.params.Pageable;
+import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IOmShopOrderService;
+import com.zex.cloud.haircut.vo.OmShopOrderVO;
 import io.swagger.annotations.Api;
-import org.apache.commons.lang3.StringUtils;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,20 +33,33 @@ public class OmShopOrderController {
     private IOmShopOrderService iOmShopOrderService;
 
     @GetMapping
-    public IPage<OmShopOrder> shopOrder(Pageable pageable, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt) {
-        return iOmShopOrderService.page(pageable.convert(), new LambdaQueryWrapper<OmShopOrder>()
-                .eq(shopId != null, OmShopOrder::getShopId, shopId)
-                .eq(stylistId != null, OmShopOrder::getStylistId, stylistId)
-                .eq(userId != null, OmShopOrder::getUserId, userId)
-                .eq(status != null, OmShopOrder::getStatus, status)
-                .eq(genderType != null, OmShopOrder::getGenderType, genderType)
-                .ge(startAt != null, OmShopOrder::getCreateAt, startAt)
-                .le(endAt != null, OmShopOrder::getCreateAt, endAt)
-                .and(StringUtils.isNotBlank(keywords), i ->
-                        i.like(OmShopOrder::getOrderId, keywords)
-                                .or()
-                                .like(OmShopOrder::getId, keywords))
-        .orderByDesc(OmShopOrder::getCreateAt));
+    public IPage<OmShopOrderVO> shopOrder(Pageable pageable, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt,Boolean useStatus,Boolean payStatus) {
+        return iOmShopOrderService.shopOrderVO(pageable.convert(),keywords,shopId,stylistId,userId,status,genderType,startAt,endAt,useStatus,payStatus);
+//        return iOmShopOrderService.page(pageable.convert(), new LambdaQueryWrapper<OmShopOrder>()
+//                .eq(shopId != null, OmShopOrder::getShopId, shopId)
+//                .eq(stylistId != null, OmShopOrder::getStylistId, stylistId)
+//                .eq(userId != null, OmShopOrder::getUserId, userId)
+//                .eq(status != null, OmShopOrder::getStatus, status)
+//                .eq(genderType != null, OmShopOrder::getGenderType, genderType)
+//                .ge(startAt != null, OmShopOrder::getCreateAt, startAt)
+//                .le(endAt != null, OmShopOrder::getCreateAt, endAt)
+//                .and(StringUtils.isNotBlank(keywords), i ->
+//                        i.like(OmShopOrder::getOrderId, keywords)
+//                                .or()
+//                                .like(OmShopOrder::getId, keywords))
+//        .orderByDesc(OmShopOrder::getCreateAt));
+    }
+
+
+    @GetMapping("/current")
+    @ApiOperation("店铺查询订单")
+    public IPage<OmShopOrderVO> currentShopOrder(Pageable pageable, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt,Boolean useStatus,Boolean payStatus) {
+        if (RequestHolder.user().getClientType() == ClientType.SHOP_CLIENT){
+            shopId = RequestHolder.user().getShopId();
+        }else {
+            userId = RequestHolder.user().getId();
+        }
+        return shopOrder(pageable, keywords, shopId, stylistId, userId, status, genderType, startAt, endAt,useStatus,payStatus);
     }
 
 
