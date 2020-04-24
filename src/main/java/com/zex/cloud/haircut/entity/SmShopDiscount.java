@@ -34,7 +34,7 @@ public class SmShopDiscount implements Serializable {
     private Long id;
 
     private String name;
-
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long serviceId;
     @JsonSerialize(using = JsonLongSerializer.class)
     private Long shopId;

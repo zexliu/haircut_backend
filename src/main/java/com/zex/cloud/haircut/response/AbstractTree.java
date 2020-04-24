@@ -20,6 +20,8 @@ public abstract class AbstractTree<T> {
 
      private List<T> children;
 
+     private Integer level;
+
      public Long getId() {
           return id;
      }
@@ -45,6 +47,13 @@ public abstract class AbstractTree<T> {
      }
 
 
+     public Integer getLevel() {
+          return level;
+     }
+
+     public void setLevel(Integer level) {
+          this.level = level;
+     }
 
      public static <T extends AbstractTree<T>> List<T> listToTree(List<T> list){
           if (CollectionUtils.isEmpty(list)){
@@ -63,6 +72,25 @@ public abstract class AbstractTree<T> {
                return rootList;
           }
      }
+
+     public static <T extends AbstractTree<T>> List<T> listToTree(List<T> list,Integer level){
+          if (CollectionUtils.isEmpty(list)){
+               return Lists.newArrayList();
+          }else {
+               Multimap<Long, T> multimap = ArrayListMultimap.create();
+               List<T> rootList = Lists.newArrayList();
+               for (T module : list) {
+                    if (module.getLevel().equals(level)){ //根目录
+                         rootList.add(module);
+                    }else {
+                         multimap.put(module.getParentId(),module);
+                    }
+               }
+               transformTree(rootList,multimap);
+               return rootList;
+          }
+     }
+
 
      private static <T extends AbstractTree<T>> void transformTree(List<T> rootList, Multimap<Long, T> multimap) {
           //便利当前层级

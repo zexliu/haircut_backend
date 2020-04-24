@@ -21,4 +21,7 @@ import java.time.LocalDateTime;
 public interface IUmPopularizeService extends IService<UmPopularize> {
 
     IPage<UmPopularizeUser> page(Page<UmPopularizeUser> convert, Long targetId, PopularizeType popularizeType, PopularizeStatus popularizeStatus, LocalDateTime startAt, LocalDateTime endAt);
+
+    UmPopularize getByUserId(Long userId);
+
 }

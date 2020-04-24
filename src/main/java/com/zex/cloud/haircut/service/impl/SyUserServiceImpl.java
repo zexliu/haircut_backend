@@ -127,16 +127,19 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         }
         syUser.setLoginAt(LocalDateTime.now());
         updateById(syUser);
-        return adaptRequestUser(syUser, clientType, null);
+        return adaptRequestUser(syUser, clientType, null, null);
     }
 
-    private RequestUser adaptRequestUser(SyUser syUser, ClientType clientType, String sessionKey) {
+    private RequestUser adaptRequestUser(SyUser syUser, ClientType clientType, String sessionKey, WxUserInfoParam userInfo) {
         RequestUser user = new RequestUser();
         user.setAvatar(syUser.getAvatar());
         user.setId(syUser.getId());
         user.setNickname(syUser.getNickname());
         user.setUsername(syUser.getUsername());
         user.setMobile(syUser.getMobile());
+        if (userInfo != null){
+            user.setOpenId(userInfo.getOpenId());
+        }
         List<String> roles = iSyUserRoleRelService.getRequestRoles(user.getId());
         user.setRoles(roles);
         if (CollectionUtils.isNotEmpty(roles) && roles.contains(Constants.SHOP_ADMIN_ROLE_NAME)) {
@@ -214,7 +217,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     @Override
     public RequestUser getRequestUser(Long userId) {
         SyUser syUser = getById(userId);
-        return adaptRequestUser(syUser, null, null);
+        return adaptRequestUser(syUser, null, null, null);
     }
 
     @Override
@@ -277,7 +280,7 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
 
         }
         SyUser syUser = getById(social.getUserId());
-        return adaptRequestUser(syUser, clientType, sessionKey);
+        return adaptRequestUser(syUser, clientType, sessionKey,userInfo);
     }
 
     @Override

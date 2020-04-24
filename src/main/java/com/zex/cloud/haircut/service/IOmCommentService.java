@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.CommentStarLevel;
 import com.zex.cloud.haircut.params.CommentReplyParam;
 import com.zex.cloud.haircut.params.OmCommentOrderParam;
+import com.zex.cloud.haircut.params.OmCommentRewardParam;
 import com.zex.cloud.haircut.response.OmOrderCommentInfo;
 import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.vo.ScoreCountVO;
@@ -30,4 +31,10 @@ public interface IOmCommentService extends IService<OmComment> {
     IPage<OmOrderCommentInfo> orderCommentPage(Page<OmOrderCommentInfo> page, Long shopId,Long stylistId, Long orderId, CommentStarLevel starLevel);
 
     ScoreCountVO getScoreCountVo(Long shopId, Long stylistId);
+
+    OmComment commentReward(Long id, RequestUser user, OmCommentRewardParam param);
+
+    void praise(Long id);
+
+    void unPraise(Long id);
 }

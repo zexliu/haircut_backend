@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zex.cloud.haircut.apis.WxPayApi;
@@ -18,6 +19,7 @@ import com.zex.cloud.haircut.mapper.OmOrderMapper;
 import com.zex.cloud.haircut.message.OrderCreatedMessage;
 import com.zex.cloud.haircut.params.OmOrderParam;
 import com.zex.cloud.haircut.response.*;
+import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,6 +42,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * <p>
@@ -79,6 +82,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
 
     @Autowired
     private IOmUserRewardService iOmUserRewardService;
+
     @Override
     @Transactional
     public OmOrder createOrder(OmOrderParam param, String ip, RequestUser user) throws JsonProcessingException {
@@ -88,8 +92,8 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
             body = iOmShopOrderService.validOrderAndCreate(param, user.getId(), generateId);
         } else if (param.getOrderType() == OrderType.SHOP_GROUPON) {
             body = iSmShopGrouponService.validOrder(param, user.getId(), generateId);
-        }else if (param.getOrderType() == OrderType.USER_REWARD){
-            body = iOmUserRewardService.validOrderAndCreate(param, user,generateId);
+        } else if (param.getOrderType() == OrderType.USER_REWARD) {
+            body = iOmUserRewardService.validOrderAndCreate(param, user, generateId);
         }
         OmOrder omOrder = new OmOrder();
         omOrder.setId(generateId);
@@ -100,6 +104,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
         omOrder.setIpAddress(ip);
         omOrder.setOrderType(param.getOrderType());
         omOrder.setUserId(user.getId());
+        omOrder.setCreateAt(LocalDateTime.now());
         save(omOrder);
         OrderCreatedMessage message = new OrderCreatedMessage();
         message.setOrderId(generateId);
@@ -141,12 +146,11 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
         wxRequest.setTradeType("JSAPI");
         wxRequest.setTimeStart(DateTimeUtils.format(omOrder.getExpireAt(), "yyyyMMddHHmmss"));
         wxRequest.setTimeExpire(DateTimeUtils.format(omOrder.getExpireAt(), "yyyyMMddHHmmss"));
-        wxRequest.setBody(omOrder.getSubject());
+        wxRequest.setBody("test");
         wxRequest.setOutTradeNo(String.valueOf(omOrder.getId()));
-        wxRequest.setTotalFee(DecimalUtils.multiply(omOrder.getAmount(), new BigDecimal("10")).intValue());
+        wxRequest.setTotalFee(DecimalUtils.multiply(omOrder.getAmount(), new BigDecimal("100")).intValue());
         wxRequest.setDetail(omOrder.getBody());
-        // TODO: 2020/2/25 获取OpenId
-        wxRequest.setOpenid("");
+        wxRequest.setOpenid(RequestHolder.user().getOpenId());
 //        wxRequest.setAttach(transactionOrder.getBody());
         wxRequest.setSign(WxPaySignature.sign(MapUtil.buildMap(wxRequest), WxProperties.SIGN_KEY));
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/xml; charset=utf-8"), XmlUtil.toString(wxRequest));
@@ -156,10 +160,10 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
             if (response.isSuccessful()) {
                 WxCreateOrderResponse body = response.body();
                 assert body != null;
-                if (StringUtils.equals(body.getReturnCode(), WxProperties.SUCCESS)) {
+                if (!StringUtils.equals(body.getReturnCode(), WxProperties.SUCCESS)) {
                     throw new ServerException("调用微信失败 returnCode != SUCCESS, returnMsg = " + body.getReturnCode());
                 }
-                if (StringUtils.equals(body.getResultCode(), WxProperties.SUCCESS)) {
+                if (!StringUtils.equals(body.getResultCode(), WxProperties.SUCCESS)) {
                     throw new ServerException("调用微信失败 resultCode != SUCCESS, err_code = " + body.getErrCode() + "   err_code_des =" + body.getErrCodeDes());
                 }
                 WxJsResponse wxJsResponse = new WxJsResponse();
@@ -200,7 +204,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
             iOmFlowerService.onPayHook(omOrder);
         } else if (omOrder.getOrderType() == OrderType.USER_RECHARGE) {
             iOmUserTransactionService.onPayHook(omOrder);
-        }else if (omOrder.getOrderType() == OrderType.USER_REWARD){
+        } else if (omOrder.getOrderType() == OrderType.USER_REWARD) {
             iOmUserRewardService.onPayHook(omOrder);
         }
         omOrder.setStatus(OrderStatus.PAID);
@@ -225,13 +229,13 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
 
     @Override
     @Transactional
-    public void refund(Long id, Long userId) {
+    public void refund(Long id, Long userId, String description) {
 
         OmOrder omOrder = getById(id);
         if (omOrder == null) {
             throw new NotFoundException("订单不存在");
         }
-        if (!omOrder.getUserId().equals(userId)){
+        if (!omOrder.getUserId().equals(userId)) {
             throw new ForbiddenException();
         }
         if (omOrder.getStatus() != OrderStatus.PAID) {
@@ -239,16 +243,16 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
         }
         BigDecimal refundAmount = omOrder.getAmount();
         if (omOrder.getOrderType() == OrderType.SHOP_SERVICE) {
-            iOmShopOrderService.refund(id,userId);
+            iOmShopOrderService.refund(id, userId);
         } else if (omOrder.getOrderType() == OrderType.SHOP_GROUPON) {
-            refundAmount =  iOmUserGrouponService.refund(id,userId);
-        }else {
+            refundAmount = iOmUserGrouponService.refund(id, userId);
+        } else {
             throw new NotSupportException("暂不支持该类型的订单退款");
         }
 
         //创建退款订单
-        Long refundId = iOmRefundOrderService.create(omOrder.getId(), userId, refundAmount, "用户退款", omOrder.getChannelType());
-        if (omOrder.getChannelType() == PayChannelType.WEI_XIN){//退款到微信
+        Long refundId = iOmRefundOrderService.create(omOrder.getId(), userId, refundAmount, description, omOrder.getChannelType());
+        if (omOrder.getChannelType() == PayChannelType.WEI_XIN) {//退款到微信
             WxRefundRequest wxRequest = new WxRefundRequest();
             wxRequest.setAppid(WxProperties.APP_ID);
             wxRequest.setMchId(WxProperties.PARTNER_ID);
@@ -257,8 +261,8 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
             wxRequest.setNonceStr(RandomUtil.getRandomStr());
             wxRequest.setOutTradeNo(String.valueOf(omOrder.getId())); //系统订单号
             wxRequest.setOutRefundNo(String.valueOf(refundId));  //退款单号
-            wxRequest.setTotalFee(String.valueOf(DecimalUtils.multiply(omOrder.getAmount(), new BigDecimal("10")).intValue()));     //订单金额
-            wxRequest.setRefundFee(String.valueOf(DecimalUtils.multiply(refundAmount, new BigDecimal("10")).intValue()));   //退款金额
+            wxRequest.setTotalFee(String.valueOf(DecimalUtils.multiply(omOrder.getAmount(), new BigDecimal("100")).intValue()));     //订单金额
+            wxRequest.setRefundFee(String.valueOf(DecimalUtils.multiply(refundAmount, new BigDecimal("100")).intValue()));   //退款金额
             wxRequest.setRefundDesc("用户退款");
             wxRequest.setSign(WxPaySignature.sign(MapUtil.buildMap(wxRequest), WxProperties.SIGN_KEY));
 
@@ -270,10 +274,10 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
                 if (response.isSuccessful()) {
                     WxRefundResponse body = response.body();
                     assert body != null;
-                    if (StringUtils.equals(body.getReturnCode(), WxProperties.SUCCESS)) {
+                    if (!StringUtils.equals(body.getReturnCode(), WxProperties.SUCCESS)) {
                         throw new ServerException("调用微信失败 returnCode != SUCCESS, returnMsg = " + body.getReturnCode());
                     }
-                    if (StringUtils.equals(body.getResultCode(), WxProperties.SUCCESS)) {
+                    if (!StringUtils.equals(body.getResultCode(), WxProperties.SUCCESS)) {
                         throw new ServerException("调用微信失败 resultCode != SUCCESS, err_code = " + body.getErrCode() + "   err_code_des =" + body.getErrCodeDes());
                     }
                 } else {
@@ -283,8 +287,8 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
                 throw new ServerException("调用微信IO异常");
             }
 
-        }else { //直接退款到钱包
-            iOmUserTransactionService.refund(omOrder.getId(),userId,refundAmount,refundId);
+        } else { //直接退款到钱包
+            iOmUserTransactionService.refund(omOrder.getId(), userId, refundAmount, refundId);
         }
 
         omOrder.setStatus(OrderStatus.REFUND);
@@ -294,7 +298,7 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
     @Override
     public BigDecimal income(LocalDate startAt, LocalDate endAt, OrderType type) {
         BigDecimal income = baseMapper.income(startAt, endAt, OrderStatus.PAID, type);
-        if (income == null){
+        if (income == null) {
             return new BigDecimal("0");
         }
         return income;
@@ -302,7 +306,19 @@ public class OmOrderServiceImpl extends ServiceImpl<OmOrderMapper, OmOrder> impl
 
     @Override
     public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt, OrderType type) {
-        return baseMapper.brokenLines(startAt,endAt,OrderStatus.PAID,type);
+        return baseMapper.brokenLines(startAt, endAt, OrderStatus.PAID, type);
+    }
+
+    @Override
+    public boolean checkFirstPay(Long userId) {
+        int count = count(new LambdaQueryWrapper<OmOrder>()
+                .eq(OmOrder::getUserId, userId)
+                .isNotNull(OmOrder::getPayAt)
+                .and(i -> i.eq(OmOrder::getOrderType, OrderType.SHOP_SERVICE)
+                        .or()
+                        .eq(OmOrder::getOrderType, OrderType.SHOP_GROUPON)));
+
+        return count == 0;
     }
 
 

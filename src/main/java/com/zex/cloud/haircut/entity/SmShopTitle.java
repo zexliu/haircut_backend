@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zex.cloud.haircut.config.JsonLongSerializer;
+import com.zex.cloud.haircut.enums.ShopTitleType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -39,5 +40,7 @@ public class SmShopTitle implements Serializable {
     private LocalDateTime createAt;
 
     private Integer seq;
+
+    private ShopTitleType type;
 
 }

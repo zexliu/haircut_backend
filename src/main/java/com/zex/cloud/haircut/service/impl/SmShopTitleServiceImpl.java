@@ -2,9 +2,10 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.SmShopTitle;
+import com.zex.cloud.haircut.enums.ShopTitleType;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.mapper.SmShopTitleMapper;
-import com.zex.cloud.haircut.params.BaseTitleParam;
+import com.zex.cloud.haircut.params.ShopTitleParam;
 import com.zex.cloud.haircut.service.ISmShopServiceRelationService;
 import com.zex.cloud.haircut.service.ISmShopTitleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,7 +27,7 @@ public class SmShopTitleServiceImpl extends ServiceImpl<SmShopTitleMapper, SmSho
     @Autowired
     private ISmShopServiceRelationService iSmShopServiceRelationService;
     @Override
-    public SmShopTitle update(Long id, BaseTitleParam param) {
+    public SmShopTitle update(Long id, ShopTitleParam param) {
         valid(id,param.getName());
         SmShopTitle title = new SmShopTitle();
         title.setDescription(param.getDescription());
@@ -34,6 +35,7 @@ public class SmShopTitleServiceImpl extends ServiceImpl<SmShopTitleMapper, SmSho
         title.setName(param.getName());
         title.setId(id);
         title.setSeq(param.getSeq());
+        title.setType(param.getType());
         updateById(title);
         return title;
     }
@@ -48,12 +50,13 @@ public class SmShopTitleServiceImpl extends ServiceImpl<SmShopTitleMapper, SmSho
     }
 
     @Override
-    public SmShopTitle save(BaseTitleParam param) {
+    public SmShopTitle save(ShopTitleParam param) {
         valid(null,param.getName());
         SmShopTitle title = new SmShopTitle();
         title.setDescription(param.getDescription());
         title.setIcon(param.getIcon());
         title.setName(param.getName());
+        title.setType(param.getType());
         save(title);
         return title;
     }

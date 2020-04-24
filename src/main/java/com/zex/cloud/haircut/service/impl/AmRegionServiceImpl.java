@@ -4,16 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.AmRegion;
 import com.zex.cloud.haircut.entity.SyPermissionModule;
 import com.zex.cloud.haircut.mapper.AmRegionMapper;
-import com.zex.cloud.haircut.response.AbstractTree;
-import com.zex.cloud.haircut.response.AmRegionTree;
-import com.zex.cloud.haircut.response.RegionDetail;
-import com.zex.cloud.haircut.response.SyPermissionModuleTree;
+import com.zex.cloud.haircut.response.*;
 import com.zex.cloud.haircut.service.IAmRegionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,5 +52,12 @@ public class AmRegionServiceImpl extends ServiceImpl<AmRegionMapper, AmRegion> i
     @Override
     public RegionDetail detailByCode(String adCode) {
         return baseMapper.detailByCode(adCode);
+    }
+
+    @Override
+    public List<AmRegionTreeVO> home() {
+        List<AmRegionTreeVO> list = baseMapper.home();
+        List<AmRegionTreeVO> collect = list.stream().filter(amRegionTreeVO -> amRegionTreeVO.getShopCount() > 0).collect(Collectors.toList());
+        return AbstractTree.listToTree(collect,2);
     }
 }

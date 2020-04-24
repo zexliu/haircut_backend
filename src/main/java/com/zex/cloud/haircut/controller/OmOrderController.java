@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 @RestController
 @RequestMapping("/api/v1/orders")
 @Api(tags = "订单操作接口")
-public class OmOrderController {
+public class  OmOrderController {
     @Autowired
     private IOmOrderService iOmOrderService;
 
@@ -95,8 +95,8 @@ public class OmOrderController {
 
     @ApiOperation("申请退款")
     @PostMapping("/refund/{id}")
-    public String refund(@PathVariable Long id) {
-        iOmOrderService.refund(id, RequestHolder.user().getId());
+    public String refund(@PathVariable Long id,String description) {
+        iOmOrderService.refund(id, RequestHolder.user().getId(),description);
         return SimpleResp.SUCCESS;
     }
 

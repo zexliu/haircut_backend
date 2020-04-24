@@ -54,6 +54,8 @@ public class OmComment implements Serializable {
 
     private String toName;
 
+    private CommentFromType toType;
+
     private String content;
 
     private String images;

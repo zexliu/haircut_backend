@@ -8,11 +8,16 @@ import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.params.SmShopDiscountParam;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
+import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.ISmShopDiscountService;
+import com.zex.cloud.haircut.util.ValidableList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -24,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @Api(tags = "店铺单项服务折扣信息")
-@RequestMapping("/v1/shop/discount")
+@RequestMapping("/api/v1/shop/discount")
 public class SmShopDiscountController {
 
     @Autowired
@@ -49,11 +54,21 @@ public class SmShopDiscountController {
         return iSmShopDiscountService.update(id,param,RequestHolder.user().getShopId());
     }
 
+
+    @PostMapping("/batch")
+    @ApiOperation("全量设置店铺单项折扣信息")
+    public String  batch(@RequestBody @Valid ValidableList<SmShopDiscountParam> params){
+        RequestUser requestUser  = RequestHolder.user();
+         iSmShopDiscountService.batch(params,RequestHolder.user().getShopId());
+        return SimpleResp.SUCCESS;
+    }
+
     @DeleteMapping("/{id}")
     @ApiOperation("删除店铺单项折扣")
     public String delete(@PathVariable  Long id ){
         iSmShopDiscountService.delete(id,RequestHolder.user().getShopId());
         return SimpleResp.SUCCESS;
+
     }
 
 }

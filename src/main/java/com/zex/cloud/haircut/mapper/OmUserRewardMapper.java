@@ -21,4 +21,9 @@ public interface OmUserRewardMapper extends BaseMapper<OmUserReward> {
 
     IPage<OmUserReWardVO> queryUserRewardVO(Page<OmUserReWardVO> convert, @Param("rewardStatus") UserRewardStatus rewardStatus,@Param("publishStatus") UserRewardPublishStatus publishStatus ,@Param("currentUserId") Long currentUserId,@Param("userId") Long userId);
 
+    void praise(Long id);
+    void unPraise(Long id);
+
+    void preview(Long id);
+
 }

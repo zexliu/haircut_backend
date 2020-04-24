@@ -6,6 +6,7 @@ import com.zex.cloud.haircut.entity.OmOrder;
 import com.zex.cloud.haircut.entity.OmUserTransaction;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.UserTransactionType;
+import com.zex.cloud.haircut.params.WithDrawParam;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,5 +33,7 @@ public interface IOmUserTransactionService extends IService<OmUserTransaction> {
 
     void onReward(Long userId, Long rewardId, BigDecimal amount);
 
+
+    void withdrawal(WithDrawParam param, Long id);
 
 }

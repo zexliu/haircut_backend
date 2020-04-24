@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.service;
 
 import com.zex.cloud.haircut.entity.SmShopServiceRelation;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zex.cloud.haircut.enums.ShopTitleType;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface ISmShopServiceRelationService extends IService<SmShopServiceRel
 
     void updateRelations(Long shopId, List<Long> titleIds);
 
-    List<Long> getServiceIdsByShopId(Long shopId);
+    List<Long> getServiceIdsByShopId(Long shopId, ShopTitleType type);
 
 }

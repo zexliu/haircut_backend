@@ -39,4 +39,28 @@
         )as t
 
     </select>
+    <select id="rewardPage" resultType="com.zex.cloud.haircut.vo.OmShopTransactionRewardVO">
+            select ost.id,
+                   ost.target_id,
+                   ost.shop_id,
+                   ost.amount,
+                   ost.type,
+                   ost.incr_status,
+                   ost.create_at ,
+                   su.avatar avatar,
+                   su.nickname nickname
+            from   om_shop_transaction ost
+            left join  om_user_reward our on  our.id = ost.target_id  and ost.type = 4
+            left join  sy_user su on su.id =  our.user_id
+            <where>
+                ost.shop_id = #{shopId}
+                and ost.type = 4
+                <if test="startAt != null">and ost.create_at >= #{startAt}</if>
+                <if test="endAt != null">and ost.create_at <![CDATA[<=]]> #{startAt}</if>
+            </where>
+
+
+
+
+    </select>
 </mapper>

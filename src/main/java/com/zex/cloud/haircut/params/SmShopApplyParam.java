@@ -36,6 +36,8 @@ public class SmShopApplyParam {
     @NotBlank
     private String socialCreditCode;
 
+    private String coverImage;
+
     // private Integer auditStatus;
 
     // private LocalDateTime createAt;

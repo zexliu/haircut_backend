@@ -6,14 +6,34 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class OmShopOrderBodyParam {
 
-    @NotBlank
-    List<OmOrderServiceParam> services;
+//    @NotBlank
+//    List<OmOrderServiceParam> services;
+
+
+    //服务ID
+    @ApiModelProperty(value = "所选服务ID")
+    Long serviceId;
+
+    //是否半价
+    @ApiModelProperty(value = "是否半价")
+    Boolean isHalf;
+
+    //用户折扣
+    @ApiModelProperty(value = "折扣ID")
+    Long discountId;
+
+    @ApiModelProperty(value = "原价")
+    BigDecimal originalAmount;
+
+    @ApiModelProperty(value = "实际金额")
+    BigDecimal realAmount;
 
     @NotNull
     @ApiModelProperty(value = "店铺ID")

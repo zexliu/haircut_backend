@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -32,7 +33,7 @@ public class SyUserExtension implements Serializable {
 
     private Long userId;
 
-    private LocalDateTime birthDay;
+    private LocalDate birthDay;
 
     private String job;
 

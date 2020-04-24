@@ -9,7 +9,14 @@
         <result column="title_id" property="titleId" />
     </resultMap>
     <select id="getServiceIdsByShopId" resultType="java.lang.Long">
-        select  title_id from   sm_shop_service_relation where  shop_id = #{shopId}
+        select  title_id from   sm_shop_service_relation
+        left join  sm_shop_title sst on sm_shop_service_relation.title_id = sst.id
+        <where>
+            shop_id = #{shopId}
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        </where>
     </select>
 
 </mapper>

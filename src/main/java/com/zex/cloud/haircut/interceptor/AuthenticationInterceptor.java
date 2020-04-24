@@ -106,7 +106,9 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                 methodType = PermissionMethodType.DELETE;
 
             }
-
+            if (!StringUtils.startsWith(permissionUrl,"/")){
+                permissionUrl = "/"+permissionUrl;
+            }
             List<String> roleNames = iSyPermissionService.getRoleNamesByUrlAndMethodType(permissionUrl, methodType);
             if (roleNames.contains("ANY")) {
                 return super.preHandle(request, response, handler);
@@ -115,13 +117,18 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                     return super.preHandle(request, response, handler);
                 } else {
                     StringBuilder roles = new StringBuilder("[");
-                    for (int i = 0; i < roleNames.size(); i++) {
-                        if (i == roleNames.size() - 1){
-                            roles.append(roleNames.get(i)).append("]");
-                        }else {
-                            roles.append(roleNames.get(i)).append(",");
+                    if (CollectionUtils.isNotEmpty(roleNames)){
+                        for (int i = 0; i < roleNames.size(); i++) {
+                            if (i == roleNames.size() - 1){
+                                roles.append(roleNames.get(i)).append("]");
+                            }else {
+                                roles.append(roleNames.get(i)).append(",");
+                            }
                         }
+                    }else {
+                        roles.append("]");
                     }
+
                     throw new AuthenticationException("需要访问权限 roles = "+ roles.toString());
                 }
             }

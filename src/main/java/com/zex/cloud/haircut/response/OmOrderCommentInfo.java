@@ -21,4 +21,6 @@ public class OmOrderCommentInfo extends OmComment  {
     private Integer serviceScore;
 
     private String stylistName;
+
+    private String shopName;
 }

@@ -9,6 +9,7 @@ import com.zex.cloud.haircut.enums.CommentStarLevel;
 import com.zex.cloud.haircut.enums.CommentTopicType;
 import com.zex.cloud.haircut.params.CommentReplyParam;
 import com.zex.cloud.haircut.params.OmCommentOrderParam;
+import com.zex.cloud.haircut.params.OmCommentRewardParam;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.response.OmOrderCommentInfo;
 import com.zex.cloud.haircut.response.SimpleResp;
@@ -67,12 +68,13 @@ public class OmCommentController {
     @ApiOperation("获取订单评论列表")
     @GetMapping
     public IPage<OmComment> commentPage(Pageable pageable, Long topicId, CommentTopicType topicType,
-                                        Long fromId, CommentFromType fromType,  Long replyId,Boolean root,Long toId) {
+                                        Long fromId, CommentFromType fromType, CommentFromType toType,  Long replyId,Boolean root,Long toId) {
         return  iOmCommentService.page(pageable.convert(),new LambdaQueryWrapper<OmComment>()
         .eq(topicId != null , OmComment::getTopicId,topicId)
         .eq(topicType != null,OmComment::getTopicType,topicType)
         .eq(fromId != null, OmComment::getFromId,fromId)
         .eq(fromType != null,OmComment::getFromType,fromType)
+        .eq(toType != null,OmComment::getToType,toType)
         .eq(replyId != null,OmComment::getReplyId,replyId)
         .eq(root != null,OmComment::getRoot,root)
         .eq(toId != null, OmComment::getToId,toId)
@@ -90,6 +92,14 @@ public class OmCommentController {
     @PostMapping("/order/{shopOrderId}")
     public OmComment commentOrder(@PathVariable Long shopOrderId, @RequestBody @Valid OmCommentOrderParam param) {
         return iOmCommentService.commentOrder(shopOrderId, RequestHolder.user(), param);
+    }
+
+
+
+    @ApiOperation("评论悬赏")
+    @PostMapping("/reward/{id}")
+    public OmComment commentReward(@PathVariable Long id, @RequestBody @Valid OmCommentRewardParam param) {
+        return iOmCommentService.commentReward(id, RequestHolder.user(), param);
     }
 
     @ApiOperation("回复评价")

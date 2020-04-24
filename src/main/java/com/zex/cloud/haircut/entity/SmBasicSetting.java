@@ -50,4 +50,7 @@ public class SmBasicSetting implements Serializable {
 
     private Integer shopFreeMonth;
 
+    private BigDecimal agentCommissionProportion;
+
+
 }

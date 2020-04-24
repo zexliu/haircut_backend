@@ -1,6 +1,8 @@
 package com.zex.cloud.haircut.util;
 
+import com.zex.cloud.haircut.enums.AuthCodeType;
 import com.zex.cloud.haircut.enums.PermissionMethodType;
+import org.apache.commons.lang3.StringUtils;
 
 public class RedisKeys {
 
@@ -20,5 +22,9 @@ public class RedisKeys {
 
     public static String permissionKey(String permissionUrl , PermissionMethodType methodType){
         return permissionUrl + "#" + methodType.name();
+    }
+
+    public static String authCode(String mobile, AuthCodeType authCodeType) {
+        return "AUTH_CODE_"+authCodeType.name()+"_"+mobile;
     }
 }

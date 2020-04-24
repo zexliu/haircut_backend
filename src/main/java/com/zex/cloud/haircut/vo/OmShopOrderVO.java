@@ -12,4 +12,9 @@ public class OmShopOrderVO extends OmShopOrder {
 
     private String userNickname;
 
+    private String stylistAvatar;
+
+    private Integer skillPraise;
+
+
 }

@@ -50,11 +50,15 @@
         our.avatar,
         our.comment_count,
         our.praise_count,
+        our.preview_count,
+        our.age,
         #{currentUserId} current_user_id,
         if(uup.id is null, false, true) praised
         from om_user_reward our
-        left join um_user_praise uup on uup.target_type = 2 and uup.target_id = our.id and uup.user_id = #{currentUserId}
+        left join um_user_praise uup on uup.target_type = 2 and uup.target_id = our.id and uup.user_id =
+        #{currentUserId}
         <where>
+            our.delete_status = 0
             <if test="publishStatus != null">
                 and our.publish_status = #{publishStatus}
             </if>
@@ -65,6 +69,23 @@
                 and our.user_id = #{userId}
             </if>
         </where>
+        group by our.id
+        order by our.create_at desc
     </select>
+    <update id="unPraise">
+        update om_user_reward
+        set praise_count = praise_count - 1
+        where id = #{id}
+    </update>
+    <update id="praise">
+        update om_user_reward
+        set praise_count = praise_count + 1
+        where id = #{id}
+    </update>
+    <update id="preview">
+        update om_user_reward
+        set preview_count = preview_count + 1
+        where id = #{id}
+    </update>
 
 </mapper>

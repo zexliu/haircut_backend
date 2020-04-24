@@ -39,6 +39,12 @@ public class OmUserRewardController {
         return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),userId);
     }
 
+
+    @GetMapping("/current")
+    @ApiOperation("当前用户获取悬赏动态列表")
+    public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus){
+        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),RequestHolder.user().getId());
+    }
     @ApiOperation("悬赏")
     @PutMapping("/rewardStatus/{id}")
     public String rewardStatus(@PathVariable Long id,@RequestParam Long commentId){
@@ -46,6 +52,13 @@ public class OmUserRewardController {
         return SimpleResp.SUCCESS;
     }
 
+
+    @ApiOperation("删除悬赏动态")
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id ){
+        iOmUserRewardService.removeById(id);
+        return SimpleResp.SUCCESS;
+    }
 
 
 }

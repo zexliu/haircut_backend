@@ -70,5 +70,6 @@ public class SmShopApply implements Serializable {
     private String identityCardBack;
     private String socialCreditCode;
 
+    private String coverImage;
 
 }

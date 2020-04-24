@@ -32,4 +32,7 @@ public interface IOmUserRewardService extends IService<OmUserReward> {
 
      IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long currentUserId,Long userId);
 
+    void praise(Long id);
+
+    void unPraise(Long id);
 }

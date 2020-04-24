@@ -7,7 +7,6 @@ public class Constants {
     public static final Long SHOP_ADMIN_ROLE_ID = 1186593156003532801L;
     public static final Long USER_GROUP_ID = 1235554038396129282L;
     public static final Long USER_ROLE_ID = 1235551571549786114L;
-
-
+    public static final Long AGENT_GROUP_ID = 1235554038396129341L;
     public static final Long WASH_CUT_BLOW_ID = 1237022834038325250L;
 }

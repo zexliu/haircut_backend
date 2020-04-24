@@ -2,6 +2,8 @@ package com.zex.cloud.haircut.mapper;
 
 import com.zex.cloud.haircut.entity.SmShopServiceRelation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zex.cloud.haircut.enums.ShopTitleType;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,6 +17,6 @@ import java.util.List;
  */
 public interface SmShopServiceRelationMapper extends BaseMapper<SmShopServiceRelation> {
 
-    List<Long> getServiceIdsByShopId(Long shopId);
+    List<Long> getServiceIdsByShopId(@Param("shopId") Long shopId, @Param("type") ShopTitleType type);
 
 }

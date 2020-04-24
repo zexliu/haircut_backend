@@ -4,25 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.enums.WeekDay;
-import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.SmHalfTimeMapper;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.service.ISmHalfTimeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.service.ISmShopService;
 import com.zex.cloud.haircut.util.DateTimeUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -64,7 +57,7 @@ public class SmHalfTimeServiceImpl extends ServiceImpl<SmHalfTimeMapper, SmHalfT
             return false;
         }
         LocalTime localTime = DateTimeUtils.localDateTimeToLocalTime(appointmentAt);
-       int count =  count(new LambdaQueryWrapper<SmHalfTime>().eq(SmHalfTime::getShopId, shopId)
+       int count =  count(new LambdaQueryWrapper<SmHalfTime>()
                 .eq(SmHalfTime::getWeekDay, WeekDay.adapt(appointmentAt.getDayOfWeek()))
                 .le(SmHalfTime::getStartAt, localTime)
                 .ge(SmHalfTime::getEndAt, localTime));
@@ -87,6 +80,17 @@ public class SmHalfTimeServiceImpl extends ServiceImpl<SmHalfTimeMapper, SmHalfT
         halfTime.setId(id);
         updateById(halfTime);
         return halfTime;
+    }
+
+    @Override
+    public Boolean isHalf(LocalDateTime dateTime) {
+        LocalTime localTime = DateTimeUtils.localDateTimeToLocalTime(dateTime);
+        int count =  count(new LambdaQueryWrapper<SmHalfTime>()
+                .eq(SmHalfTime::getWeekDay, WeekDay.adapt(dateTime.getDayOfWeek()))
+                .le(SmHalfTime::getStartAt, localTime)
+                .ge(SmHalfTime::getEndAt, localTime));
+        return count > 0;
+
     }
 
 

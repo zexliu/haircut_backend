@@ -3,14 +3,22 @@ package com.zex.cloud.haircut.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zex.cloud.haircut.entity.OmAgentTransaction;
 import com.zex.cloud.haircut.entity.OmOrder;
 import com.zex.cloud.haircut.entity.OmUserTransaction;
+import com.zex.cloud.haircut.entity.OmWithdrawalApply;
+import com.zex.cloud.haircut.enums.AgentTransactionType;
+import com.zex.cloud.haircut.enums.AuditStatus;
+import com.zex.cloud.haircut.enums.ClientTargetType;
 import com.zex.cloud.haircut.enums.UserTransactionType;
 import com.zex.cloud.haircut.exception.ForbiddenException;
+import com.zex.cloud.haircut.exception.ServerException;
 import com.zex.cloud.haircut.mapper.OmUserTransactionMapper;
+import com.zex.cloud.haircut.params.WithDrawParam;
 import com.zex.cloud.haircut.service.IOmRefundOrderService;
 import com.zex.cloud.haircut.service.IOmUserTransactionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zex.cloud.haircut.service.IOmWithdrawalApplyService;
 import com.zex.cloud.haircut.util.DecimalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +39,9 @@ public class OmUserTransactionServiceImpl extends ServiceImpl<OmUserTransactionM
 
     @Autowired
     private IOmRefundOrderService iOmRefundOrderService;
+
+    @Autowired
+    private IOmWithdrawalApplyService iOmWithdrawalApplyService;
     @Override
     public void onPayHook(OmOrder omOrder) {
         OmUserTransaction transaction = new OmUserTransaction();
@@ -95,7 +106,31 @@ public class OmUserTransactionServiceImpl extends ServiceImpl<OmUserTransactionM
         save(transaction);
     }
 
+    @Override
+    public void withdrawal(WithDrawParam param, Long id) {
+        BigDecimal balance = baseMapper.balance(null,null,null,null,id);
+        if (DecimalUtils.lt(balance,param.getAmount())){
+            throw new ServerException("账户金额低于提现金额");
+        }
+        OmWithdrawalApply omWithdrawalApply = new OmWithdrawalApply();
+        omWithdrawalApply.setAmount(param.getAmount());
+        omWithdrawalApply.setAuditStatus(AuditStatus.PENDING);
+        omWithdrawalApply.setBrandName(param.getBrandName());
+        omWithdrawalApply.setBrandNo(param.getBrandNo());
+        omWithdrawalApply.setBrandOpening(param.getBrandOpening());
+        omWithdrawalApply.setBrandUsername(param.getBrandUsername());
+        omWithdrawalApply.setTargetType(ClientTargetType.USER);
+        omWithdrawalApply.setTargetId(id);
+        iOmWithdrawalApplyService.save(omWithdrawalApply);
 
+        OmUserTransaction transaction = new OmUserTransaction();
+        transaction.setUserId(id);
+        transaction.setAmount(param.getAmount());
+        transaction.setIncrStatus(false);
+        transaction.setType(UserTransactionType.WITHDRAW);
+        transaction.setTargetId(omWithdrawalApply.getId());
+        save(transaction);
+    }
 
 
 }

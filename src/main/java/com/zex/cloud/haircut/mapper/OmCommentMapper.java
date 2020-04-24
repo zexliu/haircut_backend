@@ -27,4 +27,6 @@ public interface OmCommentMapper extends BaseMapper<OmComment> {
 
     List<OmCommentVo> selectReWardComments(@Param("rewardId")Long rewardId,@Param("currentUserId") Long currentUserId);
 
+    void praise(Long id);
+    void unPraise(Long id);
 }

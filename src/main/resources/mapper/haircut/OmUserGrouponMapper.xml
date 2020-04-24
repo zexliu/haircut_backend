@@ -4,16 +4,128 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zex.cloud.haircut.entity.OmUserGroupon">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="shop_id" property="shopId" />
-        <result column="stylist_id" property="stylistId" />
-        <result column="create_at" property="createAt" />
-        <result column="expire_at" property="expireAt" />
-        <result column="total_count" property="totalCount" />
-        <result column="remain_count" property="remainCount" />
-        <result column="amount" property="amount" />
-        <result column="service_id" property="serviceId" />
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="stylist_id" property="stylistId"/>
+        <result column="create_at" property="createAt"/>
+        <result column="expire_at" property="expireAt"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="remain_count" property="remainCount"/>
+        <result column="amount" property="amount"/>
+        <result column="service_id" property="serviceId"/>
     </resultMap>
+    <select id="income" resultType="java.math.BigDecimal">
+        select sum(oug.amount)
+        from om_user_groupon oug
+        left join sm_shop ss on ss.id = oug.shop_id
+        <where>
+            <if test="cityCode != null">
+                and ss.city_code = #{cityCode}
+            </if>
+            <if test="provinceCode != null">
+                and ss.province_code = #{provinceCode}
+            </if>
+            <if test="startAt != null">
+                and DATE(oug.create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(oug.create_at) <![CDATA[ <= ]]> #{endAt}
+            </if>
+        </where>
+    </select>
+    <select id="brokenLinesAgent" resultType="com.zex.cloud.haircut.dto.BrokenLinePoint">
+        select sum(oug.amount) amount,date_format(oug.create_at,'%Y-%m-%d') `date`
+        from om_user_groupon oug left join sm_shop ss on oug.shop_id = ss.id
+        <where>
+            1 = 1
+            <if test="startAt != null">
+                and DATE(oug.create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(oug.create_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+            <if test="cityCode != null">
+                and ss.city_code = #{cityCode}
+            </if>
+            <if test="provinceCode != null">
+                and ss.province_code = #{provinceCode}
+            </if>
+        </where>
+        group by `date`
+    </select>
+    <select id="groupons" resultType="com.zex.cloud.haircut.vo.OmUserGrouponVO">
+        select oug.id, oug.user_id, oug.shop_id, oug.stylist_id, oug.create_at, oug.expire_at, oug.total_count,
+        oug.remain_count, oug.service_id, oug.gender_type, oug.amount, oug.status, oug.order_id ,ss.name shop_name,
+        hs.nickname stylist_name , hse.name service_name,
+        su.nickname username
+        from om_user_groupon oug
+        left join sm_shop ss on ss.id = oug.shop_id
+        left join hm_stylist hs on hs.id = oug.stylist_id
+        left join hm_service hse on hse.id = oug.service_id
+        left join sy_user su on su.id = oug.user_id
+        <where>
+            <if test="keywords != null">
+                and (oug.order_id like concat('%',#{keywords},'%' )
+                or oug.id like concat('%',#{keywords},'%'))
+            </if>
+            <if test="stylistId != null">
+                and oug.stylist_id = #{stylistId}
+            </if>
+            <if test="shopId != null">
+                and oug.shop_id = #{shopId}
+            </if>
+            <if test="userId != null">
+                and oug.user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and oug.status = #{status}
+            </if>
+            <if test="genderType != null">
+                and oug.gender_type = #{genderType}
+            </if>
+            <if test="serviceId != null">
+                and oug.service_id = #{serviceId}
+            </if>
+            <if test="startAt != null">
+                and DATE(oug.create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(oug.create_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+            <if test="provinceCode != null">
+                and ss.province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                and ss.city_code = #{cityCode}
+            </if>
+        </where>
+
+    </select>
+    <select id="details" resultType="com.zex.cloud.haircut.vo.OmUserGrouponDetailVO">
+        select oug.id,
+               oug.user_id,
+               oug.shop_id,
+               oug.stylist_id,
+               oug.create_at,
+               oug.expire_at,
+               oug.total_count,
+               oug.remain_count,
+               oug.service_id,
+               oug.gender_type,
+               oug.amount,
+               oug.status,
+               oug.order_id,
+               ss.name     shop_name,
+               hs.nickname stylist_name,
+               hse.name    service_name,
+               hjt.name stylist_title
+        from om_user_groupon oug
+                 left join sm_shop ss on ss.id = oug.shop_id
+                 left join hm_stylist hs on hs.id = oug.stylist_id
+                 left join hm_service hse on hse.id = oug.service_id
+                 left join hm_job_title hjt on hjt.id = hs.job_title_id
+        where oug.id = #{id}
+    </select>
 
 </mapper>

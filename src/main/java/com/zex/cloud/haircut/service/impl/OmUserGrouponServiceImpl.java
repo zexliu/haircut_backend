@@ -1,22 +1,34 @@
 package com.zex.cloud.haircut.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.dto.OrderGrouponDTO;
 import com.zex.cloud.haircut.entity.OmOrder;
 import com.zex.cloud.haircut.entity.OmUserGroupon;
+import com.zex.cloud.haircut.enums.GenderType;
+import com.zex.cloud.haircut.enums.OrderType;
 import com.zex.cloud.haircut.enums.UserGrouponStatus;
 import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.mapper.OmUserGrouponMapper;
+import com.zex.cloud.haircut.service.ILedgerAccountService;
 import com.zex.cloud.haircut.service.IOmUserGrouponService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zex.cloud.haircut.util.DecimalUtils;
+import com.zex.cloud.haircut.vo.OmUserGrouponDetailVO;
+import com.zex.cloud.haircut.vo.OmUserGrouponVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -32,7 +44,11 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ILedgerAccountService iLedgerAccountService;
+
     @Override
+    @Transactional
     public void onPayHook(OmOrder omOrder) {
         try {
             OrderGrouponDTO dto = objectMapper.readValue(omOrder.getBody(), OrderGrouponDTO.class);
@@ -49,7 +65,10 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
             omUserGroupon.setAmount(omOrder.getAmount());
             omUserGroupon.setStatus(UserGrouponStatus.PENDING_USE);
             omUserGroupon.setOrderId(omOrder.getId());
+
             save(omUserGroupon);
+            iLedgerAccountService.account(omUserGroupon.getId(),omUserGroupon.getAmount(), omUserGroupon.getUserId(), omUserGroupon.getShopId(), OrderType.SHOP_GROUPON);
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -58,7 +77,7 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
 
     @Override
     public BigDecimal refund(Long id, Long userId) {
-        OmUserGroupon omUserGroupon = getById(id);
+        OmUserGroupon omUserGroupon = getByOrderId(id);
         if (omUserGroupon == null){
             throw new NotFoundException("团购信息不存在");
         }
@@ -79,8 +98,12 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
         }
     }
 
+    private OmUserGroupon getByOrderId(Long id) {
+        return getOne(new LambdaQueryWrapper<OmUserGroupon>().eq(OmUserGroupon::getOrderId,id));
+    }
+
     @Override
-    public void validUseStatus(Long id, Long userId) {
+    public Long validUseStatus(Long id, Long userId) {
         OmUserGroupon userGroupon = getById(id);
         if (userGroupon == null){
             throw new NotFoundException();
@@ -91,6 +114,7 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
         if (!userGroupon.getUserId().equals(userId)){
             throw new ForbiddenException();
         }
+        return userGroupon.getShopId();
     }
 
     @Override
@@ -110,8 +134,32 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
             //设置状态为已用完
             userGroupon.setStatus(UserGrouponStatus.USED);
         }
-        // TODO: 2020/2/27 结算店铺金额
         updateById(userGroupon);
 
     }
+
+    @Override
+    public BigDecimal income(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode) {
+        BigDecimal income = baseMapper.income(startAt,endAt,provinceCode,cityCode);
+        if (income == null){
+            return new BigDecimal("0");
+        }
+        return income;
+    }
+
+    @Override
+    public List<BrokenLinePoint> brokenLinesAgent(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode) {
+        return baseMapper.brokenLinesAgent(startAt,endAt,provinceCode,cityCode);
+    }
+
+    @Override
+    public IPage<OmUserGrouponVO> groupons(Page<OmUserGrouponVO> convert, String keywords, Long userId, Long shopId, Long stylistId, Long serviceId, UserGrouponStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt, Integer provinceCode, Integer cityCode) {
+        return baseMapper.groupons(convert,keywords,userId,shopId,stylistId,serviceId,status,genderType,startAt,endAt,provinceCode,cityCode);
+    }
+
+    @Override
+    public OmUserGrouponDetailVO detail(Long id) {
+        return baseMapper.details(id);
+    }
+
 }

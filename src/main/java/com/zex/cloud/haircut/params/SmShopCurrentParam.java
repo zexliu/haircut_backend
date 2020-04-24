@@ -48,5 +48,6 @@ public class SmShopCurrentParam {
     private ShopWorkStatus workStatus;
 
     private List<Long> serviceIds;
+    private List<Long> safetyIds;
 
 }

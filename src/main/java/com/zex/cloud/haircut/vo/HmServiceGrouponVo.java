@@ -30,4 +30,11 @@ public class HmServiceGrouponVo {
     @NotNull
     private Long serviceId;
 
+    private BigDecimal discount;
+
+    @JsonSerialize(using = JsonLongSerializer.class)
+    private Long discountId;
+
+
+
 }

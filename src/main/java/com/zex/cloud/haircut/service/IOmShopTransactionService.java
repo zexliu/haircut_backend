@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.entity.OmShopTransaction;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.enums.ShopTransactionType;
+import com.zex.cloud.haircut.params.WithDrawParam;
+import com.zex.cloud.haircut.vo.OmShopTransactionRewardVO;
 import com.zex.cloud.haircut.vo.OmShopTransactionVO;
 
 import java.math.BigDecimal;
@@ -27,5 +29,9 @@ public interface IOmShopTransactionService extends IService<OmShopTransaction> {
     void onReward(Long shopId, Long targetId, BigDecimal rewardAmount);
 
     OmShopTransactionVO currentShop(Long shopId);
+
+    IPage<OmShopTransactionRewardVO> rewardPage(Page<OmShopTransactionRewardVO> page, LocalDateTime startAt, LocalDateTime endAt, Long shopId);
+
+    void withdrawal(WithDrawParam param, Long shopId);
 
 }

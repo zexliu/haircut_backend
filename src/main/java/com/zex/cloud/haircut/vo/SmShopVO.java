@@ -14,5 +14,9 @@ public class SmShopVO extends SmShop {
 
     @JsonSerialize(using = JsonListLongSerializer.class)
     List<Long> serviceIds;
+    @JsonSerialize(using = JsonListLongSerializer.class)
+    List<Long> safetyIds;
+
+
 
 }

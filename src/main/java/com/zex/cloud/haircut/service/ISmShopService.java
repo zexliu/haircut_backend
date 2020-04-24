@@ -43,9 +43,9 @@ public interface ISmShopService extends IService<SmShop> {
 
     Long getShopIdByUserId(Long id);
 
-    List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt);
+    List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode);
 
-    int count(LocalDate startAt, LocalDate endAt);
+    int count(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode);
 
     SmShopVO getByShopId(Long shopId);
 

@@ -4,8 +4,10 @@ package com.zex.cloud.haircut.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SmShopTitle;
+import com.zex.cloud.haircut.enums.ShopTitleType;
 import com.zex.cloud.haircut.params.BaseTitleParam;
 import com.zex.cloud.haircut.params.Pageable;
+import com.zex.cloud.haircut.params.ShopTitleParam;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.service.ISmShopTitleService;
 import io.swagger.annotations.Api;
@@ -33,9 +35,10 @@ public class SmShopTitleController {
 
     @GetMapping
     @ApiOperation("查询所有")
-    public IPage<SmShopTitle> list(Pageable pageable){
+    public IPage<SmShopTitle> list(Pageable pageable,ShopTitleType type){
         return iSmShopTitleService.page(pageable.convert(),
                 new LambdaQueryWrapper<SmShopTitle>()
+                        .eq(type != null, SmShopTitle::getType,type)
                         .orderByDesc(SmShopTitle::getSeq));
     }
     @GetMapping("/{id}")
@@ -46,13 +49,13 @@ public class SmShopTitleController {
 
     @PostMapping
     @ApiOperation("新增")
-    public SmShopTitle save(@RequestBody BaseTitleParam param){
+    public SmShopTitle save(@RequestBody ShopTitleParam param){
         return iSmShopTitleService.save(param);
     }
 
     @PutMapping("/{id}")
     @ApiOperation("修改")
-    public SmShopTitle update(@PathVariable Long id,@RequestBody BaseTitleParam param){
+    public SmShopTitle update(@PathVariable Long id,@RequestBody ShopTitleParam param){
         return iSmShopTitleService.update(id,param);
     }
 

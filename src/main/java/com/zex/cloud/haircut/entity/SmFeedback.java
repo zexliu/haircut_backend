@@ -44,6 +44,8 @@ public class SmFeedback implements Serializable {
 
     private String images;
 
+    private String type;
+
     private FeedbackStatus status;
 
     private LocalDateTime createAt;

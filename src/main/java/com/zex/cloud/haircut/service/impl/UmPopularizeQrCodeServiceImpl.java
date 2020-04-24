@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.apis.WxApi;
+import com.zex.cloud.haircut.dto.QrCodeRequest;
 import com.zex.cloud.haircut.entity.UmPopularizeQrCode;
 import com.zex.cloud.haircut.enums.ClientType;
 import com.zex.cloud.haircut.enums.PopularizeType;
@@ -59,8 +60,11 @@ public class UmPopularizeQrCodeServiceImpl extends ServiceImpl<UmPopularizeQrCod
     }
 
     private String generateQrCode(Long targetId, PopularizeType type) {
-        String scene = "type=" + type + "&targetId=" + targetId;
-        Call<ResponseBody> call = wxRetrofit.create(WxApi.class).getQrCode(ioAuthService.getBackendAccessToken(), scene, null);
+        QrCodeRequest qrCodeRequest = new QrCodeRequest();
+        String scene = "id="+targetId+"&"+"type="+type.name();
+        qrCodeRequest.setPage(null);
+        qrCodeRequest.setScene(scene);
+        Call<ResponseBody> call = wxRetrofit.create(WxApi.class).getQrCode(ioAuthService.getBackendAccessToken(), qrCodeRequest);
         try {
             Response<ResponseBody> execute = call.execute();
             if (execute.isSuccessful() && execute.body() != null) {

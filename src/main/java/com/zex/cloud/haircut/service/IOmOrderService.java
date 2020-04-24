@@ -33,12 +33,14 @@ public interface IOmOrderService extends IService<OmOrder> {
 
     void walletPayment(Long id, String transactionPassword, Long userId);
 
-    void refund(Long id, Long userId);
+    void refund(Long id, Long userId, String description);
 
 
     BigDecimal income(LocalDate startAt, LocalDate endAt, OrderType type);
 
     List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt, OrderType type);
 
+
+    boolean checkFirstPay(Long userId);
 
 }

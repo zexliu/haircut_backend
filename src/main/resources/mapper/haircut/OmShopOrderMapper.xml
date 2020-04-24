@@ -23,10 +23,12 @@
     <select id="shopOrderVO" resultType="com.zex.cloud.haircut.vo.OmShopOrderVO">
         select oso.id, oso.shop_id, oso.user_id, oso.stylist_id, oso.order_id, oso.total_amount,
         oso.real_amount, oso.status, oso.create_at, oso.appointment_at, oso.use_at,
-        oso.expire_at, oso.subject, oso.body,oso.gender_type , su.nickname user_nickname , hs.nickname stylist_name
+        oso.expire_at, oso.subject, oso.body,oso.gender_type , su.nickname user_nickname , hs.nickname stylist_name,
+        hs.avatar stylist_avatar
         from om_shop_order oso
         left join sy_user su on su.id = oso.user_id
         left join hm_stylist hs on hs.id = oso.stylist_id
+        left join sm_shop ss on oso.shop_id = ss.id
         <where>
             <if test="shopId != null">and oso.shop_id = #{shopId}</if>
             <if test="userId != null">and oso.user_id = #{userId}</if>
@@ -44,9 +46,91 @@
             </if>
             <if test="useStatus != null and useStatus ">and oso.use_at is not null</if>
             <if test="useStatus != null and !useStatus">and oso.use_at is null</if>
-            <if test="payStatus != null and payStatus"> and oso.status >= 2 </if>
-            <if test="payStatus != null and !payStatus"> and oso.status <![CDATA[ < ]]> 2 </if>
+            <if test="payStatus != null and payStatus">and oso.status >= 2</if>
+            <if test="payStatus != null and !payStatus">and oso.status <![CDATA[ < ]]> 2</if>
+            <if test="isToday">
+                and DATE(oso.appointment_at) = CURDATE()
+            </if>
+            <if test="isAfterToday">
+                and DATE(oso.appointment_at) > CURDATE()
+            </if>
+            <if test="provinceCode != null">
+                and ss.province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                and ss.city_code = #{cityCode}
+            </if>
         </where>
     </select>
+    <select id="income" resultType="java.math.BigDecimal">
+        select sum(oso.real_amount)
+        from om_shop_order oso
+        left join sm_shop ss on ss.id = oso.shop_id
+        <where>
+            oso.`status` > 2
+            <if test="cityCode != null">
+                and ss.city_code = #{cityCode}
+            </if>
+            <if test="provinceCode != null">
+                and ss.province_code = #{provinceCode}
+            </if>
+            <if test="startAt != null">
+                and DATE(oso.create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(oso.create_at) <![CDATA[ <= ]]> #{endAt}
+            </if>
+        </where>
+    </select>
+    <select id="brokenLinesAgent" resultType="com.zex.cloud.haircut.dto.BrokenLinePoint">
+        select sum(oso.real_amount) amount,date_format(oso.create_at,'%Y-%m-%d') `date`
+        from om_shop_order oso left join sm_shop ss on oso.shop_id = ss.id
+        <where>
+            oso.`status` > 2
+            <if test="startAt != null">
+                and DATE(oso.create_at) >= #{startAt}
+            </if>
+            <if test="endAt != null">
+                and DATE(oso.create_at) <![CDATA[  <= ]]>  #{endAt}
+            </if>
+            <if test="cityCode != null">
+                and ss.city_code = #{cityCode}
+            </if>
+            <if test="provinceCode != null">
+                and ss.province_code = #{provinceCode}
+            </if>
+        </where>
+        group by `date`
+    </select>
+    <select id="getDetailById" resultType="com.zex.cloud.haircut.vo.OmShopOrderDetailVO">
+        select oso.id,
+               oso.shop_id,
+               oso.user_id,
+               oso.stylist_id,
+               oso.order_id,
+               oso.total_amount,
+               oso.real_amount,
+               oso.status,
+               oso.create_at,
+               oso.appointment_at,
+               oso.use_at,
+               oso.expire_at,
+               oso.subject,
+               oso.body,
+               oso.gender_type,
+               su.nickname      user_nickname,
+               hs.nickname      stylist_name,
+               hs.avatar        stylist_avatar,
+               ss.name          shop_name,
+               ss.logo          shop_logo,
+               ss.leader_name   shop_leader_name,
+               ss.leader_mobile shop_leader_mobile
+        from om_shop_order oso
+                 left join sy_user su on su.id = oso.user_id
+                 left join hm_stylist hs on hs.id = oso.stylist_id
+                 left join sm_shop ss on ss.id = oso.shop_id
+        where oso.id = #{id}
+    </select>
+
 
 </mapper>

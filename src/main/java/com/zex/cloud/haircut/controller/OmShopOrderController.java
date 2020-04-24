@@ -1,17 +1,21 @@
 package com.zex.cloud.haircut.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zex.cloud.haircut.entity.SmAgent;
 import com.zex.cloud.haircut.enums.ClientType;
 import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.enums.ShopOrderStatus;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IOmShopOrderService;
+import com.zex.cloud.haircut.service.ISmAgentService;
+import com.zex.cloud.haircut.vo.OmShopOrderDetailVO;
 import com.zex.cloud.haircut.vo.OmShopOrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,23 +37,9 @@ public class OmShopOrderController {
     private IOmShopOrderService iOmShopOrderService;
 
     @GetMapping
-    public IPage<OmShopOrderVO> shopOrder(Pageable pageable, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt,Boolean useStatus,Boolean payStatus) {
-        return iOmShopOrderService.shopOrderVO(pageable.convert(),keywords,shopId,stylistId,userId,status,genderType,startAt,endAt,useStatus,payStatus);
-//        return iOmShopOrderService.page(pageable.convert(), new LambdaQueryWrapper<OmShopOrder>()
-//                .eq(shopId != null, OmShopOrder::getShopId, shopId)
-//                .eq(stylistId != null, OmShopOrder::getStylistId, stylistId)
-//                .eq(userId != null, OmShopOrder::getUserId, userId)
-//                .eq(status != null, OmShopOrder::getStatus, status)
-//                .eq(genderType != null, OmShopOrder::getGenderType, genderType)
-//                .ge(startAt != null, OmShopOrder::getCreateAt, startAt)
-//                .le(endAt != null, OmShopOrder::getCreateAt, endAt)
-//                .and(StringUtils.isNotBlank(keywords), i ->
-//                        i.like(OmShopOrder::getOrderId, keywords)
-//                                .or()
-//                                .like(OmShopOrder::getId, keywords))
-//        .orderByDesc(OmShopOrder::getCreateAt));
+    public IPage<OmShopOrderVO> shopOrder(Pageable pageable, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt,Boolean useStatus,Boolean payStatus,Boolean isToday,Boolean isAfterToday,Integer provinceCode ,Integer cityCode) {
+        return iOmShopOrderService.shopOrderVO(pageable.convert(),keywords,shopId,stylistId,userId,status,genderType,startAt,endAt,useStatus,payStatus,isToday,isAfterToday,provinceCode,cityCode);
     }
-
 
     @GetMapping("/current")
     @ApiOperation("店铺查询订单")
@@ -59,8 +49,14 @@ public class OmShopOrderController {
         }else {
             userId = RequestHolder.user().getId();
         }
-        return shopOrder(pageable, keywords, shopId, stylistId, userId, status, genderType, startAt, endAt,useStatus,payStatus);
+        return shopOrder(pageable, keywords, shopId, stylistId, userId, status, genderType, startAt, endAt,useStatus,payStatus,null,null,null,null);
     }
 
+
+    @GetMapping("/{id}")
+    @ApiOperation("查询订单详情")
+    public OmShopOrderDetailVO getOrderById(@PathVariable Long id){
+       return iOmShopOrderService.getDetailById(id);
+    }
 
 }

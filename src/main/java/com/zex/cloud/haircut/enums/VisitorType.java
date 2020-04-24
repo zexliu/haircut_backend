@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.enums.IEnum;
 
 public enum VisitorType implements IEnum<Integer> {
 
-    SHOP(1),;
+    SHOP(1),REWARD(2);
     VisitorType(int code) {
         this.value = code;
     }

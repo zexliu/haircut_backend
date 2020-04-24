@@ -22,7 +22,8 @@ public class ShopDetailVO extends SmShop {
 
     private Long commentCount;
 
-    private List<Long> titleIds;
+    private List<Long> defaultTitleIds;
+    private List<Long> safetyTitleIds;
 
     private List<OmOrderCommentInfo> comments;
 

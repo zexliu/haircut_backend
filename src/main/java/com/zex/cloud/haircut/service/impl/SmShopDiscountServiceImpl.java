@@ -1,6 +1,7 @@
 package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zex.cloud.haircut.entity.SmShopDiscount;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.ForbiddenException;
@@ -13,6 +14,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -67,5 +72,27 @@ public class SmShopDiscountServiceImpl extends ServiceImpl<SmShopDiscountMapper,
             throw new NotFoundException("折扣信息不存在 serviceId = "+ serviceId +"shopId = "+ shopId);
         }
         return smShopDiscount.getDiscount();
+    }
+
+    @Override
+    public void batch(List<SmShopDiscountParam> params,Long shopId) {
+        remove(new LambdaUpdateWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId,shopId));
+
+        List<SmShopDiscount> collect = params.stream().flatMap(new Function<SmShopDiscountParam, Stream<SmShopDiscount>>() {
+            @Override
+            public Stream<SmShopDiscount> apply(SmShopDiscountParam param) {
+                SmShopDiscount discount = new SmShopDiscount();
+                BeanUtils.copyProperties(param, discount);
+                discount.setShopId(shopId);
+
+                return Stream.of(discount);
+            }
+        }).collect(Collectors.toList());
+        saveBatch(collect);
+    }
+
+    @Override
+    public List<SmShopDiscount> getByShopId(Long shopId) {
+        return list(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId,shopId));
     }
 }

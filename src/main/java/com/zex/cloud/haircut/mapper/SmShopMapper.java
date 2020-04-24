@@ -33,9 +33,10 @@ public interface SmShopMapper extends BaseMapper<SmShop> {
 
     Long getShopIdByUserId(@Param("userId") Long userId);
 
-    List<BrokenLinePoint> brokenLines(@Param("startAt") LocalDate startAt,@Param("endAt")  LocalDate endAt);
+    List<BrokenLinePoint> brokenLines(@Param("startAt") LocalDate startAt, @Param("endAt") LocalDate endAt,@Param("provinceCode") Integer provinceCode,@Param("cityCode") Integer cityCode);
 
-    int count(@Param("startAt")LocalDate startAt, @Param("endAt")LocalDate endAt);
+    int count(@Param("startAt") LocalDate startAt, @Param("endAt") LocalDate endAt,
+              @Param("provinceCode") Integer provinceCode, @Param("cityCode")Integer cityCode);
 
 
     IPage<SmHomeShopVO> homeVo(Page<SmHomeShopVO> page,

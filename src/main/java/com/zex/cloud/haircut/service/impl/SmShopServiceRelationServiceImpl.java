@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zex.cloud.haircut.entity.SmShopServiceRelation;
+import com.zex.cloud.haircut.enums.ShopTitleType;
 import com.zex.cloud.haircut.mapper.SmShopServiceRelationMapper;
 import com.zex.cloud.haircut.service.ISmShopServiceRelationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -41,9 +42,11 @@ public class SmShopServiceRelationServiceImpl extends ServiceImpl<SmShopServiceR
     }
 
     @Override
-    public List<Long> getServiceIdsByShopId(Long shopId) {
-        return baseMapper.getServiceIdsByShopId(shopId);
+    public List<Long> getServiceIdsByShopId(Long shopId, ShopTitleType type) {
+        return baseMapper.getServiceIdsByShopId(shopId,type);
     }
+
+
 
     private void removeByShopId(Long shopId) {
         remove(new LambdaQueryWrapper<SmShopServiceRelation>().eq(SmShopServiceRelation::getShopId,shopId));

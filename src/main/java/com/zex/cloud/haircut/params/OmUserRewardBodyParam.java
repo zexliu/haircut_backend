@@ -26,5 +26,6 @@ public class OmUserRewardBodyParam {
 
     @NotNull
     private Boolean anonymousStatus;
+    private Integer age;
 
 }

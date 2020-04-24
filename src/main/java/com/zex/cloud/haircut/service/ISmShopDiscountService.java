@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.SmShopDiscountParam;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -24,4 +25,7 @@ public interface ISmShopDiscountService extends IService<SmShopDiscount> {
 
     BigDecimal getDiscountByServiceIdAndShopId(Long serviceId, Long shopId);
 
+    void batch(List<SmShopDiscountParam> params,Long shopId);
+
+    List<SmShopDiscount> getByShopId(Long shopId);
 }

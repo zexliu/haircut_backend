@@ -7,6 +7,7 @@ import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IOmFlowerService;
 import com.zex.cloud.haircut.vo.OmFlowerVo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ import java.time.LocalDateTime;
  */
 @RestController
 @RequestMapping("/api/v1/flower")
-@ApiOperation("鲜花相关")
+@Api(tags = "鲜花相关")
 public class OmFlowerController {
 
     @Autowired

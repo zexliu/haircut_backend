@@ -3,6 +3,7 @@ package com.zex.cloud.haircut.controller;
 
 import com.zex.cloud.haircut.entity.AmRegion;
 import com.zex.cloud.haircut.response.AmRegionTree;
+import com.zex.cloud.haircut.response.AmRegionTreeVO;
 import com.zex.cloud.haircut.response.RegionDetail;
 import com.zex.cloud.haircut.service.IAmRegionService;
 import io.swagger.annotations.Api;
@@ -64,5 +65,11 @@ public class AmRegionController {
         return iAmRegionService.detailByCode(adCode);
     }
 
+
+    @ApiOperation("首页获取地址信息")
+    @GetMapping("/home")
+    public List<AmRegionTreeVO> home(){
+        return iAmRegionService.home();
+    }
 
 }

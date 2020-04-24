@@ -7,6 +7,7 @@ import com.zex.cloud.haircut.enums.PopularizeStatus;
 import com.zex.cloud.haircut.enums.PopularizeType;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.response.UmPopularizeUser;
+import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IUmPopularizeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,10 +35,19 @@ public class UmPopularizeController {
 
     @Autowired
     private IUmPopularizeService iUmPopularizeService;
+
+
     @ApiOperation("获取拉新分页")
     @GetMapping
     public IPage<UmPopularizeUser> page(Pageable pageable, Long targetId, PopularizeType popularizeType , PopularizeStatus popularizeStatus , LocalDateTime startAt, LocalDateTime endAt){
         return iUmPopularizeService.page(pageable.convert(),targetId,popularizeType,popularizeStatus,startAt,endAt);
+
+    }
+
+    @ApiOperation("获取拉新分页")
+    @GetMapping("/current")
+    public IPage<UmPopularizeUser> page(Pageable pageable, PopularizeType popularizeType , PopularizeStatus popularizeStatus , LocalDateTime startAt, LocalDateTime endAt){
+        return iUmPopularizeService.page(pageable.convert(), RequestHolder.user().getId(),popularizeType,popularizeStatus,startAt,endAt);
 
     }
 

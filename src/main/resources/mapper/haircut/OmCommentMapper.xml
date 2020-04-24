@@ -22,6 +22,18 @@
         <result column="comment_count" property="commentCount"/>
         <result column="anonymous_status" property="anonymousStatus"/>
     </resultMap>
+    <update id="praise">
+        update om_comment
+        set praise_count = praise_count + 1
+        where id = #{id}
+    </update>
+    <update id="unPraise">
+        update om_comment
+        set praise_count = praise_count - 1
+        where id = #{id}
+    </update>
+
+
     <select id="orderCommentPage" resultType="com.zex.cloud.haircut.response.OmOrderCommentInfo">
         select oc.id,
         oc.topic_id,
@@ -46,10 +58,12 @@
         ocs.skill_score,
         ocs.hygiene_score,
         ocs.service_score ,
-        hs.nickname stylist_name
+        hs.nickname stylist_name,
+        ss.name shop_name
         from om_comment oc
         left join om_comment_score ocs on oc.id = ocs.comment_id
-        left join  hm_stylist hs on hs.id = ocs.stylist_id
+        left join hm_stylist hs on hs.id = ocs.stylist_id
+        left join sm_shop ss on ss.id = ocs.shop_id
         <where>
             oc.topic_type = 1
             <if test="shopId != null">and ocs.shop_id = #{shopId}</if>
@@ -81,23 +95,23 @@
                oc.praise_count,
                oc.anonymous_status,
                if(uup.id is null, false, true) praised,
-               if(ost.id is null, false,true) rewarded
-        from   om_comment oc
-        left join um_user_praise uup on uup.target_type = 1 and uup.target_id = oc.id  and uup.user_id  = #{currentUserId}
-        left join om_shop_transaction ost on ost.target_id = oc.id
+               if(ost.id is null, false, true) rewarded
+        from om_comment oc
+                 left join um_user_praise uup on uup.target_type = 1 and uup.target_id = oc.id and uup.user_id = #{currentUserId}
+                 left join om_shop_transaction ost on ost.target_id = oc.id
         where topic_id = #{rewardId}
-        and topic_type = 2
+          and topic_type = 2
 
     </select>
     <select id="shopScoreCountVO" resultType="com.zex.cloud.haircut.vo.ScoreCountVO">
-        select  count(*) count ,avg(score) score   from  om_comment_score ocs
+        select count(*) count ,avg(score) score from om_comment_score ocs
         <where>
             <if test="shopId != null">
                 shop_id = #{shopId}
             </if>
-        <if test="stylistId != null">
-            stylist_id = #{stylistId}
-        </if>
+            <if test="stylistId != null">
+                stylist_id = #{stylistId}
+            </if>
         </where>
     </select>
 

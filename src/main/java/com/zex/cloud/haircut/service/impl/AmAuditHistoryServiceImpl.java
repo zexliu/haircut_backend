@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author Zex
@@ -26,14 +26,19 @@ import java.util.List;
 public class AmAuditHistoryServiceImpl extends ServiceImpl<AmAuditHistoryMapper, AmAuditHistory> implements IAmAuditHistoryService {
 
     @Autowired
-    AuditProcessor iSmShopApplyService;
+    private AuditProcessor iSmShopApplyService;
 
+    @Autowired
+    private AuditProcessor iSmAgentApplyService;
+
+    @Autowired
+    private AuditProcessor iomWithdrawalApplyService;
 
     @Override
     public List<AmAuditHistory> getByTargetIdAndType(Long targetId, AuditTargetType targetType) {
         return list(new LambdaQueryWrapper<AmAuditHistory>()
-                .eq(AmAuditHistory::getTargetId,targetId)
-                .eq(AmAuditHistory::getTargetType,targetType));
+                .eq(AmAuditHistory::getTargetId, targetId)
+                .eq(AmAuditHistory::getTargetType, targetType));
     }
 
     @Override
@@ -41,10 +46,15 @@ public class AmAuditHistoryServiceImpl extends ServiceImpl<AmAuditHistoryMapper,
     public void audit(AmAuditParam param, String operatorIp, Long operatorId) {
 
         String body = null;
-        switch (param.getTargetType()){
+        switch (param.getTargetType()) {
             case SHOP:
                 body = iSmShopApplyService.auditProcess(param.getTargetId(), param.getAuditStatus());
                 break;
+            case AGENT:
+                body = iSmAgentApplyService.auditProcess(param.getTargetId(), param.getAuditStatus());
+                break;
+            case WITHDRAWAL:
+                body = iomWithdrawalApplyService.auditProcess(param.getTargetId(), param.getAuditStatus());
             default:
                 break;
         }

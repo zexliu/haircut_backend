@@ -68,6 +68,10 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
 
     @Autowired
     private IUmUserCollectService iUmUserCollectService;
+
+
+    @Autowired
+    private ISmShopDiscountService iSmShopDiscountService;
     @Override
     @Transactional
     public HmStylist save(HmStylistParam param, Long shopId) {
@@ -261,10 +265,12 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
         List<HmStylistServiceRelation> services = iHmStylistServiceRelationService.getByStylistId(id);
 //        hmStylistDetail.setServices(services);
 
+        List<SmShopDiscount> smShopDiscounts = iSmShopDiscountService.getByShopId(stylist.getShopId());
         List<HmService> hmServices = iHmServiceService.list();
         List<HmServiceGrouponVo> males = new ArrayList<>();
         List<HmServiceGrouponVo> females = new ArrayList<>();
         for (HmService hmService : hmServices) {
+            SmShopDiscount discount =  findDiscount(hmService.getId(),smShopDiscounts);
             SmShopGroupon maleGroupon = findGroupon(GenderType.MALE, hmService.getId(), groupons);
             SmShopGroupon femaleGroupon = findGroupon(GenderType.FEMALE, hmService.getId(), groupons);
             HmStylistServiceRelation relation = findServiceRelatino(hmService.getId(), services);
@@ -276,7 +282,11 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
             maleVo.setSinglePrice(relation != null ? relation.getMalePrice() : null);
             maleVo.setStylistServiceId(relation != null ? relation.getId() : null);
             maleVo.setServiceName(hmService.getName());
-            males.add(maleVo);
+            maleVo.setDiscount(discount != null? discount.getDiscount(): null);
+            maleVo.setDiscountId(discount !=  null? discount.getId(): null);
+            if (maleVo.getSinglePrice() != null){
+                males.add(maleVo);
+            }
 
             femaleVo.setServiceId(hmService.getId());
             femaleVo.setGrouponId(femaleGroupon != null ? femaleGroupon.getId() : null);
@@ -284,7 +294,11 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
             femaleVo.setSinglePrice(relation != null ? relation.getFemalePrice() : null);
             femaleVo.setStylistServiceId(relation != null ? relation.getId() : null);
             femaleVo.setServiceName(hmService.getName());
-            females.add(femaleVo);
+            femaleVo.setDiscount(discount != null? discount.getDiscount(): null);
+            femaleVo.setDiscountId(discount !=  null? discount.getId(): null);
+            if (femaleVo.getSinglePrice() != null){
+                females.add(femaleVo);
+            }
         }
         hmStylistDetail.setFemales(females);
         hmStylistDetail.setMales(males);
@@ -292,11 +306,12 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
         return hmStylistDetail;
     }
 
+
     @Override
     public List<HmStylistVO> getStylistVoByShopId(Long id) {
         List<HmStylistVO> stylistVOS = baseMapper.getHmStylistVOsBySHopId(id, Constants.WASH_CUT_BLOW_ID);
         for (HmStylistVO stylistVO : stylistVOS) {
-            int waitCount  =  iOmShopOrderService.getWaitCount(stylistVO.getId(), LocalDateTime.now());
+            int waitCount  =  iOmShopOrderService.getWaitCount(null, stylistVO.getId(), LocalDateTime.now());
             //等待人数
             stylistVO.setWaitCount(waitCount);
             stylistVO.setWaitTime(waitCount * 30);
@@ -312,7 +327,7 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
     public IPage<HmStylistCollectVO> getCollectStylist(Page<HmStylistCollectVO> page, Long userId, Double latitude, Double longitude) {
         IPage<HmStylistCollectVO> vos = baseMapper.getCollectStylists(page,userId,Constants.WASH_CUT_BLOW_ID,latitude,longitude);
         for (HmStylistCollectVO record : vos.getRecords()) {
-            int waitCount  =  iOmShopOrderService.getWaitCount(record.getId(), LocalDateTime.now());
+            int waitCount  =  iOmShopOrderService.getWaitCount(null, record.getId(), LocalDateTime.now());
             //等待人数
             record.setWaitCount(waitCount);
             record.setWaitTime(waitCount * 30);
@@ -329,7 +344,7 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
     public IPage<HmStylistCollectVO> list(Page<HmStylistCollectVO> page, String keywords, Double latitude, Double longitude) {
         IPage<HmStylistCollectVO> vos = baseMapper.list(page,keywords,Constants.WASH_CUT_BLOW_ID,latitude,longitude);
         for (HmStylistCollectVO record : vos.getRecords()) {
-            int waitCount  =  iOmShopOrderService.getWaitCount(record.getId(), LocalDateTime.now());
+            int waitCount  =  iOmShopOrderService.getWaitCount(null, record.getId(), LocalDateTime.now());
             //等待人数
             record.setWaitCount(waitCount);
             record.setWaitTime(waitCount * 30);
@@ -349,7 +364,7 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
         detail.setWorkCases(workCases);
         List<HmStylistResume> resumes = iHmStylistResumeService.getByStylistId(id);
         detail.setResumes(resumes);
-        int waitCount  =  iOmShopOrderService.getWaitCount(detail.getId(), LocalDateTime.now());
+        int waitCount  =  iOmShopOrderService.getWaitCount(null, detail.getId(), LocalDateTime.now());
         //等待人数
         detail.setWaitCount(waitCount);
         detail.setWaitTime(waitCount * 30);
@@ -381,6 +396,20 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
         }
         return null;
 
+    }
+
+
+
+    private SmShopDiscount findDiscount(Long id, List<SmShopDiscount> smShopDiscounts) {
+        if (CollectionUtils.isEmpty(smShopDiscounts)) {
+            return null;
+        }
+        for (SmShopDiscount item : smShopDiscounts) {
+            if (item.getServiceId().equals(id)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     private SmShopGroupon findGroupon(GenderType genderType, Long id, List<SmShopGroupon> groupons) {

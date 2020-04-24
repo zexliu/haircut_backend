@@ -34,4 +34,6 @@ public class SmFeedbackParam implements Serializable {
 
     private String images;
 
+    private String type;
+
 }

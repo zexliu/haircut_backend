@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.enums.GenderType;
 import com.zex.cloud.haircut.enums.UserRewardPublishStatus;
 import com.zex.cloud.haircut.enums.UserRewardStatus;
@@ -32,7 +34,9 @@ public class OmUserReward implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long id;
+    @JsonSerialize(using = JsonLongSerializer.class)
 
     private Long userId;
 
@@ -58,6 +62,7 @@ public class OmUserReward implements Serializable {
 
     @TableLogic
     private Boolean deleteStatus;
+    @JsonSerialize(using = JsonLongSerializer.class)
     private Long orderId;
 
     private Boolean anonymousStatus;
@@ -72,5 +77,7 @@ public class OmUserReward implements Serializable {
 
     private Integer praiseCount;
 
+    private Integer previewCount;
 
+    private Integer age;
 }

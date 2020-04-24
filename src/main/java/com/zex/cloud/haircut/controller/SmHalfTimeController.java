@@ -4,6 +4,7 @@ package com.zex.cloud.haircut.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SmHalfTime;
+import com.zex.cloud.haircut.enums.WeekDay;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 import com.zex.cloud.haircut.response.SimpleResp;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -46,17 +49,30 @@ public class SmHalfTimeController {
     @GetMapping
     public IPage<SmHalfTime> list(Pageable pageable) {
         return iSmHalfTimeService.page(pageable.convert(), new LambdaQueryWrapper<SmHalfTime>()
-        .orderByAsc(SmHalfTime::getWeekDay,SmHalfTime::getStartAt));
+                .orderByAsc(SmHalfTime::getWeekDay, SmHalfTime::getStartAt));
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id){
+    public String delete(@PathVariable Long id) {
         iSmHalfTimeService.removeById(id);
         return SimpleResp.SUCCESS;
     }
 
     @GetMapping("/{id}")
-    public SmHalfTime detail(@PathVariable Long id){
+    public SmHalfTime detail(@PathVariable Long id) {
         return iSmHalfTimeService.getById(id);
+    }
+
+    @GetMapping("/isHalf")
+    @ApiOperation("查询是否半价时间")
+    public Boolean isHalf(LocalDateTime dateTime) {
+        return iSmHalfTimeService.isHalf(dateTime);
+    }
+
+    @GetMapping("/weekDau")
+    @ApiOperation("查询半价时间段")
+    public SmHalfTime week(@RequestParam WeekDay weekDay){
+        return iSmHalfTimeService.getOne(new LambdaQueryWrapper<SmHalfTime>()
+        .eq(SmHalfTime::getWeekDay,weekDay));
     }
 }

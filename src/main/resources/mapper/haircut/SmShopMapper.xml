@@ -71,7 +71,12 @@
             <if test="endAt != null">
                 and DATE(create_at) <![CDATA[  <= ]]>  #{endAt}
             </if>
-
+            <if test="provinceCode != null">
+                and province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                and city_code = #{cityCode}
+            </if>
         </where>
         group by `date`
     </select>
@@ -85,7 +90,12 @@
             <if test="endAt != null">
                 and DATE(create_at) <![CDATA[  <= ]]>  #{endAt}
             </if>
-
+            <if test="provinceCode != null">
+                and province_code = #{provinceCode}
+            </if>
+            <if test="cityCode != null">
+                and city_code = #{cityCode}
+            </if>
         </where>
     </select>
     <resultMap id="homeVO" type="com.zex.cloud.haircut.vo.SmHomeShopVO">
@@ -102,6 +112,7 @@
         logo,
         address,
         work_status ,
+        half_status,
         st_distance (point (longitude,latitude),point (#{longitude},#{latitude})) * 111195 distance
         from sm_shop
         <where>
@@ -113,13 +124,13 @@
             <if test="workStatus != null">
                 and work_status = #{workStatus}
             </if>
-            <if test="provinceCode != null">
+            <if test="provinceCode != null and provinceCode != ''">
                 and province_code = #{provinceCode}
             </if>
-            <if test="cityCode != null">
+            <if test="cityCode != null and cityCode != '' ">
                 and city_code = #{cityCode}
             </if>
-            <if test="districtCode != null">
+            <if test="districtCode != null and districtCode != ''">
                 and district_code = #{districtCode}
             </if>
             order by score desc ,distance asc
@@ -134,7 +145,8 @@
                st_distance(point(longitude, latitude), point(#{longitude}, #{latitude})) * 111195 distance
         from sm_shop ss
                  left join um_user_collect uuc on ss.id = uuc.target_id
-        where enable  and uuc.user_id = #{userId}
+        where enable
+          and uuc.user_id = #{userId}
     </select>
 
 

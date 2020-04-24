@@ -4,9 +4,7 @@ import com.zex.cloud.haircut.entity.SmHalfTime;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zex.cloud.haircut.params.SmHalfTimeParam;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * <p>
@@ -26,4 +24,5 @@ public interface ISmHalfTimeService extends IService<SmHalfTime> {
 
     SmHalfTime update(Long id, SmHalfTimeParam param);
 
+    Boolean isHalf(LocalDateTime dateTime);
 }

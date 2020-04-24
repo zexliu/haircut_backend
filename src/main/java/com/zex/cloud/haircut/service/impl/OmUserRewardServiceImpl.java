@@ -5,14 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zex.cloud.haircut.entity.OmComment;
-import com.zex.cloud.haircut.entity.OmOrder;
-import com.zex.cloud.haircut.entity.OmShopOrder;
-import com.zex.cloud.haircut.entity.OmUserReward;
-import com.zex.cloud.haircut.enums.CommentFromType;
-import com.zex.cloud.haircut.enums.ShopOrderStatus;
-import com.zex.cloud.haircut.enums.UserRewardPublishStatus;
-import com.zex.cloud.haircut.enums.UserRewardStatus;
+import com.zex.cloud.haircut.entity.*;
+import com.zex.cloud.haircut.enums.*;
 import com.zex.cloud.haircut.exception.ForbiddenException;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.exception.ParameterException;
@@ -22,16 +16,21 @@ import com.zex.cloud.haircut.params.OmOrderParam;
 import com.zex.cloud.haircut.params.OmShopOrderBodyParam;
 import com.zex.cloud.haircut.params.OmUserRewardBodyParam;
 import com.zex.cloud.haircut.security.RequestUser;
-import com.zex.cloud.haircut.service.IOmCommentService;
-import com.zex.cloud.haircut.service.IOmShopTransactionService;
-import com.zex.cloud.haircut.service.IOmUserRewardService;
+import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zex.cloud.haircut.service.IOmUserTransactionService;
+import com.zex.cloud.haircut.util.DecimalUtils;
 import com.zex.cloud.haircut.vo.OmUserReWardVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -56,6 +55,10 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
 
     @Autowired
     private IOmShopTransactionService iOmShopTransactionService;
+
+    @Autowired
+    private IUmVisitorsLogService iUmVisitorsLogService;
+
     @Override
     public String validOrderAndCreate(OmOrderParam param, RequestUser user, Long generateId) throws JsonProcessingException {
 
@@ -64,7 +67,6 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
         if (body == null) {
             throw new ParameterException("rewardBody不能为空");
         }
-
         OmUserReward userReward = new OmUserReward();
         userReward.setAnonymousStatus(body.getAnonymousStatus());
         userReward.setAvatar(user.getAvatar());
@@ -75,11 +77,17 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
         userReward.setImages(body.getImages());
         userReward.setJob(body.getJob());
         userReward.setOrderId(generateId);
+        userReward.setAge(body.getAge());
         userReward.setNickname(user.getNickname());
         userReward.setPraiseCount(0);
+        userReward.setDeleteStatus(false);
         userReward.setGenderType(body.getSexType());
+        if (DecimalUtils.eq(param.getAmount(), new BigDecimal("0"))) {
+            userReward.setPublishStatus(UserRewardPublishStatus.PUBLISHED);
+        } else {
+            userReward.setPublishStatus(UserRewardPublishStatus.PENDING_PAY);
+        }
         userReward.setRewardStatus(UserRewardStatus.PENDING_REWARD);
-        userReward.setPublishStatus(UserRewardPublishStatus.PENDING_PAY);
         userReward.setRewardAmount(param.getAmount());
         userReward.setUserId(user.getId());
         userReward.setWeight(body.getWeight());
@@ -115,31 +123,45 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
         if (userReward == null) {
             throw new NotFoundException("悬赏动态不存在");
         }
-        if (userReward.getPublishStatus() != UserRewardPublishStatus.PUBLISHED){
+        if (userReward.getPublishStatus() != UserRewardPublishStatus.PUBLISHED) {
             throw new ForbiddenException("当前动态不在发布状态");
         }
-        if (userReward.getRewardStatus() != UserRewardStatus.PENDING_REWARD){
+        if (userReward.getRewardStatus() != UserRewardStatus.PENDING_REWARD) {
             throw new ForbiddenException("当前动态不在待悬赏状态");
         }
         OmComment omComment = iOmCommentService.getById(commentId);
-        if (omComment == null){
+        if (omComment == null) {
             throw new NotFoundException("评论不存在");
         }
-        if (!omComment.getTopicId().equals(id)){
+        if (!omComment.getTopicId().equals(id)) {
             throw new ForbiddenException("该评论不属于该动态");
         }
-        if (omComment.getFromType() == CommentFromType.SHOP){
-            iOmShopTransactionService.onReward(omComment.getFromId(),id,userReward.getRewardAmount());
-        }else if (omComment.getFromType() == CommentFromType.USER){
-            iOmUserTransactionService.onReward(omComment.getFromId(),id,userReward.getRewardAmount());
+        if (omComment.getFromType() == CommentFromType.SHOP) {
+            iOmShopTransactionService.onReward(omComment.getFromId(), id, userReward.getRewardAmount());
+        } else if (omComment.getFromType() == CommentFromType.USER) {
+            iOmUserTransactionService.onReward(omComment.getFromId(), id, userReward.getRewardAmount());
         }
 
 
     }
 
     @Override
-    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long currentUserId,Long userId) {
-        return baseMapper.queryUserRewardVO(convert,rewardStatus,publishStatus,currentUserId,userId);
+    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus, Long currentUserId, Long userId) {
+        IPage<OmUserReWardVO> page = baseMapper.queryUserRewardVO(convert, rewardStatus, publishStatus, currentUserId, userId);
+        for (OmUserReWardVO record : page.getRecords()) {
+            baseMapper.preview(record.getId());
+        }
+        return page;
+    }
+
+    @Override
+    public void praise(Long id) {
+        baseMapper.praise(id);
+    }
+
+    @Override
+    public void unPraise(Long id) {
+        baseMapper.unPraise(id);
     }
 
     private OmUserReward getByOrderId(Long id) {

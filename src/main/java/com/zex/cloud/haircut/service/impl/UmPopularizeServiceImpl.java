@@ -1,5 +1,6 @@
 package com.zex.cloud.haircut.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.entity.UmPopularize;
@@ -27,5 +28,10 @@ public class UmPopularizeServiceImpl extends ServiceImpl<UmPopularizeMapper, UmP
     @Override
     public IPage<UmPopularizeUser> page(Page<UmPopularizeUser> page, Long targetId, PopularizeType popularizeType, PopularizeStatus popularizeStatus, LocalDateTime startAt, LocalDateTime endAt) {
         return baseMapper.list(page,targetId,popularizeStatus,popularizeType,startAt,endAt);
+    }
+
+    @Override
+    public UmPopularize getByUserId(Long userId) {
+        return getOne(new LambdaQueryWrapper<UmPopularize>().eq(UmPopularize::getUserId,userId));
     }
 }

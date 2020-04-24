@@ -20,5 +20,13 @@
                AND a.parent_id = b.id
                AND b.parent_id = c.id
     </select>
+    <select id="home" resultType="com.zex.cloud.haircut.response.AmRegionTreeVO">
+        SELECT am_region.id,  am_region.`name`  , am_region.ad_code  ,am_region.parent_id ,am_region.level  , count(sm_shop.id  )   shop_count FROM am_region
+        LEFT JOIN sm_shop  on  sm_shop.district_code = am_region.ad_code  OR  sm_shop.city_code = am_region.ad_code
+        WHERE level <![CDATA[
+        <=
+        ]]> 3 and level > 1
+        GROUP BY am_region.id
+    </select>
 
 </mapper>

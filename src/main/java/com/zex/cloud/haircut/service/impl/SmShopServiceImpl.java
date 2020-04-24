@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.config.Constants;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
+import com.zex.cloud.haircut.entity.UmVisitorsLog;
 import com.zex.cloud.haircut.enums.CollectType;
+import com.zex.cloud.haircut.enums.ShopTitleType;
+import com.zex.cloud.haircut.enums.VisitorType;
 import com.zex.cloud.haircut.response.OmOrderCommentInfo;
 import com.zex.cloud.haircut.vo.*;
 import com.zex.cloud.haircut.entity.SmShop;
@@ -16,6 +19,7 @@ import com.zex.cloud.haircut.params.SmShopCurrentParam;
 import com.zex.cloud.haircut.params.SmShopParam;
 import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +41,11 @@ import java.util.List;
  */
 @Service
 public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> implements ISmShopService {
+    @Autowired
+    private IOmShopOrderService iOmShopOrderService;
 
+    @Autowired
+    private IUmVisitorsLogService iUmVisitorsLogService;
     @Autowired
     private ISmShopServiceRelationService iSmShopServiceRelationService;
 
@@ -83,7 +92,14 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
         smShop.setId(id);
         updateById(smShop);
         //修改自己的时候增加的参数
-        iSmShopServiceRelationService.updateRelations(id, param.getServiceIds());
+        List<Long> ids = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(param.getServiceIds())){
+            ids.addAll(param.getServiceIds());
+        }
+        if (CollectionUtils.isNotEmpty(param.getSafetyIds())){
+            ids.addAll(param.getSafetyIds());
+        }
+        iSmShopServiceRelationService.updateRelations(id, ids);
         return smShop;
     }
 
@@ -127,13 +143,13 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
     }
 
     @Override
-    public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt) {
-        return baseMapper.brokenLines(startAt, endAt);
+    public List<BrokenLinePoint> brokenLines(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode) {
+        return baseMapper.brokenLines(startAt, endAt,provinceCode,cityCode);
     }
 
     @Override
-    public int count(LocalDate startAt, LocalDate endAt) {
-        return baseMapper.count(startAt, endAt);
+    public int count(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode) {
+        return baseMapper.count(startAt, endAt,provinceCode,cityCode);
     }
 
     @Override
@@ -141,7 +157,10 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
         SmShop smShop = getById(shopId);
         SmShopVO adminVO = new SmShopVO();
         BeanUtils.copyProperties(smShop, adminVO);
-        List<Long> serviceIds = iSmShopServiceRelationService.getServiceIdsByShopId(shopId);
+        List<Long> serviceIds = iSmShopServiceRelationService.getServiceIdsByShopId(shopId, ShopTitleType.DEFAULT);
+
+        List<Long> safetyIds = iSmShopServiceRelationService.getServiceIdsByShopId(shopId,ShopTitleType.SAFETY);
+        adminVO.setSafetyIds(safetyIds);
         adminVO.setServiceIds(serviceIds);
         return adminVO;
     }
@@ -156,9 +175,13 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
             //获取最低的洗剪吹价格
             BigDecimal minAmount = iHmStylistServiceRelationService.getMinAmount(Constants.WASH_CUT_BLOW_ID, record.getId(), null);
             record.setPrice(minAmount);
+
+            int peopleCount  =  iOmShopOrderService.getWaitCount(record.getId(),null, LocalDateTime.now());
+            //等待人数
+            record.setPeopleCount(peopleCount);
             //是否在半价时间内
-            Boolean halfStatus = iSmHalfTimeService.valid(record.getId(), LocalDateTime.now());
-            record.setHalfStatus(halfStatus);
+//            Boolean halfStatus = iSmHalfTimeService.valid(record.getId(), LocalDateTime.now());
+//            record.setHalfStatus(halfStatus);
         }
         return smHomeShopVOIPage;
 
@@ -176,15 +199,24 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
         detailVO.setComments(commentVo);
         int fansCount = iUmUserCollectService.shopCount(CollectType.SHOP,id);
         detailVO.setFansCount(fansCount);
-        detailVO.setHalfStatus(iSmHalfTimeService.valid(id,LocalDateTime.now()));
+        detailVO.setHalfStatus(smShop.getHalfStatus());
 //        Float score = iOmCommentScoreService.score(id);
         detailVO.setScore(scoreCountVO.getScore());
-        List<Long> titleIds = iSmShopServiceRelationService.getServiceIdsByShopId(id);
-        detailVO.setTitleIds(titleIds);
+        List<Long> titleIds = iSmShopServiceRelationService.getServiceIdsByShopId(id,ShopTitleType.DEFAULT);
+        detailVO.setDefaultTitleIds(titleIds);
+        List<Long> safetyIds = iSmShopServiceRelationService.getServiceIdsByShopId(id,ShopTitleType.SAFETY);
+        detailVO.setSafetyTitleIds(safetyIds);
         List<HmStylistVO> stylistVOS = iHmStylistService.getStylistVoByShopId(id);
         detailVO.setStylists(stylistVOS);
         boolean collect = iUmUserCollectService.isCollect(userId, detailVO.getId(), CollectType.SHOP);
         detailVO.setCollect(collect);
+
+        UmVisitorsLog umVisitorsLog = new UmVisitorsLog();
+        umVisitorsLog.setTargetId(id);
+        umVisitorsLog.setTargetType(VisitorType.SHOP);
+        umVisitorsLog.setUserId(userId);
+        umVisitorsLog.setCreateAt(LocalDateTime.now());
+        iUmVisitorsLogService.save(umVisitorsLog);
         return detailVO;
     }
 
@@ -207,8 +239,8 @@ public class SmShopServiceImpl extends ServiceImpl<SmShopMapper, SmShop> impleme
             BigDecimal minAmount = iHmStylistServiceRelationService.getMinAmount(Constants.WASH_CUT_BLOW_ID, record.getId(), null);
             record.setPrice(minAmount);
             //是否在半价时间内
-            Boolean halfStatus = iSmHalfTimeService.valid(record.getId(), LocalDateTime.now());
-            record.setHalfStatus(halfStatus);
+//            Boolean halfStatus = iSmHalfTimeService.valid(record.getId(), LocalDateTime.now());
+//            record.setHalfStatus(halfStatus);
         }
         return smHomeShopVOIPage;
     }

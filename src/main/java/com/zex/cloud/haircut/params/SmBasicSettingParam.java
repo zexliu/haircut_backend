@@ -32,5 +32,7 @@ public class SmBasicSettingParam implements Serializable {
     private BigDecimal userFirstAmount;
     @NotNull
     private Integer shopFreeMonth;
+    @NotNull
+    private BigDecimal agentCommissionProportion;
 
 }

@@ -15,7 +15,7 @@
         <result column="shop_free_month" property="shopFreeMonth" />
     </resultMap>
     <select id="current" resultType="com.zex.cloud.haircut.entity.SmBasicSetting">
-        select  id, shop_free_month, shop_commission_proportion, user_commission_proportion, user_first_amount, create_at, operator_ip, operator_id, operator_at  from  sm_basic_setting
+        select  id, shop_free_month, shop_commission_proportion,agent_commission_proportion, user_commission_proportion, user_first_amount, create_at, operator_ip, operator_id, operator_at  from  sm_basic_setting
         order by create_at desc limit 1
     </select>
 

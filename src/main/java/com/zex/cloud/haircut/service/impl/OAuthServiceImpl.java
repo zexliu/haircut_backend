@@ -59,16 +59,16 @@ public class OAuthServiceImpl implements IOAuthService {
     }
 
     @Override
-    public TokenRespSimple wxMiniToken(TokenWxMiniParam param)  {
+    public TokenRespSimple wxMiniToken(TokenWxMiniParam param) {
         Call<WxJsCodeToSessionResponse> call = wxRetrofit.create(WxApi.class).jsCodeToSession(param.getAppId(), WxProperties.APPS.get(param.getAppId()), param.getJsCode(), "authorization_code");
         try {
-            Response<WxJsCodeToSessionResponse> execute =  call.execute();
+            Response<WxJsCodeToSessionResponse> execute = call.execute();
             WxJsCodeToSessionResponse body = execute.body();
             if (execute.isSuccessful() && body != null) {
                 if (body.getErrCode() == null || body.getErrCode() == 0) {
-                    verifySignature(param.getRawData(),body.getSessionKey(),param.getSignature());
-                    WxUserInfoParam userInfo = getUserInfo(param.getEncryptedData(),body.getSessionKey(),param.getIv(),param.getAppId());
-                    RequestUser requestUser = iSyUserService.getRequestUser(userInfo,body.getSessionKey(), param.getClientType(),param.getPopularizeId(),param.getPopularizeType());
+                    verifySignature(param.getRawData(), body.getSessionKey(), param.getSignature());
+                    WxUserInfoParam userInfo = getUserInfo(param.getEncryptedData(), body.getSessionKey(), param.getIv(), param.getAppId());
+                    RequestUser requestUser = iSyUserService.getRequestUser(userInfo, body.getSessionKey(), param.getClientType(), param.getPopularizeId(), param.getPopularizeType());
                     return saveToRedis(requestUser);
                 } else {
                     throw new ServerException(body.getErrMsg());
@@ -82,14 +82,14 @@ public class OAuthServiceImpl implements IOAuthService {
 
     }
 
-    private WxUserInfoParam getUserInfo(String encryptedData,String sessionKey, String iv, String appId) {
+    private WxUserInfoParam getUserInfo(String encryptedData, String sessionKey, String iv, String appId) {
         try {
             String json = AESUtil.decryptData(encryptedData, sessionKey, iv);
             System.out.println(json);
             WxUserInfoParam wxUserInfoParam = objectMapper.readValue(json, WxUserInfoParam.class);
-            if (StringUtils.equals(wxUserInfoParam.getWatermark().getAppid(),appId)){
+            if (StringUtils.equals(wxUserInfoParam.getWatermark().getAppid(), appId)) {
                 return wxUserInfoParam;
-            }else{
+            } else {
                 throw new ServerException("解析微信敏感信息异常");
             }
         } catch (Exception e) {
@@ -98,12 +98,12 @@ public class OAuthServiceImpl implements IOAuthService {
         }
     }
 
-    private void verifySignature(String rawData, String sessionKey,String signature) {
-            rawData += sessionKey;
-            String sha1 = DigestUtils.sha1Hex(rawData);
-            if (!StringUtils.equals(signature,sha1)){
-                throw new ServerException("微信验签失败");
-            }
+    private void verifySignature(String rawData, String sessionKey, String signature) {
+        rawData += sessionKey;
+        String sha1 = DigestUtils.sha1Hex(rawData);
+        if (!StringUtils.equals(signature, sha1)) {
+            throw new ServerException("微信验签失败");
+        }
     }
 
     @Override
@@ -115,12 +115,8 @@ public class OAuthServiceImpl implements IOAuthService {
                 Response<WxAccessToken> execute = call.execute();
                 WxAccessToken body = execute.body();
                 if (execute.isSuccessful() && body != null) {
-                    if (body.getErrCode() == 0) {
-                        accessToken = body.getAccessToken();
-                        stringRedisTemplate.opsForValue().set(RedisKeys.WX_ACCESS_TOKEN, accessToken, body.getExpiresIn(), TimeUnit.SECONDS);
-                    } else {
-                        throw new ServerException(body.getErrMsg());
-                    }
+                    accessToken = body.getAccessToken();
+                    stringRedisTemplate.opsForValue().set(RedisKeys.WX_ACCESS_TOKEN, accessToken, body.getExpiresIn(), TimeUnit.SECONDS);
                 } else {
                     throw new ServerException("调用微信网络异常");
                 }

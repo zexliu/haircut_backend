@@ -56,4 +56,5 @@
         group by `date`
     </select>
 
+
 </mapper>

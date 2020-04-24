@@ -5,17 +5,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.OmShopTransaction;
 import com.zex.cloud.haircut.enums.ShopTransactionType;
 import com.zex.cloud.haircut.params.Pageable;
+import com.zex.cloud.haircut.params.WithDrawParam;
+import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.IOmShopTransactionService;
+import com.zex.cloud.haircut.vo.OmShopTransactionRewardVO;
 import com.zex.cloud.haircut.vo.OmShopTransactionVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -51,6 +52,13 @@ public class OmShopTransactionController {
 
     }
 
+    @GetMapping("/current/reward")
+    @ApiOperation("获取当前用户悬赏记录分页")
+    public IPage<OmShopTransactionRewardVO> currentUserPage(Pageable pageable, LocalDateTime startAt, LocalDateTime endAt) {
+        return iOmShopTransactionService.rewardPage(pageable.convert(),startAt,endAt,RequestHolder.user().getShopId());
+
+    }
+
     @GetMapping("/current/balance")
     @ApiOperation("获取当前用户钱包余额")
     public BigDecimal currentBalance(LocalDateTime startAt, LocalDateTime endAt, Boolean incrStatus, ShopTransactionType transactionType){
@@ -70,4 +78,13 @@ public class OmShopTransactionController {
         return iOmShopTransactionService.currentShop(RequestHolder.user().getShopId());
     }
 
+
+
+
+    @PostMapping("/withdrawal")
+    @ApiOperation("店铺提现")
+    public String withdrawal(@RequestBody @Valid WithDrawParam param){
+        iOmShopTransactionService.withdrawal(param, RequestHolder.user().getShopId());
+        return SimpleResp.SUCCESS;
+    }
 }

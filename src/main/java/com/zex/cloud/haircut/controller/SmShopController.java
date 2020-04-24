@@ -2,6 +2,7 @@ package com.zex.cloud.haircut.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zex.cloud.haircut.enums.ShopTitleType;
 import com.zex.cloud.haircut.vo.HmStylistCollectVO;
 import com.zex.cloud.haircut.vo.ShopDetailVO;
 import com.zex.cloud.haircut.vo.SmHomeShopVO;

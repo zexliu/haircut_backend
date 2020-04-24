@@ -35,8 +35,8 @@ import java.util.List;
  * @author Zex
  * @since 2020-02-19
  */
-@Service
-public class SmShopApplyProcessorImpl extends ServiceImpl<SmShopApplyMapper, SmShopApply> implements ISmShopApplyService , AuditProcessor {
+@Service("iSmShopApplyService")
+public class SmShopApplyServiceImpl extends ServiceImpl<SmShopApplyMapper, SmShopApply> implements ISmShopApplyService , AuditProcessor {
 
     @Autowired
     private ObjectMapper objectMapper;

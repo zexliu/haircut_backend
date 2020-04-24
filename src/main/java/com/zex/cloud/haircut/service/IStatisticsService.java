@@ -4,7 +4,6 @@ import com.zex.cloud.haircut.dto.BarPoint;
 import com.zex.cloud.haircut.dto.PiePoint;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -16,4 +15,13 @@ public interface IStatisticsService {
     List<PiePoint>  pie(LocalDate startAt, LocalDate endAt);
 
     List<BarPoint> bar(LocalDate startAt, LocalDate endAt);
+
+    Map<String, Object> numbersAgent(LocalDate startAt, LocalDate endAt, Long id, Integer provinceCode, Integer code);
+
+    Map<String, Object> brokenLinesAgent(LocalDate startAt, LocalDate endAt, String type, Long id, Integer provinceCode, Integer cityCode);
+
+    List<PiePoint> pieAgent(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode);
+
+    List<BarPoint> barAgent(LocalDate startAt, LocalDate endAt, Integer provinceCode, Integer cityCode);
+
 }
