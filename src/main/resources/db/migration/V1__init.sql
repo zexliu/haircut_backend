@@ -713,7 +713,7 @@ create table sy_permission
 (
     id                   bigint not null,
     name                 varchar(30),
-    url                  varchar(30),
+    url                  varchar(200),
     method_type          tinyint,
     seq                  int default 0,
     remark               varchar(200),

@@ -316,8 +316,9 @@ public class HmStylistServiceImpl extends ServiceImpl<HmStylistMapper, HmStylist
             stylistVO.setWaitCount(waitCount);
             stylistVO.setWaitTime(waitCount * 30);
             //手艺值
-            int commentCount = iOmCommentScoreService.stylistGoodCommentCount(id);
-            int orderCount = iOmShopOrderService.stylistOrderCount(id);
+
+            int commentCount = iOmCommentScoreService.stylistGoodCommentCount(stylistVO.getId());
+            int orderCount = iOmShopOrderService.stylistOrderCount(stylistVO.getId());
             stylistVO.setSkillPraise(commentCount + orderCount);
         }
         return stylistVOS;
