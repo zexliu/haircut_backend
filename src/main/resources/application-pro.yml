@@ -1,12 +1,12 @@
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/hhh?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
+    url: jdbc:mysql://rm-wz9hsmiyn0xe3b9m0.mysql.rds.aliyuncs.com:3306/haircut?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: haircut
+    password: ZXCasd123
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
-    host: 127.0.0.1
+    host: 172.18.197.78
     port: 6379
     password: 666666
     timeout: 3600ms #超时时间
@@ -17,10 +17,12 @@ spring:
         max-wait: -1ms #默认-1 最大连接阻塞等待时间
         min-idle: 0 #最小空闲连接
   rabbitmq:
-    host: 127.0.0.1
+    host: 172.18.197.78
     port: 5672
     username: root
     password: 666666
 
-files-location: /Users/zex/upload_files
-host-url: http://api.zex.nat300.top/
+files-location: /files
+host-url: http://http://api.ydqmf.com/
+server:
+  port: 80

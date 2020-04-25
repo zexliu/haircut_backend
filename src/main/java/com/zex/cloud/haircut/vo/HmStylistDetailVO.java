@@ -1,13 +1,10 @@
 package com.zex.cloud.haircut.vo;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import com.zex.cloud.haircut.entity.HmDomain;
 import com.zex.cloud.haircut.entity.HmStylist;
 import com.zex.cloud.haircut.entity.HmStylistResume;
 import com.zex.cloud.haircut.entity.HmWorkCase;
 import com.zex.cloud.haircut.response.OmOrderCommentInfo;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

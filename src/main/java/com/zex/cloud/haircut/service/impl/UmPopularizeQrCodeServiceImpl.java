@@ -32,7 +32,6 @@ import java.io.IOException;
  */
 @Service
 public class UmPopularizeQrCodeServiceImpl extends ServiceImpl<UmPopularizeQrCodeMapper, UmPopularizeQrCode> implements IUmPopularizeQrCodeService {
-
     @Autowired
     private Retrofit wxRetrofit;
     @Autowired

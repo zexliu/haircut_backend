@@ -3,7 +3,6 @@ package com.zex.cloud.haircut.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.zex.cloud.haircut.entity.PmBanner;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.params.PmBannerParam;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.function.BinaryOperator;
 
 /**
  * <p>

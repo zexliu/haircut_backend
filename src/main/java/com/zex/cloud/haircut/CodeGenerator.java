@@ -8,10 +8,7 @@ import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.zex.cloud.haircut.util.BCryptPasswordEncoder;
-import com.zex.cloud.haircut.util.PasswordEncoder;
 import org.apache.commons.lang3.StringUtils;
-import sun.security.util.Password;
 
 import java.util.ArrayList;
 import java.util.List;
