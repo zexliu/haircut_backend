@@ -30,9 +30,11 @@ public interface IOmUserRewardService extends IService<OmUserReward> {
 
     void rewardStatus(Long id, Long commentId, Long userId);
 
-     IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long currentUserId,Long userId);
+     IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long currentUserId,Long userId,Boolean deleteStatus);
 
     void praise(Long id);
 
     void unPraise(Long id);
+
+    void remove(Long id);
 }

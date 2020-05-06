@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author Zex
@@ -32,13 +32,13 @@ public class SmShopDiscountServiceImpl extends ServiceImpl<SmShopDiscountMapper,
 
     @Override
     public SmShopDiscount create(SmShopDiscountParam param, Long shopId) {
-        int count = count(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId,shopId)
-        .eq(SmShopDiscount::getServiceId,param.getServiceId()));
-        if (count> 0 ){
+        int count = count(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId, shopId)
+                .eq(SmShopDiscount::getServiceId, param.getServiceId()));
+        if (count > 0) {
             throw new ExistsException("该项服务已经有过折扣信息了");
         }
         SmShopDiscount discount = new SmShopDiscount();
-        BeanUtils.copyProperties(param,discount);
+        BeanUtils.copyProperties(param, discount);
         discount.setShopId(shopId);
         save(discount);
         return discount;
@@ -47,10 +47,10 @@ public class SmShopDiscountServiceImpl extends ServiceImpl<SmShopDiscountMapper,
     @Override
     public SmShopDiscount update(Long id, SmShopDiscountParam param, Long shopId) {
         SmShopDiscount discount = getById(id);
-        if (!discount.getShopId().equals(shopId)){
+        if (!discount.getShopId().equals(shopId)) {
             throw new ForbiddenException();
         }
-        BeanUtils.copyProperties(param,discount);
+        BeanUtils.copyProperties(param, discount);
         updateById(discount);
         return null;
     }
@@ -58,7 +58,7 @@ public class SmShopDiscountServiceImpl extends ServiceImpl<SmShopDiscountMapper,
     @Override
     public void delete(Long id, Long shopId) {
         SmShopDiscount discount = getById(id);
-        if (!discount.getShopId().equals(shopId)){
+        if (!discount.getShopId().equals(shopId)) {
             throw new ForbiddenException();
         }
         removeById(id);
@@ -68,31 +68,30 @@ public class SmShopDiscountServiceImpl extends ServiceImpl<SmShopDiscountMapper,
     public BigDecimal getDiscountByServiceIdAndShopId(Long serviceId, Long shopId) {
         SmShopDiscount smShopDiscount = getOne(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId, shopId)
                 .eq(SmShopDiscount::getServiceId, serviceId));
-        if (smShopDiscount == null){
-            throw new NotFoundException("折扣信息不存在 serviceId = "+ serviceId +"shopId = "+ shopId);
+        if (smShopDiscount == null) {
+            throw new NotFoundException("折扣信息不存在 serviceId = " + serviceId + "shopId = " + shopId);
         }
         return smShopDiscount.getDiscount();
     }
 
     @Override
-    public void batch(List<SmShopDiscountParam> params,Long shopId) {
-        remove(new LambdaUpdateWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId,shopId));
-
-        List<SmShopDiscount> collect = params.stream().flatMap(new Function<SmShopDiscountParam, Stream<SmShopDiscount>>() {
-            @Override
-            public Stream<SmShopDiscount> apply(SmShopDiscountParam param) {
-                SmShopDiscount discount = new SmShopDiscount();
-                BeanUtils.copyProperties(param, discount);
-                discount.setShopId(shopId);
-
-                return Stream.of(discount);
-            }
+    public void batch(List<SmShopDiscountParam> params, Long shopId) {
+        remove(new LambdaUpdateWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId, shopId));
+        long count = params.stream().flatMap((Function<SmShopDiscountParam, Stream<Long>>) smShopDiscountParam -> Stream.of(smShopDiscountParam.getServiceId())).distinct().count();
+        if (count < params.size()) {
+            throw new ForbiddenException("所选服务中 包含重复数据");
+        }
+        List<SmShopDiscount> collect = params.stream().flatMap((Function<SmShopDiscountParam, Stream<SmShopDiscount>>) param -> {
+            SmShopDiscount discount = new SmShopDiscount();
+            BeanUtils.copyProperties(param, discount);
+            discount.setShopId(shopId);
+            return Stream.of(discount);
         }).collect(Collectors.toList());
         saveBatch(collect);
     }
 
     @Override
     public List<SmShopDiscount> getByShopId(Long shopId) {
-        return list(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId,shopId));
+        return list(new LambdaQueryWrapper<SmShopDiscount>().eq(SmShopDiscount::getShopId, shopId));
     }
 }

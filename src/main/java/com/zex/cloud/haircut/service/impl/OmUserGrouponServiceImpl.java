@@ -91,10 +91,9 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
             return omUserGroupon.getAmount();
         }else {
             //剩余金额 等于 总金额 / 总数量 * 剩余数量
-            BigDecimal remainAmount = DecimalUtils.multiply(DecimalUtils.divide(omUserGroupon.getAmount(),new BigDecimal(String.valueOf(omUserGroupon.getTotalCount())))
-                    ,new BigDecimal(String.valueOf(omUserGroupon.getRemainCount())));
             //退款金额等于剩余金额 扣除 5%
-            return DecimalUtils.multiply(remainAmount,new BigDecimal("0.5"));
+            return DecimalUtils.multiply(DecimalUtils.divide(omUserGroupon.getAmount(),new BigDecimal(String.valueOf(omUserGroupon.getTotalCount())))
+                    ,new BigDecimal(String.valueOf(omUserGroupon.getRemainCount())));
         }
     }
 

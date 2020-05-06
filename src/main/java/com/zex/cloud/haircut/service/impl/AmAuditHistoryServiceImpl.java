@@ -38,7 +38,8 @@ public class AmAuditHistoryServiceImpl extends ServiceImpl<AmAuditHistoryMapper,
     public List<AmAuditHistory> getByTargetIdAndType(Long targetId, AuditTargetType targetType) {
         return list(new LambdaQueryWrapper<AmAuditHistory>()
                 .eq(AmAuditHistory::getTargetId, targetId)
-                .eq(AmAuditHistory::getTargetType, targetType));
+                .eq(AmAuditHistory::getTargetType, targetType)
+                .orderByDesc(AmAuditHistory::getCreateAt));
     }
 
     @Override

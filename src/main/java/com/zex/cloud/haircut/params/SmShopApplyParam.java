@@ -1,4 +1,5 @@
 package com.zex.cloud.haircut.params;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -8,6 +9,9 @@ import javax.validation.constraints.NotNull;
 public class SmShopApplyParam {
 
 
+    @ApiModelProperty("验证码")
+    @NotBlank
+    private String authCode;
     @NotBlank
     private String name;
     private String address;

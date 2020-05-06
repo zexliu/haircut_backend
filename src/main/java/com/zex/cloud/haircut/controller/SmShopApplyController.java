@@ -8,6 +8,7 @@ import com.zex.cloud.haircut.enums.AuditStatus;
 import com.zex.cloud.haircut.exception.NotFoundException;
 import com.zex.cloud.haircut.params.Pageable;
 import com.zex.cloud.haircut.params.SmShopApplyParam;
+import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.response.SmShopApplyDetail;
 import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.service.ISmShopApplyService;
@@ -43,6 +44,12 @@ public class SmShopApplyController {
     }
 
 
+    @PostMapping("/code")
+    @ApiOperation("发送短信验证码")
+    public String sendAuthCode(@RequestParam String mobile){
+        iSmShopApplyService.sendAuthCode(mobile);
+        return SimpleResp.SUCCESS;
+    }
 
     @PostMapping
     @ApiOperation("提交申请")

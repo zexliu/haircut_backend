@@ -58,7 +58,9 @@
         left join um_user_praise uup on uup.target_type = 2 and uup.target_id = our.id and uup.user_id =
         #{currentUserId}
         <where>
-            our.delete_status = 0
+            <if test="deleteStatus != null">
+                and our.delete_status = #{deleteStatus}
+            </if>
             <if test="publishStatus != null">
                 and our.publish_status = #{publishStatus}
             </if>

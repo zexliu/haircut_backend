@@ -8,18 +8,17 @@ import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.entity.SmShopApply;
 import com.zex.cloud.haircut.enums.AuditStatus;
 import com.zex.cloud.haircut.enums.AuditTargetType;
+import com.zex.cloud.haircut.enums.AuthCodeType;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.ForbiddenException;
+import com.zex.cloud.haircut.exception.ParameterException;
 import com.zex.cloud.haircut.exception.ServerException;
 import com.zex.cloud.haircut.mapper.SmShopApplyMapper;
 import com.zex.cloud.haircut.params.SmShopApplyParam;
 import com.zex.cloud.haircut.response.SmShopApplyDetail;
-import com.zex.cloud.haircut.service.AuditProcessor;
-import com.zex.cloud.haircut.service.IAmAuditHistoryService;
-import com.zex.cloud.haircut.service.ISmShopApplyService;
+import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zex.cloud.haircut.service.ISmShopService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,12 +43,17 @@ public class SmShopApplyServiceImpl extends ServiceImpl<SmShopApplyMapper, SmSho
     private IAmAuditHistoryService iAmAuditHistoryService;
 
     @Autowired
+    private ISmsService iSmsService;
+    @Autowired
     private ISmShopService iSmShopService;
     @Override
     public SmShopApply create(SmShopApplyParam param, Long userId) {
         SmShopApply smShopApply = getApplyByUserId(userId);
         if (smShopApply != null) {
             throw new ExistsException("申请记录已存在");
+        }
+        if (!iSmsService.isAuthCodePass(param.getLeaderMobile(),AuthCodeType.AGENT_APPLY,param.getAuthCode())){
+            throw new ParameterException("验证码不正确或已过期");
         }
         smShopApply = new SmShopApply();
         BeanUtils.copyProperties(param, smShopApply);
@@ -92,6 +96,10 @@ public class SmShopApplyServiceImpl extends ServiceImpl<SmShopApplyMapper, SmSho
         return detail;
     }
 
+    @Override
+    public void sendAuthCode(String mobile) {
+        iSmsService.sendAuthCode(mobile, AuthCodeType.SHOP_APPLY,null);
+    }
 
 
     @Override
@@ -105,7 +113,7 @@ public class SmShopApplyServiceImpl extends ServiceImpl<SmShopApplyMapper, SmSho
             BeanUtils.copyProperties(smShopApply,smShop);
             smShop.setId(null);
             smShop.setCreateAt(null);
-            smShop.setWorkStatus(ShopWorkStatus.REST);
+            smShop.setWorkStatus(ShopWorkStatus.WORK);
             smShop.setLogo(smShopApply.getPhoto());
             smShop.setEnable(true);
             iSmShopService.customSave(smShop);

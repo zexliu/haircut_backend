@@ -18,6 +18,7 @@ import com.zex.cloud.haircut.params.OmUserRewardBodyParam;
 import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zex.cloud.haircut.util.DateTimeUtils;
 import com.zex.cloud.haircut.util.DecimalUtils;
 import com.zex.cloud.haircut.vo.OmUserReWardVO;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ import java.util.stream.Stream;
 @Slf4j
 public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmUserReward> implements IOmUserRewardService {
 
+    @Autowired
+    IOmOrderService iOmOrderService;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -146,8 +149,8 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
     }
 
     @Override
-    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus, Long currentUserId, Long userId) {
-        IPage<OmUserReWardVO> page = baseMapper.queryUserRewardVO(convert, rewardStatus, publishStatus, currentUserId, userId);
+    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus, Long currentUserId, Long userId,Boolean deleteStatus) {
+        IPage<OmUserReWardVO> page = baseMapper.queryUserRewardVO(convert, rewardStatus, publishStatus, currentUserId, userId,deleteStatus);
         for (OmUserReWardVO record : page.getRecords()) {
             baseMapper.preview(record.getId());
         }
@@ -162,6 +165,21 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
     @Override
     public void unPraise(Long id) {
         baseMapper.unPraise(id);
+    }
+
+    @Override
+    public void remove(Long id) {
+        OmUserReward reward = getById(id);
+        if (reward == null){
+            return;
+        }
+
+        if (DecimalUtils.ne(reward.getRewardAmount(),new BigDecimal("0")) && reward.getRewardStatus()==UserRewardStatus.PENDING_REWARD){
+            iOmOrderService.refund(reward.getOrderId(),reward.getUserId(),"动态删除退款");
+        }
+        removeById(id);
+
+
     }
 
     private OmUserReward getByOrderId(Long id) {

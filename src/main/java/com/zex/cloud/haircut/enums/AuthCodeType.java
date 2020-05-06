@@ -2,7 +2,7 @@ package com.zex.cloud.haircut.enums;
 
 public enum  AuthCodeType {
 
-    AGENT_APPLY("1001");
+    AGENT_APPLY("1001"),SHOP_APPLY("1001");
 
 
     String templateCode;

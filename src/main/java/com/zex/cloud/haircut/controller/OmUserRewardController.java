@@ -35,15 +35,14 @@ public class OmUserRewardController {
 
     @GetMapping
     @ApiOperation("获取悬赏动态列表")
-    public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long userId){
-        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),userId);
+    public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Long userId,Boolean deleteStatus){
+        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),userId,deleteStatus);
     }
-
 
     @GetMapping("/current")
     @ApiOperation("当前用户获取悬赏动态列表")
     public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus){
-        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),RequestHolder.user().getId());
+        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),RequestHolder.user().getId(),false);
     }
     @ApiOperation("悬赏")
     @PutMapping("/rewardStatus/{id}")
@@ -56,7 +55,7 @@ public class OmUserRewardController {
     @ApiOperation("删除悬赏动态")
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id ){
-        iOmUserRewardService.removeById(id);
+        iOmUserRewardService.remove(id);
         return SimpleResp.SUCCESS;
     }
 

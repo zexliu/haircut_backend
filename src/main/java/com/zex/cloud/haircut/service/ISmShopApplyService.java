@@ -23,4 +23,6 @@ public interface ISmShopApplyService extends IService<SmShopApply> {
 
     SmShopApplyDetail detail(Long id);
 
+    void sendAuthCode(String mobile);
+
 }

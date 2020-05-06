@@ -89,11 +89,6 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
             throw new ParameterException("原价不符 serviceId =" + body.getServiceId());
         }
 
-        //获取优惠金额
-        if (body.getDiscountId() != null) {
-            BigDecimal discount = iSmShopDiscountService.getDiscountByServiceIdAndShopId(body.getServiceId(), body.getShopId());
-            realPrice = DecimalUtils.divide(DecimalUtils.multiply(realPrice, discount), new BigDecimal("10"));
-        }
         if (body.getIsHalf() != null && body.getIsHalf()) {
             //效验是否在半价时间内
             boolean valid = iSmHalfTimeService.valid(body.getShopId(), body.getAppointmentAt());
@@ -101,6 +96,12 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
                 throw new ServerException("不在半价时间内");
             }
             realPrice = DecimalUtils.divide(realPrice, new BigDecimal("2"));
+        }else {
+            //获取优惠金额
+            if (body.getDiscountId() != null) {
+                BigDecimal discount = iSmShopDiscountService.getDiscountByServiceIdAndShopId(body.getServiceId(), body.getShopId());
+                realPrice = DecimalUtils.divide(DecimalUtils.multiply(realPrice, discount), new BigDecimal("10"));
+            }
         }
         if (DecimalUtils.ne(realPrice, body.getRealAmount())) {
             throw new ParameterException("实际金额不符 serviceId =" + body);
