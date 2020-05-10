@@ -12,7 +12,6 @@ import com.zex.cloud.haircut.enums.AuthCodeType;
 import com.zex.cloud.haircut.enums.ShopWorkStatus;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.ForbiddenException;
-import com.zex.cloud.haircut.exception.ParameterException;
 import com.zex.cloud.haircut.exception.ServerException;
 import com.zex.cloud.haircut.mapper.SmShopApplyMapper;
 import com.zex.cloud.haircut.params.SmShopApplyParam;
@@ -52,14 +51,13 @@ public class SmShopApplyServiceImpl extends ServiceImpl<SmShopApplyMapper, SmSho
         if (smShopApply != null) {
             throw new ExistsException("申请记录已存在");
         }
-        if (!iSmsService.isAuthCodePass(param.getLeaderMobile(),AuthCodeType.AGENT_APPLY,param.getAuthCode())){
-            throw new ParameterException("验证码不正确或已过期");
-        }
+
         smShopApply = new SmShopApply();
         BeanUtils.copyProperties(param, smShopApply);
         smShopApply.setAuditStatus(AuditStatus.PENDING);
         smShopApply.setUpdateAt(LocalDateTime.now());
         smShopApply.setUserId(userId);
+        smShopApply.setVersion(1);
         save(smShopApply);
         return smShopApply;
     }
@@ -98,7 +96,7 @@ public class SmShopApplyServiceImpl extends ServiceImpl<SmShopApplyMapper, SmSho
 
     @Override
     public void sendAuthCode(String mobile) {
-        iSmsService.sendAuthCode(mobile, AuthCodeType.SHOP_APPLY,null);
+        iSmsService.sendAuthCode(mobile, AuthCodeType.REGISTER,null);
     }
 
 

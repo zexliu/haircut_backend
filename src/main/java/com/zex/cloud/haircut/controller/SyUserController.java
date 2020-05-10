@@ -3,6 +3,7 @@ package com.zex.cloud.haircut.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zex.cloud.haircut.entity.SyUser;
+import com.zex.cloud.haircut.enums.AuthCodeType;
 import com.zex.cloud.haircut.params.*;
 import com.zex.cloud.haircut.response.SimpleResp;
 import com.zex.cloud.haircut.response.SyUserDetail;
@@ -80,6 +81,29 @@ public class SyUserController {
     @ApiOperation("通过账号和旧密码修改密码")
     public String password(@RequestBody PasswordParam param) {
         iSyUserService.password(param);
+        return SimpleResp.SUCCESS;
+    }
+
+    @PostMapping("/password/mobile")
+    @ApiOperation("通过短信验证码修改密码")
+    public String passwordMobile(@RequestBody @Valid PasswordAuthCodeParam param) {
+        iSyUserService.passwordMobile(param);
+        return SimpleResp.SUCCESS;
+    }
+
+
+    @PostMapping("/code")
+    @ApiOperation("修改密码 验证码")
+    public String sendAuthCode(@RequestParam String mobile){
+        iSyUserService.sendAuthCode(mobile, AuthCodeType.FORGET_PASSWORD);
+        return SimpleResp.SUCCESS;
+    }
+
+
+    @PostMapping("/code/register")
+    @ApiOperation("用户注册 验证码")
+    public String sendAuthCodeRegister(@RequestParam String mobile){
+        iSyUserService.sendAuthCode(mobile, AuthCodeType.REGISTER);
         return SimpleResp.SUCCESS;
     }
 

@@ -9,9 +9,6 @@ import javax.validation.constraints.NotNull;
 public class SmShopApplyParam {
 
 
-    @ApiModelProperty("验证码")
-    @NotBlank
-    private String authCode;
     @NotBlank
     private String name;
     private String address;

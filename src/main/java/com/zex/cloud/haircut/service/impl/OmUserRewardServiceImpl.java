@@ -149,7 +149,7 @@ public class OmUserRewardServiceImpl extends ServiceImpl<OmUserRewardMapper, OmU
     }
 
     @Override
-    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus, Long currentUserId, Long userId,Boolean deleteStatus) {
+    public IPage<OmUserReWardVO> page(Page<OmUserReWardVO> convert, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus, Long currentUserId, Long userId,Integer deleteStatus) {
         IPage<OmUserReWardVO> page = baseMapper.queryUserRewardVO(convert, rewardStatus, publishStatus, currentUserId, userId,deleteStatus);
         for (OmUserReWardVO record : page.getRecords()) {
             baseMapper.preview(record.getId());

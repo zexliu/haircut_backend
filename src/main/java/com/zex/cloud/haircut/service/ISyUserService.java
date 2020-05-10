@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zex.cloud.haircut.dto.BrokenLinePoint;
 import com.zex.cloud.haircut.entity.SyUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zex.cloud.haircut.enums.AuthCodeType;
 import com.zex.cloud.haircut.enums.ClientType;
 import com.zex.cloud.haircut.enums.PopularizeType;
 import com.zex.cloud.haircut.params.*;
@@ -51,4 +52,8 @@ public interface ISyUserService extends IService<SyUser> {
     RequestUser getRequestUser(WxUserInfoParam userInfo, String sessionKey, ClientType clientType, Long popularizeId, PopularizeType popularizeType);
 
     SyUser register(SyUserRegisterParam param, String ip);
+
+    void passwordMobile(PasswordAuthCodeParam param);
+
+    void sendAuthCode(String mobile, AuthCodeType forgetPassword);
 }

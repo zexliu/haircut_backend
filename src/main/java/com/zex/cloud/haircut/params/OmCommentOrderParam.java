@@ -18,16 +18,16 @@ public class OmCommentOrderParam {
     @NotNull
     private Integer score;
     @ApiModelProperty("技术评分")
-    @NotNull
+//    @NotNull
     private Integer skillScore;
     @ApiModelProperty("卫生评分")
-    @NotNull
+//    @NotNull
     private Integer hygieneScore;
     @ApiModelProperty("服务评分")
-    @NotNull
+//    @NotNull
     private Integer serviceScore;
 
     @ApiModelProperty("是否匿名评价")
-    @NotNull
+//    @NotNull
     private Boolean anonymousStatus;
 }

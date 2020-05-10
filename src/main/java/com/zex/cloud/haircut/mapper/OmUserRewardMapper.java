@@ -19,7 +19,7 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface OmUserRewardMapper extends BaseMapper<OmUserReward> {
 
-    IPage<OmUserReWardVO> queryUserRewardVO(Page<OmUserReWardVO> convert, @Param("rewardStatus") UserRewardStatus rewardStatus,@Param("publishStatus") UserRewardPublishStatus publishStatus ,@Param("currentUserId") Long currentUserId,@Param("userId") Long userId,@Param("deleteStatus") Boolean deleteStatus);
+    IPage<OmUserReWardVO> queryUserRewardVO(Page<OmUserReWardVO> convert, @Param("rewardStatus") UserRewardStatus rewardStatus,@Param("publishStatus") UserRewardPublishStatus publishStatus ,@Param("currentUserId") Long currentUserId,@Param("userId") Long userId,@Param("deleteStatus") Integer deleteStatus);
 
     void praise(Long id);
     void unPraise(Long id);

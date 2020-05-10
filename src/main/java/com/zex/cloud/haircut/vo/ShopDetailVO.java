@@ -1,5 +1,8 @@
 package com.zex.cloud.haircut.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zex.cloud.haircut.config.JsonListLongSerializer;
+import com.zex.cloud.haircut.config.JsonLongSerializer;
 import com.zex.cloud.haircut.entity.HmStylist;
 import com.zex.cloud.haircut.entity.SmShop;
 import com.zex.cloud.haircut.response.OmOrderCommentInfo;
@@ -22,7 +25,9 @@ public class ShopDetailVO extends SmShop {
 
     private Long commentCount;
 
+    @JsonSerialize(using = JsonListLongSerializer.class)
     private List<Long> defaultTitleIds;
+    @JsonSerialize(using = JsonListLongSerializer.class)
     private List<Long> safetyTitleIds;
 
     private List<OmOrderCommentInfo> comments;

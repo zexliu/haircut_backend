@@ -80,6 +80,7 @@ public class SmAgentApplyServiceImpl extends ServiceImpl<SmAgentApplyMapper, SmA
         smAgentApply.setAuditStatus(AuditStatus.PENDING);
         smAgentApply.setUpdateAt(LocalDateTime.now());
         smAgentApply.setUserId(userId);
+        smAgentApply.setVersion(1);
         save(smAgentApply);
 
         return smAgentApply;
@@ -113,7 +114,7 @@ public class SmAgentApplyServiceImpl extends ServiceImpl<SmAgentApplyMapper, SmA
     @Override
     public SmAgentApplyDetail detail(Long id) {
         SmAgentApply apply = getById(id);
-        List<AmAuditHistory> histories = iAmAuditHistoryService.getByTargetIdAndType(id, AuditTargetType.SHOP);
+        List<AmAuditHistory> histories = iAmAuditHistoryService.getByTargetIdAndType(id, AuditTargetType.AGENT);
         SmAgentApplyDetail detail  = new SmAgentApplyDetail();
         BeanUtils.copyProperties(apply,detail);
         detail.setAuditHistories(histories);

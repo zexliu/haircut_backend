@@ -22,4 +22,7 @@ public class SyUserRegisterParam {
     @NotBlank
     private String password;
 
+    @ApiModelProperty("验证码")
+    @NotBlank
+    private String authCode;
 }

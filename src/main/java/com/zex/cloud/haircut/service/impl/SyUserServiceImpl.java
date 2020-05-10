@@ -10,6 +10,7 @@ import com.zex.cloud.haircut.enums.*;
 import com.zex.cloud.haircut.exception.AuthenticationException;
 import com.zex.cloud.haircut.exception.ExistsException;
 import com.zex.cloud.haircut.exception.NotFoundException;
+import com.zex.cloud.haircut.exception.ParameterException;
 import com.zex.cloud.haircut.mapper.SyUserMapper;
 import com.zex.cloud.haircut.params.*;
 import com.zex.cloud.haircut.response.SyUserDetail;
@@ -40,6 +41,8 @@ import java.util.List;
 @Service
 public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> implements ISyUserService {
 
+    @Autowired
+    private  ISmsService iSmsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -286,6 +289,9 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
     @Override
     public SyUser register(SyUserRegisterParam param, String ip) {
         valid(null, param.getUsername(), null, null);
+        if (!iSmsService.isAuthCodePass(param.getUsername(),AuthCodeType.REGISTER,param.getAuthCode())){
+            throw new ParameterException("验证码不正确或已过期");
+        }
         SyUser syUser = new SyUser();
         syUser.setUsername(param.getUsername());
         String password = passwordEncoder.encode(param.getPassword());
@@ -294,6 +300,24 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
         //默认用户组
         iSyGroupUserRelService.save(Constants.USER_GROUP_ID, syUser.getId());
         return syUser;
+    }
+
+    @Override
+    public void passwordMobile(PasswordAuthCodeParam param) {
+        if (!iSmsService.isAuthCodePass(param.getUsername(),AuthCodeType.FORGET_PASSWORD,param.getAuthCode())){
+            throw new ParameterException("验证码不正确或已过期");
+        }
+        SyUser syUser = getOne(new LambdaQueryWrapper<SyUser>().eq(SyUser::getUsername, param.getUsername()));
+        if (syUser == null) {
+            throw new NotFoundException("用户不存在");
+        }
+        syUser.setPassword(passwordEncoder.encode(param.getNewPassword()));
+        updateById(syUser);
+    }
+
+    @Override
+    public void sendAuthCode(String mobile, AuthCodeType forgetPassword) {
+        iSmsService.sendAuthCode(mobile, forgetPassword,null);
     }
 
 
