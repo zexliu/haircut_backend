@@ -13,4 +13,6 @@ public class OrderGrouponDTO {
     private Integer count;
     private BigDecimal amount;
     private GenderType genderType;
+    private BigDecimal price;
+
 }

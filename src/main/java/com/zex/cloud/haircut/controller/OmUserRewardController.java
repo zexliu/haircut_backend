@@ -41,8 +41,8 @@ public class OmUserRewardController {
 
     @GetMapping("/current")
     @ApiOperation("当前用户获取悬赏动态列表")
-    public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus){
-        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),RequestHolder.user().getId(),0);
+    public IPage<OmUserReWardVO> page(Pageable pageable, UserRewardStatus rewardStatus, UserRewardPublishStatus publishStatus,Integer deleteStatus){
+        return iOmUserRewardService.page(pageable.convert(),rewardStatus,publishStatus,RequestHolder.user().getId(),RequestHolder.user().getId(),deleteStatus);
     }
     @ApiOperation("悬赏")
     @PutMapping("/rewardStatus/{id}")

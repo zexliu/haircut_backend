@@ -77,5 +77,6 @@ public class SmShop implements Serializable {
     private ShopWorkStatus workStatus;
 
     private Boolean halfStatus;
-
+    private String identityCardFront;
+    private String identityCardBack;
 }

@@ -91,7 +91,7 @@ public class OmCommentController {
     @ApiOperation("评价订单")
     @PostMapping("/order/{shopOrderId}")
     public OmComment commentOrder(@PathVariable Long shopOrderId, @RequestBody @Valid OmCommentOrderParam param) {
-        return iOmCommentService.commentOrder(shopOrderId, RequestHolder.user(), param);
+        return iOmCommentService.commentOrder(shopOrderId, RequestHolder.user(), param, false);
     }
 
 

@@ -50,8 +50,8 @@ public class LedgerAccountServiceImpl implements ILedgerAccountService {
         SmShop shop = iSmShopService.getById(shopId);
         //判断店铺是否在免佣时间内
         BigDecimal shopAmount;
-        if (shop.getCreateAt().plusMonths(basicSetting.getShopFreeMonth()).isAfter(LocalDateTime.now())) {
-            BigDecimal platformAmount = null;
+        if (shop.getCreateAt().plusMonths(basicSetting.getShopFreeMonth()).isBefore(LocalDateTime.now())) {
+            BigDecimal platformAmount = totalAmount;
 
             shopAmount = DecimalUtils.subtract(amount, totalAmount);
             //查询店铺所在地是否有代理商

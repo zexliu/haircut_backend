@@ -29,7 +29,7 @@
     <select id="list" resultMap="BaseResultMap">
         select id, name, logo, cover_image, introduction, address, province_code, city_code, district_code,
         business_license, leader_name, leader_mobile, enable, longitude, latitude, create_at, score, html_info,
-        work_start_at, work_end_at, work_status ,half_status
+        work_start_at, work_end_at, work_status ,half_status,identity_card_front ,identity_card_back
         from sm_shop
         <where>
             1=1

@@ -65,9 +65,8 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
             omUserGroupon.setAmount(omOrder.getAmount());
             omUserGroupon.setStatus(UserGrouponStatus.PENDING_USE);
             omUserGroupon.setOrderId(omOrder.getId());
-
+            omUserGroupon.setPrice(dto.getPrice());
             save(omUserGroupon);
-            iLedgerAccountService.account(omUserGroupon.getId(),omUserGroupon.getAmount(), omUserGroupon.getUserId(), omUserGroupon.getShopId(), OrderType.SHOP_GROUPON);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -92,8 +91,15 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
         }else {
             //剩余金额 等于 总金额 / 总数量 * 剩余数量
             //退款金额等于剩余金额 扣除 5%
-            return DecimalUtils.multiply(DecimalUtils.divide(omUserGroupon.getAmount(),new BigDecimal(String.valueOf(omUserGroupon.getTotalCount())))
-                    ,new BigDecimal(String.valueOf(omUserGroupon.getRemainCount())));
+            BigDecimal subtract = DecimalUtils.subtract(omUserGroupon.getAmount(), DecimalUtils.multiply(omUserGroupon.getPrice(), new BigDecimal(String.valueOf(omUserGroupon.getRemainCount()))));
+            if (DecimalUtils.le(omUserGroupon.getAmount(),subtract)){
+                throw new ForbiddenException("该团购订单已无可退金额");
+            }
+            return subtract;
+
+//            return DecimalUtils.multiply(omUserGroupon.getPrice(),new BigDecimal(String.valueOf(omUserGroupon.getRemainCount())));
+//            return DecimalUtils.multiply(DecimalUtils.divide(omUserGroupon.getAmount(),new BigDecimal(String.valueOf(omUserGroupon.getTotalCount())))
+//                    ,new BigDecimal(String.valueOf(omUserGroupon.getRemainCount())));
         }
     }
 
@@ -133,6 +139,9 @@ public class OmUserGrouponServiceImpl extends ServiceImpl<OmUserGrouponMapper, O
             //设置状态为已用完
             userGroupon.setStatus(UserGrouponStatus.USED);
         }
+
+        iLedgerAccountService.account(userGroupon.getId(),DecimalUtils.divide(userGroupon.getAmount(),new BigDecimal(String.valueOf(userGroupon.getTotalCount()))), userGroupon.getUserId(), userGroupon.getShopId(), OrderType.SHOP_GROUPON);
+
         updateById(userGroupon);
 
     }

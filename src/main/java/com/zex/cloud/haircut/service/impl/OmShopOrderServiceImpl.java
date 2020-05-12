@@ -259,7 +259,7 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
     }
 
     @Override
-    public OmShopOrder comment(Long shopOrderId, Long userId) {
+    public OmShopOrder comment(Long shopOrderId, Long userId, Boolean auto) {
         OmShopOrder shopOrder = getById(shopOrderId);
         if (shopOrder == null) {
             throw new NotFoundException();
@@ -268,7 +268,11 @@ public class OmShopOrderServiceImpl extends ServiceImpl<OmShopOrderMapper, OmSho
             throw new ForbiddenException();
         }
         if (shopOrder.getStatus() != ShopOrderStatus.PENDING_EVALUATION) {
-            throw new ForbiddenException("该订单不在待评价状态");
+            if (auto){
+                return null;
+            }else {
+                throw new ForbiddenException("该订单不在待评价状态");
+            }
         }
         shopOrder.setStatus(ShopOrderStatus.FINISH);
         updateById(shopOrder);

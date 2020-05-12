@@ -7,7 +7,6 @@ import com.zex.cloud.haircut.entity.OmComment;
 import com.zex.cloud.haircut.entity.OmCommentScore;
 import com.zex.cloud.haircut.entity.OmShopOrder;
 import com.zex.cloud.haircut.entity.SmShop;
-import com.zex.cloud.haircut.enums.ClientType;
 import com.zex.cloud.haircut.enums.CommentFromType;
 import com.zex.cloud.haircut.enums.CommentStarLevel;
 import com.zex.cloud.haircut.enums.CommentTopicType;
@@ -52,9 +51,11 @@ public class OmCommentServiceImpl extends ServiceImpl<OmCommentMapper, OmComment
 
     @Override
     @Transactional
-    public OmComment commentOrder(Long shopOrderId, RequestUser user, OmCommentOrderParam param) {
-        OmShopOrder shopOrder = iOmShopOrderService.comment(shopOrderId, user.getId());
-        OmComment omComment = new OmComment();
+    public OmComment commentOrder(Long shopOrderId, RequestUser user, OmCommentOrderParam param, Boolean auto) {
+        OmShopOrder shopOrder = iOmShopOrderService.comment(shopOrderId, user.getId(),auto);
+        if (shopOrder == null){
+            return null;
+        }OmComment omComment = new OmComment();
         omComment.setCommentCount(0);
         omComment.setContent(param.getContent());
         omComment.setCreateAt(LocalDateTime.now());

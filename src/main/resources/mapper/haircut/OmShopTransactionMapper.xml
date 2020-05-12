@@ -18,10 +18,19 @@
         select SUM(amount) inc_amount, 0 sub_amount
         from om_shop_transaction
         <where>
-            incr_status is true
+             1=1
+            <if test="incrStatus == null">
+                and incr_status is true
+            </if>
+            <if test="incrStatus != null and incrStatus">
+                and incr_status is true
+            </if>
+            <if test="incrStatus != null and !incrStatus">
+                and incr_status is null
+            </if>
             <if test="shopId != null">and shop_id = #{shopId}</if>
             <if test="startAt != null">and create_at >= #{startAt}</if>
-            <if test="endAt != null">and create_at <![CDATA[<=]]> #{startAt}</if>
+            <if test="endAt != null">and create_at <![CDATA[<=]]> #{endAt}</if>
             <if test="incrStatus != null">and incr_status = #{incrStatus}</if>
             <if test="type != null">and type = #{type}</if>
         </where>
@@ -29,10 +38,19 @@
         select 0 inc_amount, SUM(amount) sub_amount
         from om_shop_transaction
         <where>
-            incr_status is false
+            1=1
+            <if test="incrStatus == null">
+                and incr_status is false
+            </if>
+            <if test="incrStatus != null and !incrStatus">
+                and incr_status is false
+            </if>
+            <if test="incrStatus != null and incrStatus">
+                and incr_status is null
+            </if>
             <if test="shopId != null">and shop_id = #{shopId}</if>
             <if test="startAt != null">and create_at >= #{startAt}</if>
-            <if test="endAt != null">and create_at <![CDATA[<=]]> #{startAt}</if>
+            <if test="endAt != null">and create_at <![CDATA[<=]]> #{endAt}</if>
             <if test="incrStatus != null">and incr_status = #{incrStatus}</if>
             <if test="type != null">and type = #{type}</if>
         </where>

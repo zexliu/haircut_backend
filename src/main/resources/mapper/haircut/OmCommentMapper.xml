@@ -66,6 +66,7 @@
         left join sm_shop ss on ss.id = ocs.shop_id
         <where>
             oc.topic_type = 1
+            and oc.delete_status = 0
             <if test="shopId != null">and ocs.shop_id = #{shopId}</if>
             <if test="stylistId != null">and ocs.stylist_id = #{stylistId}</if>
             <if test="orderId != null">and oc.topic_id = #{orderId}</if>
@@ -101,16 +102,18 @@
                  left join om_shop_transaction ost on ost.target_id = oc.id
         where topic_id = #{rewardId}
           and topic_type = 2
+          and oc.delete_status = 0
 
     </select>
     <select id="shopScoreCountVO" resultType="com.zex.cloud.haircut.vo.ScoreCountVO">
         select count(*) count ,avg(score) score from om_comment_score ocs
         <where>
+            ocs.delete_status = 0
             <if test="shopId != null">
-                shop_id = #{shopId}
+               and shop_id = #{shopId}
             </if>
             <if test="stylistId != null">
-                stylist_id = #{stylistId}
+                and stylist_id = #{stylistId}
             </if>
         </where>
     </select>

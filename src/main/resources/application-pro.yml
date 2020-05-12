@@ -23,6 +23,6 @@ spring:
     password: 666666
 
 files-location: /files
-host-url: https://api.ydqmf.com/
+host-url: https://api.ydqmf.com
 server:
   port: 80

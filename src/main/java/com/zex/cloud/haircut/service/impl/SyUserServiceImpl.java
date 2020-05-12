@@ -267,7 +267,8 @@ public class SyUserServiceImpl extends ServiceImpl<SyUserMapper, SyUser> impleme
                 }
             }
             //保存推广信息
-            if (popularizeId != null && popularizeType != null) {
+//            if (popularizeId != null && popularizeType != null) {
+            if (popularizeId != null ) {
                 UmPopularize umPopularize = new UmPopularize();
                 umPopularize.setTargetId(popularizeId);
                 umPopularize.setTargetType(popularizeType);

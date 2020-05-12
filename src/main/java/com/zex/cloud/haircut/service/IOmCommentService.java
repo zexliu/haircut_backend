@@ -22,7 +22,7 @@ import com.zex.cloud.haircut.vo.ScoreCountVO;
  */
 public interface IOmCommentService extends IService<OmComment> {
 
-    OmComment commentOrder(Long shopOrderId, RequestUser user, OmCommentOrderParam param);
+    OmComment commentOrder(Long shopOrderId, RequestUser user, OmCommentOrderParam param, Boolean auto);
 
     OmComment reply(Long id, RequestUser user, CommentReplyParam param);
 

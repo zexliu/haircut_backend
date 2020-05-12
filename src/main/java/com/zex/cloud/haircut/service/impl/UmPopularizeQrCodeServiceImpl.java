@@ -60,8 +60,9 @@ public class UmPopularizeQrCodeServiceImpl extends ServiceImpl<UmPopularizeQrCod
 
     private String generateQrCode(Long targetId, PopularizeType type) {
         QrCodeRequest qrCodeRequest = new QrCodeRequest();
-        String scene = "id="+targetId+"&"+"type="+type.name();
-        qrCodeRequest.setPage(null);
+//        String scene = "id="+targetId+"&"+"type="+type.name();
+        String scene = String.valueOf(targetId);
+        qrCodeRequest.setPage("pages/login/login");
         qrCodeRequest.setScene(scene);
         Call<ResponseBody> call = wxRetrofit.create(WxApi.class).getQrCode(ioAuthService.getBackendAccessToken(), qrCodeRequest);
         try {

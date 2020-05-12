@@ -88,10 +88,13 @@ public class SmShopGrouponServiceImpl extends ServiceImpl<SmShopGrouponMapper, S
         if (shopGroupon == null) {
             throw new NotFoundException("团购信息不存在");
         }
+
+        BigDecimal price = iHmStylistServiceRelationService.getPriceByServiceIdStylistIdAndSex(shopGroupon.getServiceId(), shopGroupon.getStylistId(), body.getGenderType());
 //        BigDecimal onePrice = iHmStylistServiceRelationService.getPriceByServiceIdStylistIdAndSex(shopGroupon.getServiceId(), body.getStylistId(), body.getGenderType());
 //        BigDecimal originPrice = DecimalUtils.multiply(onePrice, new BigDecimal(shopGroupon.getCount()));
 //        BigDecimal realAmount = DecimalUtils.multiply(originPrice, shopGroupon.getDiscount());
         BigDecimal realAmount = shopGroupon.getAmount();
+
 
         if (body.getCouponId() != null) {
             //使用优惠券并验证优惠金额
@@ -110,6 +113,7 @@ public class SmShopGrouponServiceImpl extends ServiceImpl<SmShopGrouponMapper, S
         dto.setStylistId(body.getStylistId());
         dto.setShopId(body.getShopId());
         dto.setGenderType(body.getGenderType());
+        dto.setPrice(price);
         return objectMapper.writeValueAsString(dto);
 
 //        List<OrderGrouponItemDTO> items = new ArrayList<>();

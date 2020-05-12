@@ -38,7 +38,7 @@ public interface IOmShopOrderService extends IService<OmShopOrder> {
 
     void use(Long id, Long shopId);
 
-    OmShopOrder comment(Long shopOrderId, Long userId);
+    OmShopOrder comment(Long shopOrderId, Long userId, Boolean auto);
 
     IPage<OmShopOrderVO> shopOrderVO(IPage<OmShopOrderVO> page, String keywords, Long shopId, Long stylistId, Long userId, ShopOrderStatus status, GenderType genderType, LocalDateTime startAt, LocalDateTime endAt, Boolean useStatus, Boolean payStatus, Boolean isToday, Boolean isAfterToday, Integer provinceCode, Integer cityCode);
 

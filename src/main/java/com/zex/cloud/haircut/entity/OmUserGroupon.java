@@ -56,6 +56,8 @@ public class OmUserGroupon implements Serializable {
 
     private BigDecimal amount;
 
+    private BigDecimal price;
+
     private UserGrouponStatus status;
 
     @JsonSerialize(using = JsonLongSerializer.class)

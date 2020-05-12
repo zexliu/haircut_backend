@@ -48,6 +48,7 @@ public class SmShopParam {
     private LocalTime workEndAt;
 
     private ShopWorkStatus workStatus;
-
+    private String identityCardFront;
+    private String identityCardBack;
 
 }

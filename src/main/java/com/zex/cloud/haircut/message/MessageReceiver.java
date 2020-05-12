@@ -5,7 +5,6 @@ import com.zex.cloud.haircut.entity.OmOrder;
 import com.zex.cloud.haircut.enums.OrderStatus;
 import com.zex.cloud.haircut.enums.OrderType;
 import com.zex.cloud.haircut.params.OmCommentOrderParam;
-import com.zex.cloud.haircut.security.RequestHolder;
 import com.zex.cloud.haircut.security.RequestUser;
 import com.zex.cloud.haircut.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +59,6 @@ public class MessageReceiver {
         param.setHygieneScore(5);
         param.setSkillScore(5);
         RequestUser requestUser = iSyUserService.getRequestUser(msg.getUserId());
-        iOmCommentService.commentOrder(msg.getOrderId(),requestUser,param);
+        iOmCommentService.commentOrder(msg.getOrderId(),requestUser,param, true);
     }
 }
